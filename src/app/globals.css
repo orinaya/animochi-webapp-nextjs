@@ -1,0 +1,197 @@
+@import "tailwindcss";
+@import "react-toastify/dist/ReactToastify.css";
+
+/* --- Tehegan font --- */
+/* used for title */
+@font-face {
+  font-family: "Tehegan";
+  src: url("/assets/fonts/tehegan/Tehegan.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+:root {
+  --background: var(--color-latte-50);
+  --foreground: var(--color-blueberry-950);
+}
+
+/* Color Palette and Fonts */
+@theme inline {
+  --color-blueberry-50: #ebeaff;
+  --color-blueberry-100: #d9d8ff;
+  --color-blueberry-200: #c0baff;
+  --color-blueberry-300: #9d90ff;
+  --color-blueberry-400: #8564ff;
+  --color-blueberry-500: #7840ff;
+  --color-blueberry-600: #741fff;
+  --color-blueberry-700: #6a14ee;
+  --color-blueberry-800: #5414bf;
+  --color-blueberry-900: #451a95;
+  /* main --color-blueberry-950 */
+  --color-blueberry-950: #190933;
+
+  --color-strawberry-50: #fdf5f3;
+  --color-strawberry-25: #fefbfa;
+  --color-strawberry-100: #fbe9e5;
+  --color-strawberry-200: #f9d6cf;
+  --color-strawberry-300: #f4b9ad;
+  /* main  --color-strawberry-400 */
+  --color-strawberry-400: #ee9e8e;
+  --color-strawberry-500: #df6b54;
+  --color-strawberry-600: #cb5037;
+  --color-strawberry-700: #aa402b;
+  --color-strawberry-800: #8d3827;
+  --color-strawberry-900: #763326;
+  --color-strawberry-950: #40170f;
+
+  --color-peach-50: #fff4ed;
+  /* main --color-peach-100 */
+  --color-peach-100: #ffdbc3;
+  --color-peach-200: #fec9aa;
+  --color-peach-300: #fda374;
+  --color-peach-400: #fb713c;
+  --color-peach-500: #f94c16;
+  --color-peach-600: #ea320c;
+  --color-peach-700: #c2220c;
+  --color-peach-800: #9a1d12;
+  --color-peach-900: #7c1b12;
+  --color-peach-950: #430a07;
+
+  /* main  --color-latte-50 */
+  --color-latte-50: #fff5e0;
+  --color-latte-25: #fffcf7;
+  --color-latte-100: #feecc7;
+  --color-latte-200: #fdd88a;
+  --color-latte-300: #fcbe4d;
+  --color-latte-400: #fba524;
+  --color-latte-500: #f5810b;
+  --color-latte-600: #d95d06;
+  --color-latte-700: #b43e09;
+  --color-latte-800: #92300e;
+  --color-latte-900: #78280f;
+  --color-latte-950: #451203;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Outfit", sans-serif;
+}
+
+.font-tehegan {
+  font-family: "Tehegan", serif;
+}
+
+/* Animations personnalisées pour les actions du monstre */
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Animation des particules d'emojis autour du monstre */
+@keyframes emoji-float {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-80px) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(0.8);
+  }
+}
+
+.animate-emoji-float {
+  animation: emoji-float 1.5s ease-out forwards;
+}
+
+/* Pixel Art Rendering */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Animation confettis pour level-up */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.animate-confetti {
+  animation: confetti 3s ease-in forwards;
+}
+
+/* Animation slide-in pour les récompenses */
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s ease-out forwards;
+}
