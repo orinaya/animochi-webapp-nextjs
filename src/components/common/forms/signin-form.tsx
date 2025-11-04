@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { FaEye } from 'react-icons/fa'
-import { FiMail, FiLock } from 'react-icons/fi'
+import { FiMail, FiLock, FiUser } from 'react-icons/fi'
 import { Button, InputField } from '../ui'
 import { authClient } from '@/lib/auth-client'
 
@@ -32,9 +32,11 @@ function SignInForm({ onError, onFormSwitch }: SignInFormProps): React.ReactNode
           provider: 'github',
           callbackURL: '/dashboard'
         })
-      } else {
-        // TODO: Implémenter Google OAuth quand configuré
-        console.log(`OAuth sign-in with ${provider} not yet implemented`)
+      } else if (provider === 'google') {
+        await authClient.signIn.social({
+          provider: 'google',
+          callbackURL: '/dashboard'
+        })
       }
     } catch (error) {
       console.error(`OAuth sign-in error with ${provider}:`, error)
@@ -138,7 +140,7 @@ function SignInForm({ onError, onFormSwitch }: SignInFormProps): React.ReactNode
             variant='primary'
             color='strawberry'
             disabled={isLoading}
-            iconBefore={FiLock}
+            iconBefore={FiUser}
             size='xl'
             className='w-full'
           >
@@ -151,7 +153,7 @@ function SignInForm({ onError, onFormSwitch }: SignInFormProps): React.ReactNode
           </div>
         </div>
 
-        <div className='text-center text-sm leading-[131.25%] text-latte-700'>
+        <div className='text-center text-sm leading-[131.25%] text-blueberry-950'>
           <span>Pas de compte ? </span>
           <button
             type='button'

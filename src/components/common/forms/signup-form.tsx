@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { FaGoogle, FaGithub, FaEye } from 'react-icons/fa'
-import { FiMail, FiLock } from 'react-icons/fi'
+import { FaEye } from 'react-icons/fa'
+import { FiMail, FiLock, FiUserPlus } from 'react-icons/fi'
 import { Button, InputField } from '../ui'
 import { authClient } from '@/lib/auth-client'
 
@@ -34,9 +34,11 @@ function SignUpForm({ onError, onFormSwitch }: SignUpFormProps): React.ReactNode
           provider: 'github',
           callbackURL: '/dashboard'
         })
-      } else {
-        // TODO: Implémenter Google OAuth quand configuré
-        console.log(`OAuth sign-up with ${provider} not yet implemented`)
+      } else if (provider === 'google') {
+        await authClient.signIn.social({
+          provider: 'google',
+          callbackURL: '/dashboard'
+        })
       }
     } catch (error) {
       console.error(`OAuth sign-up error with ${provider}:`, error)
@@ -91,20 +93,16 @@ function SignUpForm({ onError, onFormSwitch }: SignUpFormProps): React.ReactNode
       <div className='flex gap-4'>
         <Button
           type='button'
-          variant='primary'
-          color='strawberry'
-          className='flex-1 h-10 gap-2.5'
-          iconBefore={FaGoogle}
+          variant='google'
+          className='flex-1'
           onClick={() => { void handleOAuthSignUp('google') }}
         >
           Google
         </Button>
         <Button
           type='button'
-          variant='primary'
-          color='blueberry'
-          className='flex-1 h-10 gap-2.5'
-          iconBefore={FaGithub}
+          variant='github'
+          className='flex-1'
           onClick={() => { void handleOAuthSignUp('github') }}
         >
           Github
@@ -124,7 +122,7 @@ function SignUpForm({ onError, onFormSwitch }: SignUpFormProps): React.ReactNode
           <InputField
             type='email'
             name='email'
-            placeholder='Adresse email'
+            label='Email'
             value={credentials.email}
             required
             leftIcon={FiMail}
@@ -137,7 +135,7 @@ function SignUpForm({ onError, onFormSwitch }: SignUpFormProps): React.ReactNode
           <InputField
             type='password'
             name='password'
-            placeholder='Mot de passe'
+            label='Mot de passe'
             value={credentials.password}
             required
             leftIcon={FiLock}
@@ -155,15 +153,16 @@ function SignUpForm({ onError, onFormSwitch }: SignUpFormProps): React.ReactNode
             type='submit'
             variant='primary'
             color='strawberry'
-            className='w-full h-10 gap-2.5'
             disabled={isLoading}
-            iconBefore={FiLock}
+            iconBefore={FiUserPlus}
+            size='xl'
+            className='w-full'
           >
             {isLoading ? 'Création en cours...' : 'Créer mon compte'}
           </Button>
         </div>
 
-        <div className='text-center text-sm leading-[131.25%] text-latte-700'>
+        <div className='text-center text-sm leading-[131.25%] text-blueberry-950'>
           <span>Vous avez déjà un compte ? </span>
           <button
             type='button'
