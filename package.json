@@ -8,7 +8,6 @@
     "build": "next build",
     "build:next": "next build",
     "build:docs": "cd documentation && npm ci && npm run build",
-    "build:all": "npm run build && npm run build:docs && npm run merge-outputs",
     "merge-outputs": "node scripts/merge-outputs.js",
     "start": "next start",
     "lint": "ts-standard --fix"
