@@ -1,26 +1,37 @@
 'use client'
 
+import Image from 'next/image'
+import { FaGithub } from 'react-icons/fa'
 import { type ThemeColor, type ButtonSize, type ButtonVariant } from '@/types'
 
 function getSize (size?: ButtonSize): string {
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-4 py-2 text-base',
-    lg: 'px-5 py-2.5 text-lg',
-    xl: 'px-6 py-3 text-xl'
+    lg: 'px-5 py-2.5 text-base',
+    xl: 'px-6 py-3 text-base'
   }
   return sizes[size ?? 'md']
 }
 
 function getVariant (variant: ButtonVariant, color: ThemeColor, disabled: boolean): string {
-  const baseClasses = 'font-normal rounded-lg inline-flex justify-center items-center transition-all duration-300 transform text-center'
+  const baseClasses = 'font-normal rounded-xl inline-flex justify-center items-center transition-all duration-300 transform text-center'
 
   if (disabled) {
     return `${baseClasses} cursor-not-allowed opacity-50 bg-gray-100 text-gray-400 border-gray-200`
   }
 
+  // Gestion des variantes spéciales (Google et GitHub)
+  if (variant === 'google') {
+    return `${baseClasses} bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-blue-500 `
+  }
+
+  if (variant === 'github') {
+    return `${baseClasses} bg-[#24292e] hover:bg-[#1a1e22] text-white border border-[#24292e] focus:ring-2 focus:ring-gray-500`
+  }
+
   // Configuration des styles par couleur et variant avec vos couleurs principales
-  const styleMap: Record<ThemeColor, Record<ButtonVariant, string>> = {
+  const styleMap: Record<ThemeColor, Record<Exclude<ButtonVariant, 'google' | 'github'>, string>> = {
     blueberry: {
       primary: `${baseClasses} bg-blueberry-950 hover:bg-blueberry-900 text-white border-blueberry-950 focus:ring-blueberry-950`,
       secondary: `${baseClasses} bg-latte-25 hover:bg-latte-50 text-blueberry-950 border-latte-100 focus:ring-blueberry-950`,
@@ -77,6 +88,32 @@ function Button ({
   iconAfter: IconAfter,
   iconCenter: IconCenter
 }: ButtonProps): React.ReactNode {
+  // Gérer automatiquement les icônes pour les variantes spéciales
+  const renderIcon = (): React.ReactNode => {
+    if (variant === 'google') {
+      return (
+        <Image
+          src='/assets/images/logo/google-favicon.svg'
+          alt='Google'
+          width={16}
+          height={16}
+          className='mr-2'
+        />
+      )
+    }
+
+    if (variant === 'github') {
+      return <FaGithub className='mr-2' />
+    }
+
+    // Icônes personnalisées pour les autres variantes
+    if (IconBefore != null) {
+      return <IconBefore className='mr-2' />
+    }
+
+    return null
+  }
+
   return (
     <button
       type={type}
@@ -84,7 +121,7 @@ function Button ({
       onClick={onClick}
       className={`${getSize(size)} ${getVariant(variant, color, disabled)} ${className}`}
     >
-      {(IconBefore != null) && <IconBefore className='mr-2' />}
+      {renderIcon()}
       {children}
       {(IconCenter != null) && <IconCenter className={`mx-2 ${className}`} />}
       {(IconAfter != null) && <IconAfter className='ml-2' />}
