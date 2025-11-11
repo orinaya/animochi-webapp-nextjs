@@ -92,7 +92,7 @@ export function Modal ({
   if (!isOpen) return null
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
+    <div className='fixed inset-0 z-50 flex items-center justify-center px-4'>
       {/* Overlay */}
       <div
         className='absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300'
@@ -115,10 +115,10 @@ export function Modal ({
       >
         {/* En-tête avec titre et bouton de fermeture */}
         {title !== undefined && (
-          <div className='sticky top-0 z-10 flex items-center justify-between p-6 border-b border-latte-100 bg-white rounded-t-2xl'>
+          <div className='sticky top-0 z-10 flex items-center justify-between px-6 pt-6 pb-2 bg-white rounded-t-2xl'>
             <h2
               id='modal-title'
-              className='text-2xl font-bold text-blueberry-900'
+              className='text-2xl font-bold text-blueberry-950'
             >
               {title}
             </h2>
@@ -146,7 +146,7 @@ export function Modal ({
         )}
 
         {/* Contenu */}
-        <div className={title !== undefined ? 'p-6' : 'p-8'}>
+        <div className={title !== undefined ? 'px-6' : 'px-8'}>
           {children}
         </div>
       </div>

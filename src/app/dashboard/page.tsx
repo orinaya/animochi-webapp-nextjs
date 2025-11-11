@@ -86,7 +86,7 @@
 // export default DashboardPage
 // import { getMonsters } from '@/actions/monsters.action'
 import DashboardContent from '@/components/web/dashboard/dashboard-content'
-import { auth } from '@/lib/auth'
+import { auth } from '@/lib/auth/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -107,7 +107,7 @@ import { redirect } from 'next/navigation'
  * @example
  * Route accessible via /dashboard
  */
-async function DashboardPage(): Promise<React.ReactNode> {
+async function DashboardPage (): Promise<React.ReactNode> {
   // Récupération de la session utilisateur
   const session = await auth.api.getSession({
     headers: await headers()

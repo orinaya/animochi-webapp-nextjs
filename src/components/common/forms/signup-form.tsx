@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { FaEye } from 'react-icons/fa'
 import { FiMail, FiLock, FiUserPlus } from 'react-icons/fi'
 import { Button, InputField } from '../ui'
-import { authClient } from '@/lib/auth-client'
+import { authClient } from '@/lib/auth/auth-client'
 
 interface Credentials {
   email: string
