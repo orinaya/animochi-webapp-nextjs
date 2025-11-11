@@ -8,8 +8,8 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Modal } from '@/components/common/ui/modal'
-import Button from '@/components/common/ui/button'
+import { Modal } from '@/components/ui/modal'
+import Button from '@/components/ui/button'
 import { ANIMAL_AVATARS, getAnimalImageUrl } from '@/lib/avatar/animal-avatar-utils'
 
 interface ProfileAvatarModalProps {

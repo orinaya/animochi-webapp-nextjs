@@ -1,5 +1,5 @@
-import Header from '@/components/web/header'
-import Footer from '@/components/web/footer'
+import Header from '@/components/landing/header'
+import Footer from '@/components/landing/footer'
 import { Metadata } from 'next'
 
 export const metadata: Readonly<Metadata> = {

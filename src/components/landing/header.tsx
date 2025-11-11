@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '../common/ui'
+import { Button } from '../ui'
 import AnimochiLogo from '../../../public/animochi-line.svg'
 import Image from 'next/image'
 import Link from 'next/link'

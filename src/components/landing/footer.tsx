@@ -3,7 +3,7 @@ interface FooterProps {
 }
 
 // Footer component test
-export default function Footer({ children }: FooterProps): React.ReactNode {
+export default function Footer ({ children }: FooterProps): React.ReactNode {
   return (
     <footer className='bg-blueberry-950 text-latte-50 py-12'>
       <div className='max-w-6xl mx-auto px-4'>

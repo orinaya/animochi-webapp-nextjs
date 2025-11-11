@@ -6,7 +6,7 @@
 'use client'
 
 import { Sidebar } from './sidebar'
-import type { authClient } from '@/lib/auth-client'
+import type { authClient } from '@/lib/auth/auth-client'
 
 type Session = typeof authClient.$Infer.Session
 

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import SignInForm from './signin-form'
 import SignUpForm from './signup-form'
-import ErrorMessage from '../error-message'
+import ErrorMessage from '../errors/error-message'
 // import ImageAnimochi from '../../../../public/assets/images/sign-in/animochi-signin.png'
 
 function AuthFormContent (): React.ReactNode {

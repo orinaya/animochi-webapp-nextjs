@@ -19,7 +19,7 @@ export default function ErrorMessage ({
       ${className}
     `}
     >
-      <span className='w-6 h-6 bg-strawberry-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5'>
+      <span className='w-6 h-6 bg-strawberry-100 rounded-full flex items-center justify-center shrink-0 mt-0.5'>
         <span className='text-strawberry-600 text-sm font-bold'>!</span>
       </span>
       <div>
