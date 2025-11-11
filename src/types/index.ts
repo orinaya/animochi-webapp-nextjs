@@ -1,4 +1,11 @@
-export type ThemeColor = 'blueberry' | 'strawberry' | 'peach' | 'latte'
+export type ThemeColor =
+  | 'blueberry'
+  | 'strawberry'
+  | 'peach'
+  | 'latte'
+  | 'success'
+  | 'warning'
+  | 'danger'
 
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl'
 
