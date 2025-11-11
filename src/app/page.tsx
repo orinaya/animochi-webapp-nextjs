@@ -45,7 +45,7 @@ export const metadata: Readonly<Metadata> = {
 
 export default function Home (): React.ReactNode {
   return (
-    <div className='min-h-screen bg-latte-50'>
+    <div className='min-h-screen'>
       <Header />
       <Footer />
     </div>

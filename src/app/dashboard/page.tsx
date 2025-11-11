@@ -107,7 +107,7 @@ import { redirect } from 'next/navigation'
  * @example
  * Route accessible via /dashboard
  */
-async function DashboardPage(): Promise<React.ReactNode> {
+async function DashboardPage (): Promise<React.ReactNode> {
   // Récupération de la session utilisateur
   const session = await auth.api.getSession({
     headers: await headers()

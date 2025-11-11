@@ -75,7 +75,7 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
 
   return (
     <>
-      <aside className='w-60 h-screen fixed left-0 top-0 bg-strawberry-100 flex flex-col justify-between overflow-y-auto'>
+      <aside className='h-screen bg-strawberry-100 flex flex-col justify-between overflow-y-auto flex-1'>
         {/* Profil utilisateur avec bannière */}
         <div className='flex-1'>
           <div className='relative mb-8'>

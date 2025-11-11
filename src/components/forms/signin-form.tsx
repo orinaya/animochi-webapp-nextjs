@@ -16,7 +16,7 @@ interface SignInFormProps {
   onFormSwitch?: () => void
 }
 
-function SignInForm({ onError, onFormSwitch }: SignInFormProps): React.ReactNode {
+function SignInForm ({ onError, onFormSwitch }: SignInFormProps): React.ReactNode {
   const [credentials, setCredentials] = useState<Credentials>({
     email: '',
     password: ''
