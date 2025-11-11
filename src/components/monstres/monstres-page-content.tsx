@@ -1,0 +1,233 @@
+/**
+ * MonstresPageContent - Contenu de la page Mes Monstres
+ * Affiche la liste complète des monstres de l'utilisateur avec navigation
+ */
+
+'use client'
+
+import { useEffect, useState } from 'react'
+import { DashboardLayout } from '@/components/layout'
+import { useAuth } from '@/hooks/use-auth'
+import { authClient } from '@/lib/auth/auth-client'
+import { FiUsers, FiPlus } from 'react-icons/fi'
+import Button from '@/components/ui/button'
+import type { Monster } from '@/types/monster'
+
+type Session = typeof authClient.$Infer.Session
+
+interface MonstresPageContentProps {
+  /** Session utilisateur contenant les informations de l'utilisateur connecté */
+  session: Session
+}
+
+interface MonsterListHeaderProps {
+  /** Nombre total de monstres */
+  count: number
+  /** Callback pour ouvrir la modal de création */
+  onCreateMonster: () => void
+}
+
+/**
+ * En-tête de la liste des monstres avec compteur et bouton d'action
+ */
+function MonsterListHeader ({ count, onCreateMonster }: MonsterListHeaderProps): React.ReactNode {
+  return (
+    <div className='flex items-center justify-between mb-8'>
+      <div className='flex items-center gap-3'>
+        <div className='p-3 bg-blueberry-100 rounded-xl'>
+          <FiUsers className='text-2xl text-blueberry-600' />
+        </div>
+        <div>
+          <h2 className='text-2xl font-bold text-blueberry-950'>Mes Monstres</h2>
+          <p className='text-latte-600'>
+            {count === 0 ? 'Aucun monstre' : `${count} monstre${count > 1 ? 's' : ''}`}
+          </p>
+        </div>
+      </div>
+      <Button
+        variant='primary'
+        size='md'
+        onClick={onCreateMonster}
+        className='flex items-center gap-2'
+      >
+        <FiPlus className='text-lg' />
+        Adopter un monstre
+      </Button>
+    </div>
+  )
+}
+
+/**
+ * État vide quand l'utilisateur n'a pas encore de monstres
+ */
+function EmptyMonstersState ({ onCreateMonster }: { onCreateMonster: () => void }): React.ReactNode {
+  return (
+    <div className='text-center py-16'>
+      <div className='mb-6'>
+        <div className='w-24 h-24 bg-linear-to-br from-blueberry-100 to-strawberry-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+          <span className='text-4xl'>🐾</span>
+        </div>
+      </div>
+      <h3 className='text-2xl font-bold text-blueberry-950 mb-4'>
+        Votre collection est vide !
+      </h3>
+      <p className='text-latte-600 mb-8 max-w-md mx-auto'>
+        Commencez votre aventure Animochi en adoptant votre premier monstre.
+        Chaque créature a sa personnalité unique !
+      </p>
+      <Button
+        variant='primary'
+        size='lg'
+        onClick={onCreateMonster}
+        className='flex items-center gap-2 mx-auto'
+      >
+        <FiPlus className='text-lg' />
+        Adopter mon premier monstre
+      </Button>
+    </div>
+  )
+}
+
+/**
+ * Grille de monstres (placeholder pour le moment)
+ */
+function MonstersGrid ({ monsters }: { monsters: Monster[] }): React.ReactNode {
+  if (monsters.length === 0) {
+    return null
+  }
+
+  return (
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+      {monsters.map((monster, index) => (
+        <div
+          key={monster.id ?? monster._id ?? index}
+          className='bg-white rounded-xl p-6 shadow-sm border border-latte-200 hover:shadow-md transition-all duration-200'
+        >
+          <div className='text-center'>
+            <div className='w-16 h-16 bg-linear-to-br from-blueberry-100 to-strawberry-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+              <span className='text-2xl'>{monster.emoji ?? '🐾'}</span>
+            </div>
+            <h3 className='font-bold text-blueberry-950 mb-2'>{monster.name}</h3>
+            <p className='text-sm text-latte-600 mb-4'>Niveau {monster.level ?? 1}</p>
+            <div className='text-xs text-latte-500'>
+              État: {monster.state ?? 'content'}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/**
+ * Composant principal du contenu de la page Monstres
+ *
+ * Respecte le principe SRP : Orchestre uniquement l'affichage de la page monstres
+ * Respecte le principe OCP : Extensible via props et composition
+ *
+ * @param {MonstresPageContentProps} props - Les propriétés du composant
+ * @returns {React.ReactNode} Le contenu complet de la page monstres
+ */
+export function MonstresPageContent ({ session }: MonstresPageContentProps): React.ReactNode {
+  const { logout } = useAuth()
+  const [monsters, setMonsters] = useState<Monster[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Données du fil d'Ariane
+  const breadcrumbItems = [
+    { label: 'Tableau de bord', href: '/dashboard' },
+    { label: 'Mes Monstres' }
+  ]
+
+  // Simulation de données pour le moment (à remplacer par un vraai appel API)
+  useEffect(() => {
+    const loadMonsters = async (): Promise<void> => {
+      try {
+        setIsLoading(true)
+        // TODO: Remplacer par un vrai appel API
+        // const data = await getMonsters()
+
+        // Simulation de données pour le développement
+        const mockMonsters: Monster[] = [
+          {
+            id: '1',
+            name: 'Mochi',
+            emoji: '🐱',
+            level: 5,
+            state: 'happy',
+            color: 'blueberry'
+          },
+          {
+            id: '2',
+            name: 'Bubbles',
+            emoji: '🐸',
+            level: 3,
+            state: 'sleepy',
+            color: 'strawberry'
+          }
+        ]
+
+        setMonsters(mockMonsters)
+      } catch (error) {
+        console.error('Erreur lors du chargement des monstres:', error)
+        setMonsters([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    void loadMonsters()
+  }, [])
+
+  const handleCreateMonster = (): void => {
+    console.log('Ouvrir la modal de création de monstre')
+    // TODO: Implémenter la modal de création
+  }
+
+  const handleLogout = (): void => {
+    try {
+      logout()
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error)
+    }
+  }
+
+  return (
+    <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
+      {/* Titre de la page en blueberry-950 */}
+      <div className='mb-8'>
+        <h1 className='text-3xl font-semibold text-blueberry-950 mb-2'>
+          Mes Monstres
+        </h1>
+        {/* <p className='text-lg text-latte-600'>
+          Découvrez et gérez votre collection de créatures Animochi
+        </p> */}
+      </div>
+
+      {/* Contenu principal */}
+      {isLoading
+        ? (
+          <div className='flex items-center justify-center py-16'>
+            <div className='text-lg text-latte-600'>Chargement de vos monstres...</div>
+          </div>
+          )
+        : (
+          <div>
+            {monsters.length === 0
+              ? (
+                <EmptyMonstersState onCreateMonster={handleCreateMonster} />
+                )
+              : (
+                <>
+                  <MonsterListHeader
+                    count={monsters.length}
+                    onCreateMonster={handleCreateMonster}
+                  />
+                  <MonstersGrid monsters={monsters} />
+                </>
+                )}
+          </div>
+          )}
+    </DashboardLayout>
+  )
+}

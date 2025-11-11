@@ -10,13 +10,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
-import { FiHome, FiUsers, FiDollarSign, FiAward, FiUser, FiSettings, FiLogOut, FiCamera, FiEdit } from 'react-icons/fi'
+import { FiHome, FiDollarSign, FiAward, FiUser, FiSettings, FiLogOut, FiCamera, FiEdit } from 'react-icons/fi'
 import type { authClient } from '@/lib/auth/auth-client'
-import { useState, useRef, type ComponentType } from 'react'
+import { useState, useRef, useEffect, type ComponentType } from 'react'
 import Button from '@/components/ui/button'
 import { ProfileAvatarModal } from '@/components/dashboard/profile/profile-avatar-modal'
 import { useUserAvatar } from '@/hooks/use-user-avatar'
 import { getAnimalImageUrl, getAnimalAvatarByFilename } from '@/lib/avatar/animal-avatar-utils'
+import { IoPawOutline } from 'react-icons/io5'
 
 type Session = typeof authClient.$Infer.Session
 
@@ -34,7 +35,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: 'dashboard', name: 'Tableau de bord', href: '/dashboard', icon: FiHome },
-  { id: 'creatures', name: 'Mes Créatures', href: '/creature', icon: FiUsers },
+  { id: 'monsters', name: 'Mes Monstres', href: '/monstres', icon: IoPawOutline },
   { id: 'wallet', name: 'Mon Wallet', href: '/wallet', icon: FiDollarSign },
   { id: 'leaderboard', name: 'Classement', href: '/leaderboard', icon: FiAward },
   { id: 'profile', name: 'Profil', href: '/profile', icon: FiUser }
@@ -44,6 +45,7 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
   const pathname = usePathname()
   // const { wallet } = useWallet()
   const [bannerImage, setBannerImage] = useState<string | null>(null)
+  const [isHydrated, setIsHydrated] = useState(false)
   const bannerInputRef = useRef<HTMLInputElement>(null)
 
   // Hook pour la gestion de l'avatar
@@ -54,6 +56,11 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
     openModal,
     closeModal
   } = useUserAvatar()
+
+  // Éviter le mismatch d'hydratation
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
 
   const handleBannerClick = (): void => {
     bannerInputRef.current?.click()
@@ -71,7 +78,8 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
   }
 
   // Obtenir les informations de l'avatar sélectionné
-  const avatarInfo = getAnimalAvatarByFilename(selectedAvatar)
+  const avatarInfo = isHydrated ? getAnimalAvatarByFilename(selectedAvatar) : null
+  const avatarSrc = isHydrated ? getAnimalImageUrl(selectedAvatar) : '/assets/images/animochi/animals/blaireau.png' // Avatar par défaut
 
   return (
     <>
@@ -122,13 +130,19 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
               <div className='relative group'>
                 {/* Cercle de la photo */}
                 <div className='w-24 h-24 rounded-full bg-white p-1 shadow-lg'>
-                  <div className={`w-full h-full rounded-full p-1 flex items-center justify-center overflow-hidden ${avatarInfo?.backgroundColor ?? 'bg-blueberry-400'}`}>
+                  <div
+                    className={`w-full h-full rounded-full p-1 flex items-center justify-center overflow-hidden ${avatarInfo?.backgroundColor ?? 'bg-blueberry-400'}`}
+                    suppressHydrationWarning
+                  >
                     <Image
-                      src={getAnimalImageUrl(selectedAvatar)}
+                      src={avatarSrc}
                       alt={avatarInfo?.displayName ?? 'Avatar'}
                       width={80}
                       height={80}
                       className='w-full h-full object-cover rounded-full scale-110'
+                      priority={false}
+                      key={isHydrated ? selectedAvatar : 'default'} // Force re-render après hydratation
+                      suppressHydrationWarning
                     />
                   </div>
                 </div>
@@ -198,8 +212,8 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
           <Button
             onClick={onLogout}
             size='sm'
-            variant='primary'
-            color='blueberry'
+            variant='ghost'
+            color='danger'
             iconBefore={FiLogOut}
             className='w-full'
           >
@@ -208,13 +222,15 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
         </div>
       </aside>
 
-      {/* Modal de sélection d'avatar */}
-      <ProfileAvatarModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        currentAvatar={selectedAvatar}
-        onSelectAvatar={setSelectedAvatar}
-      />
+      {/* Modal de sélection d'avatar - Rendu seulement après hydratation */}
+      {isHydrated && (
+        <ProfileAvatarModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          currentAvatar={selectedAvatar}
+          onSelectAvatar={setSelectedAvatar}
+        />
+      )}
     </>
   )
 }
