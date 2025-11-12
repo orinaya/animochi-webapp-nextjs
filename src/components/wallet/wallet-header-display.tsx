@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { useWallet } from '@/hooks/use-wallet'
 import { formatAnimochi } from '@/utils/wallet.utils'
 
-export function WalletHeaderDisplay(): React.ReactNode {
+export function WalletHeaderDisplay (): React.ReactNode {
   const { wallet, loading } = useWallet()
 
   if (loading) {

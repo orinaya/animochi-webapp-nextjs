@@ -3,7 +3,7 @@
  * Principe SRP : Gère uniquement le formatage des montants
  */
 
-import {CURRENCY_SYMBOL} from "@/config/wallet.constants"
+import { CURRENCY_SYMBOL } from '@/config/wallet.constants'
 
 /**
  * Formate un montant en Animochi avec le symbole Ⱥ
@@ -11,7 +11,7 @@ import {CURRENCY_SYMBOL} from "@/config/wallet.constants"
  * @param locale - Locale à utiliser (par défaut 'fr-FR')
  * @returns Montant formaté (ex: "7 680 Ⱥ")
  */
-export function formatAnimochi(amount: number, locale: string = "fr-FR"): string {
+export function formatAnimochi (amount: number, locale: string = 'fr-FR'): string {
   return `${amount.toLocaleString(locale)} ${CURRENCY_SYMBOL}`
 }
 
@@ -21,10 +21,10 @@ export function formatAnimochi(amount: number, locale: string = "fr-FR"): string
  * @param locale - Locale à utiliser (par défaut 'fr-FR')
  * @returns Montant formaté (ex: "7,99 €")
  */
-export function formatEuros(amount: number, locale: string = "fr-FR"): string {
+export function formatEuros (amount: number, locale: string = 'fr-FR'): string {
   return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: "EUR",
+    style: 'currency',
+    currency: 'EUR'
   }).format(amount)
 }
 
@@ -34,7 +34,7 @@ export function formatEuros(amount: number, locale: string = "fr-FR"): string {
  * @param locale - Locale à utiliser (par défaut 'fr-FR')
  * @returns Montant formaté avec signe (ex: "+100 Ⱥ" ou "-50 Ⱥ")
  */
-export function formatTransactionAmount(amount: number, locale: string = "fr-FR"): string {
-  const sign = amount >= 0 ? "+" : ""
+export function formatTransactionAmount (amount: number, locale: string = 'fr-FR'): string {
+  const sign = amount >= 0 ? '+' : ''
   return `${sign}${amount.toLocaleString(locale)} ${CURRENCY_SYMBOL}`
 }

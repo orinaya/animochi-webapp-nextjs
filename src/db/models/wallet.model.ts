@@ -20,7 +20,7 @@ const walletSchema = new Schema(
     balance: {
       type: Number,
       required: true,
-      default: 100, // Welcome bonus : 100 Animoney
+      default: 3000, // Welcome bonus : 3000 Animoney
       min: [0, 'Le solde ne peut pas être négatif'],
       validate: {
         validator: Number.isInteger,

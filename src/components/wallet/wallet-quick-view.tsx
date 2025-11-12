@@ -11,7 +11,7 @@ import Link from 'next/link'
 import { formatAnimochi } from '@/utils/wallet.utils'
 import { useWallet } from '@/hooks/use-wallet'
 
-export function WalletQuickView(): React.ReactNode {
+export function WalletQuickView (): React.ReactNode {
   const { wallet, loading } = useWallet()
 
   if (loading) {

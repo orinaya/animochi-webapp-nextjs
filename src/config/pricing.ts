@@ -8,38 +8,48 @@
  * @remarks
  * - amount: Montant d'Animochi (Ⱥ) à créditer
  * - price: Prix en euros (sera converti en centimes pour Stripe)
+ * - productId: ID du produit dans Stripe (optionnel, pour tracking)
+ * - priceId: ID du prix dans Stripe (optionnel, pour Checkout prédéfini)
  */
 
 export interface PricingPackage {
   price: number
   amount: number
+  productId?: string
+  priceId?: string
 }
 
 export const pricingTable: Record<number, PricingPackage> = {
   10: {
     price: 0.99,
-    amount: 10,
+    amount: 10
+    // productId: 'prod_xxx', // À remplir depuis Stripe Dashboard
+    // priceId: 'price_xxx'
   },
   50: {
     price: 4.49,
-    amount: 50,
+    amount: 50
+    // productId: 'prod_yyy',
+    // priceId: 'price_yyy'
   },
   100: {
     price: 8.99,
-    amount: 100,
+    amount: 100
+    // productId: 'prod_zzz',
+    // priceId: 'price_zzz'
   },
   500: {
     price: 39.99,
-    amount: 500,
+    amount: 500
   },
   1000: {
     price: 74.99,
-    amount: 1000,
+    amount: 1000
   },
   5000: {
     price: 349.99,
-    amount: 5000,
-  },
+    amount: 5000
+  }
 }
 
 /**
@@ -47,3 +57,17 @@ export const pricingTable: Record<number, PricingPackage> = {
  * Utilisé pour la validation côté client
  */
 export const AVAILABLE_AMOUNTS = Object.keys(pricingTable).map(Number)
+
+/**
+ * Récupère un package par son montant
+ */
+export function getPackageByAmount (amount: number): PricingPackage | undefined {
+  return pricingTable[amount]
+}
+
+/**
+ * Vérifie si un montant est valide
+ */
+export function isValidAmount (amount: number): boolean {
+  return AVAILABLE_AMOUNTS.includes(amount)
+}

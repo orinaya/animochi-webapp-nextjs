@@ -65,9 +65,9 @@ export interface WalletDTO {
  */
 export enum TransactionType {
   /** Ajout de fonds (achat, récompense, bonus) */
-  CREDIT = "CREDIT",
+  CREDIT = 'CREDIT',
   /** Retrait de fonds (achat accessoire, boost, etc.) */
-  DEBIT = "DEBIT",
+  DEBIT = 'DEBIT',
 }
 
 /**
@@ -75,13 +75,13 @@ export enum TransactionType {
  */
 export enum TransactionStatus {
   /** Transaction en attente */
-  PENDING = "PENDING",
+  PENDING = 'PENDING',
   /** Transaction réussie */
-  COMPLETED = "COMPLETED",
+  COMPLETED = 'COMPLETED',
   /** Transaction échouée */
-  FAILED = "FAILED",
+  FAILED = 'FAILED',
   /** Transaction annulée */
-  CANCELLED = "CANCELLED",
+  CANCELLED = 'CANCELLED',
 }
 
 /**

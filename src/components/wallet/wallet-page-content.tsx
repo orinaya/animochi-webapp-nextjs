@@ -10,7 +10,9 @@ import { DashboardLayout } from '@/components/layout'
 import { authClient } from '@/lib/auth/auth-client'
 import { deductFunds } from '@/actions/wallet.actions'
 import { useWallet } from '@/hooks/use-wallet'
+import { useTransactions } from '@/hooks/use-transactions'
 import { useState } from 'react'
+import { PaymentSuccessHandler } from './payment-success-modal'
 
 type Session = typeof authClient.$Infer.Session
 
@@ -18,8 +20,9 @@ interface WalletPageContentProps {
   session: Session
 }
 
-export function WalletPageContent({ session }: WalletPageContentProps): React.ReactNode {
+export function WalletPageContent ({ session }: WalletPageContentProps): React.ReactNode {
   const { wallet, loading, error, refetch } = useWallet()
+  const { transactions, loading: transactionsLoading, refetch: refetchTransactions } = useTransactions()
   const [subtractError, setSubtractError] = useState<string | null>(null)
 
   const handleLogout = (): void => {
@@ -28,7 +31,7 @@ export function WalletPageContent({ session }: WalletPageContentProps): React.Re
 
   const handleSubtract = async (amount: number): Promise<void> => {
     setSubtractError(null)
-    const result = await deductFunds(amount, `Retrait de ${amount} Ⱥ`)
+    const result = await deductFunds(amount, 'MANUAL_SUBTRACT')
 
     if (!result.success) {
       setSubtractError(result.error ?? 'Erreur inconnue')
@@ -36,6 +39,7 @@ export function WalletPageContent({ session }: WalletPageContentProps): React.Re
     }
 
     await refetch()
+    await refetchTransactions() // Rafraîchir l'historique après un retrait
   }
 
   if (error !== null && error !== '') {
@@ -64,6 +68,14 @@ export function WalletPageContent({ session }: WalletPageContentProps): React.Re
 
   return (
     <DashboardLayout session={session} onLogout={handleLogout}>
+      {/* Modal de succès de paiement */}
+      <PaymentSuccessHandler
+        onPaymentSuccess={() => {
+          void refetch()
+          void refetchTransactions() // Rafraîchir aussi les transactions après un paiement
+        }}
+      />
+
       <div className='max-w-4xl mx-auto space-y-6'>
         {/* Header */}
         <div className='mb-8'>
@@ -90,7 +102,7 @@ export function WalletPageContent({ session }: WalletPageContentProps): React.Re
         />
 
         {/* Transaction History */}
-        <TransactionHistory transactions={[]} loading={loading} />
+        <TransactionHistory transactions={transactions} loading={transactionsLoading} />
       </div>
     </DashboardLayout>
   )

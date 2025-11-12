@@ -9,7 +9,7 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { WalletPageContent } from '@/components/wallet/wallet-page-content'
 
-export default async function WalletPage(): Promise<React.ReactNode> {
+export default async function WalletPage (): Promise<React.ReactNode> {
   // Vérifier l'authentification
   const session = await auth.api.getSession({
     headers: await headers()

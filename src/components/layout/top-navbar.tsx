@@ -31,7 +31,7 @@ interface TopNavBarProps {
  * @param {TopNavBarProps} props - Les propriétés de la barre de navigation
  * @returns {React.ReactNode} La barre de navigation supérieure
  */
-function TopNavBar({ session, onLogout, breadcrumbItems }: TopNavBarProps): React.ReactNode {
+function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): React.ReactNode {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -109,10 +109,10 @@ function TopNavBar({ session, onLogout, breadcrumbItems }: TopNavBarProps): Reac
                     >
                       {item.label}
                     </Link>
-                  )
+                    )
                   : (
                     <span className='text-strawberry-600 font-medium'>{item.label}</span>
-                  )}
+                    )}
               </div>
             ))}
           </nav>
