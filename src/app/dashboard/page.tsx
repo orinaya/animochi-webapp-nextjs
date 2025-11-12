@@ -89,6 +89,7 @@ import DashboardContent from '@/components/dashboard/dashboard-content'
 import { auth } from '@/lib/auth/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getMonsters } from '@/actions/monsters.action'
 
 /**
  * Page Dashboard - Point d'entrée principal du tableau de bord utilisateur
@@ -113,19 +114,19 @@ async function DashboardPage (): Promise<React.ReactNode> {
     headers: await headers()
   })
 
-  // Récupération des monstres de l'utilisateur
-  // const monsters = await getMonsters()
-
-  // Sérialisation pour passage au composant client
-  // const plainMonsters = JSON.parse(JSON.stringify(monsters))
-
   // Redirection si non authentifié
   if (session === null || session === undefined) {
     redirect('/sign-in')
   }
 
+  // Récupération des monstres de l'utilisateur
+  const monsters = await getMonsters()
+
+  // Sérialisation pour passage au composant client
+  const plainMonsters = JSON.parse(JSON.stringify(monsters))
+
   return (
-    <DashboardContent session={session} />
+    <DashboardContent session={session} monsters={plainMonsters} />
   )
 }
 

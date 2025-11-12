@@ -234,3 +234,144 @@ body {
 .animate-slide-in-left {
   animation: slide-in-left 0.5s ease-out forwards;
 }
+
+/* Animations pour le carousel de monstres */
+@keyframes slide-in-from-right {
+  0% {
+    transform: translateX(420px) scale(0.75);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scale(0.75);
+    opacity: 0.4;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-from-right 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slide-in-from-left {
+  0% {
+    transform: translateX(-420px) scale(0.75);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) scale(0.75);
+    opacity: 0.4;
+  }
+}
+
+.animate-slide-in-left {
+  animation: slide-in-from-left 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slide-to-left {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-420px) scale(0.75);
+    opacity: 0.4;
+  }
+}
+
+.animate-slide-out-left {
+  animation: slide-to-left 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slide-to-right {
+  0% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(420px) scale(0.75);
+    opacity: 0.4;
+  }
+}
+
+.animate-slide-out-right {
+  animation: slide-to-right 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slide-left-to-center {
+  0% {
+    transform: translateX(0) scale(0.75);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(420px) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-slide-left-to-center {
+  animation: slide-left-to-center 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slide-right-to-center {
+  0% {
+    transform: translateX(0) scale(0.75);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(-420px) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-slide-right-to-center {
+  animation: slide-right-to-center 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fade-out-left {
+  0% {
+    transform: translateX(0) scale(0.75);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(-420px) scale(0.75);
+    opacity: 0;
+  }
+}
+
+.animate-fade-out-left {
+  animation: fade-out-left 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fade-out-right {
+  0% {
+    transform: translateX(0) scale(0.75);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(420px) scale(0.75);
+    opacity: 0;
+  }
+}
+
+.animate-fade-out-right {
+  animation: fade-out-right 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Animation pour la carte centrale qui apparaît */
+@keyframes center-card-enter {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.4;
+  }
+  60% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-center-card-enter {
+  animation: center-card-enter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
