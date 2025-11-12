@@ -12,6 +12,8 @@ import { formatAnimochi } from '@/utils/wallet.utils'
 export function WalletHeaderDisplay (): React.ReactNode {
   const { wallet, loading } = useWallet()
 
+  console.log('🎨 [WalletHeaderDisplay] Render - wallet:', wallet?.balance, 'loading:', loading)
+
   if (loading) {
     return (
       <div className='bg-blueberry-100 rounded-lg px-3 py-2 animate-pulse'>

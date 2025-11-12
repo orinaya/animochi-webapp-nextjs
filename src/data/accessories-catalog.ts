@@ -22,7 +22,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'hat',
     emoji: '🎩',
     description: 'Un élégant chapeau noir pour chat distingué',
-    price: 50,
+    price: 150,
     rarity: 'common',
     svg: `
       <g id="top-hat">
@@ -49,7 +49,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'hat',
     emoji: '🧢',
     description: 'Un béret rouge très français, parfait pour les chats artistes',
-    price: 75,
+    price: 250,
     rarity: 'rare',
     svg: `
       <g id="beret">
@@ -73,7 +73,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'hat',
     emoji: '👑',
     description: 'Une couronne royale pour chat majestueux',
-    price: 200,
+    price: 600,
     rarity: 'epic',
     svg: `
       <g id="crown">
@@ -100,7 +100,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'hat',
     emoji: '😇',
     description: 'Une auréole divine pour les chats angéliques',
-    price: 500,
+    price: 1500,
     rarity: 'legendary',
     svg: `
       <g id="halo">
@@ -125,7 +125,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'glasses',
     emoji: '🤓',
     description: 'Des lunettes rondes pour chat intellectuel',
-    price: 60,
+    price: 180,
     rarity: 'common',
     svg: `
       <g id="round-glasses">
@@ -148,7 +148,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'glasses',
     emoji: '😎',
     description: 'Des lunettes de soleil cool pour chat branché',
-    price: 100,
+    price: 300,
     rarity: 'rare',
     svg: `
       <g id="sunglasses">
@@ -171,7 +171,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'glasses',
     emoji: '🧐',
     description: 'Un monocle raffiné pour chat aristocrate',
-    price: 180,
+    price: 540,
     rarity: 'epic',
     svg: `
       <g id="monocle">
@@ -193,7 +193,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'glasses',
     emoji: '🌈',
     description: "Des lunettes magiques aux couleurs de l'arc-en-ciel",
-    price: 450,
+    price: 1350,
     rarity: 'legendary',
     svg: `
       <g id="rainbow-glasses">
@@ -234,7 +234,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'shoes',
     emoji: '👟',
     description: 'Des baskets sportives pour chat actif',
-    price: 40,
+    price: 120,
     rarity: 'common',
     svg: `
       <g id="sneakers">
@@ -259,7 +259,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'shoes',
     emoji: '🥾',
     description: 'Des bottes robustes pour chat explorateur',
-    price: 90,
+    price: 270,
     rarity: 'rare',
     svg: `
       <g id="boots">
@@ -290,7 +290,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'shoes',
     emoji: '🩰',
     description: 'Des chaussons roses délicats pour chat danseur',
-    price: 150,
+    price: 450,
     rarity: 'epic',
     svg: `
       <g id="ballet-shoes">
@@ -319,7 +319,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
     category: 'shoes',
     emoji: '✨',
     description: 'Des sabots enchantés qui brillent à chaque pas',
-    price: 420,
+    price: 1260,
     rarity: 'legendary',
     svg: `
       <g id="magic-clogs">
@@ -352,7 +352,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         </circle>
       </g>
     `
-  }
+  },
 ]
 
 /**

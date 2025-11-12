@@ -12,14 +12,16 @@
 
 'use client'
 
-import { useState } from 'react'
-// import { useRouter } from 'next/navigation' // TODO: Décommenter quand les API seront implémentées
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import Button from '@/components/ui/button'
 import AccessoryShopModal from '@/components/accessories/accessory-shop-modal'
 import AccessoryInventoryModal from '@/components/accessories/accessory-inventory-modal'
 import type { Monster } from '@/types/monster'
-import type { AccessoryData } from '@/types/monster-accessories'
+import type { AccessoryData, OwnedAccessory } from '@/types/monster-accessories'
+import { useWallet } from '@/hooks/use-wallet'
+import { walletEvents } from '@/lib/wallet-events'
 
 interface MonsterDetailHeaderProps {
   /** Données du monstre */
@@ -38,26 +40,64 @@ export default function MonsterDetailHeader ({
   monster,
   monsterId
 }: MonsterDetailHeaderProps): React.ReactNode {
-  // const router = useRouter() // TODO: Décommenter quand les API seront implémentées
+  const router = useRouter()
+  const { wallet, refetch: refetchWallet } = useWallet()
   const [showShop, setShowShop] = useState(false)
   const [showInventory, setShowInventory] = useState(false)
+  const [ownedAccessories, setOwnedAccessories] = useState<string[]>([])
+  const [ownedAccessoriesDetails, setOwnedAccessoriesDetails] = useState<Array<OwnedAccessory & { details: AccessoryData }>>([])
+
+  // Charger les accessoires possédés
+  useEffect(() => {
+    const fetchOwnedAccessories = async (): Promise<void> => {
+      try {
+        const response = await fetch('/api/accessories/owned')
+        if (response.ok) {
+          const data = await response.json() as { accessories: Array<OwnedAccessory & { details: AccessoryData }> }
+          setOwnedAccessories(data.accessories.map((acc) => acc.details.name))
+          setOwnedAccessoriesDetails(data.accessories)
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des accessoires:', error)
+      }
+    }
+    void fetchOwnedAccessories()
+  }, [])
 
   /**
    * Gère l'achat d'un accessoire
    */
   const handlePurchaseAccessory = async (accessory: AccessoryData): Promise<void> => {
     try {
-      // TODO: Implémenter l'appel API pour acheter un accessoire
-      toast.info(`Achat de ${accessory.name} - API à implémenter`)
-      // const response = await fetch('/api/accessories/purchase', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ accessoryName: accessory.name, monsterId })
-      // })
-      // if (response.ok) {
-      //   toast.success(`${accessory.emoji} ${accessory.name} acheté !`)
-      //   router.refresh()
-      // }
+      const response = await fetch('/api/accessories/purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessoryName: accessory.name })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast.success(`${accessory.emoji} ${accessory.name} acheté avec succès !`)
+
+        // Émettre l'événement pour notifier tous les composants qui utilisent useWallet
+        walletEvents.emit()
+
+        // Rafraîchir le wallet local et la liste des accessoires possédés
+        void refetchWallet()
+        setOwnedAccessories((prev) => [...prev, accessory.name])
+
+        // Rafraîchir les détails des accessoires
+        const refreshResponse = await fetch('/api/accessories/owned')
+        if (refreshResponse.ok) {
+          const refreshData = await refreshResponse.json() as { accessories: Array<OwnedAccessory & { details: AccessoryData }> }
+          setOwnedAccessoriesDetails(refreshData.accessories)
+        }
+
+        router.refresh()
+      } else {
+        toast.error(data.error ?? 'Impossible d\'acheter cet accessoire')
+      }
     } catch (error) {
       console.error('Erreur lors de l\'achat:', error)
       toast.error('Impossible d\'acheter cet accessoire')
@@ -146,15 +186,16 @@ export default function MonsterDetailHeader ({
       <AccessoryShopModal
         isOpen={showShop}
         onClose={() => { setShowShop(false) }}
-        koinsBalance={1000} // TODO: Récupérer le vrai solde depuis le profil utilisateur
+        animoneysBalance={wallet?.balance ?? 0}
         onPurchase={handlePurchaseAccessory}
+        ownedAccessories={ownedAccessories}
       />
 
       {/* Modal de l'inventaire d'accessoires */}
       <AccessoryInventoryModal
         isOpen={showInventory}
         onClose={() => { setShowInventory(false) }}
-        ownedAccessories={[]} // TODO: Récupérer les accessoires possédés depuis l'API
+        ownedAccessories={ownedAccessoriesDetails}
         equippedAccessories={monster.equippedAccessories ?? {}}
         monsterId={monsterId}
         onEquip={handleEquipAccessory}

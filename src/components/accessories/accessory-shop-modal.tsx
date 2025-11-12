@@ -23,10 +23,12 @@ interface AccessoryShopModalProps {
   isOpen: boolean
   /** Callback appelé lors de la fermeture */
   onClose: () => void
-  /** Solde actuel en Koins */
-  koinsBalance: number
+  /** Solde actuel en Animoneys */
+  animoneysBalance: number
   /** Callback appelé lors de l'achat d'un accessoire */
   onPurchase: (accessory: AccessoryData) => Promise<void>
+  /** Liste des accessoires déjà possédés (noms) */
+  ownedAccessories?: string[]
 }
 
 /**
@@ -60,8 +62,9 @@ function getRarityLabel (rarity: AccessoryRarity): string {
 export default function AccessoryShopModal ({
   isOpen,
   onClose,
-  koinsBalance,
-  onPurchase
+  animoneysBalance,
+  onPurchase,
+  ownedAccessories = []
 }: AccessoryShopModalProps): React.ReactNode {
   const [selectedCategory, setSelectedCategory] = useState<AccessoryCategory | 'all'>('all')
   const [selectedRarity, setSelectedRarity] = useState<AccessoryRarity | 'all'>('all')
@@ -91,14 +94,14 @@ export default function AccessoryShopModal ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="🛍️ Boutique d'Accessoires" size='xl'>
       <div className='space-y-6'>
-        {/* Solde de Koins */}
+        {/* Solde d'Animoneys */}
         <div className='bg-linear-to-r from-strawberry-100 to-peach-100 rounded-xl p-4 flex items-center justify-between'>
           <div className='flex items-center gap-3'>
             <span className='text-3xl'>💰</span>
             <div>
               <p className='text-sm text-latte-600'>Votre solde</p>
               <p className='text-2xl font-bold text-blueberry-950'>
-                {koinsBalance} <span className='text-lg'>Koins</span>
+                {animoneysBalance} <span className='text-lg'>Ⱥ</span>
               </p>
             </div>
           </div>
@@ -115,8 +118,8 @@ export default function AccessoryShopModal ({
               <button
                 onClick={() => { setSelectedCategory('all') }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedCategory === 'all'
-                    ? 'bg-blueberry-500 text-white'
-                    : 'bg-latte-100 text-latte-700 hover:bg-latte-200'
+                  ? 'bg-blueberry-500 text-white'
+                  : 'bg-latte-100 text-latte-700 hover:bg-latte-200'
                   }`}
               >
                 Tout
@@ -126,8 +129,8 @@ export default function AccessoryShopModal ({
                   key={category}
                   onClick={() => { setSelectedCategory(category) }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedCategory === category
-                      ? 'bg-blueberry-500 text-white'
-                      : 'bg-latte-100 text-latte-700 hover:bg-latte-200'
+                    ? 'bg-blueberry-500 text-white'
+                    : 'bg-latte-100 text-latte-700 hover:bg-latte-200'
                     }`}
                 >
                   {getCategoryLabel(category)}
@@ -145,8 +148,8 @@ export default function AccessoryShopModal ({
               <button
                 onClick={() => { setSelectedRarity('all') }}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${selectedRarity === 'all'
-                    ? 'bg-peach-500 text-white'
-                    : 'bg-latte-100 text-latte-700 hover:bg-latte-200'
+                  ? 'bg-peach-500 text-white'
+                  : 'bg-latte-100 text-latte-700 hover:bg-latte-200'
                   }`}
               >
                 Tout
@@ -156,8 +159,8 @@ export default function AccessoryShopModal ({
                   key={rarity}
                   onClick={() => { setSelectedRarity(rarity) }}
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${selectedRarity === rarity
-                      ? 'bg-peach-500 text-white'
-                      : `${RARITY_COLORS[rarity]}`
+                    ? 'bg-peach-500 text-white'
+                    : `${RARITY_COLORS[rarity]}`
                     }`}
                 >
                   {getRarityLabel(rarity)}
@@ -170,22 +173,33 @@ export default function AccessoryShopModal ({
         {/* Grille d'accessoires */}
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[500px] overflow-y-auto pr-2'>
           {filteredAccessories.map((accessory) => {
-            const canAfford = koinsBalance >= accessory.price
+            const canAfford = animoneysBalance >= accessory.price
             const isPurchasing = purchasing === accessory.name
+            const isOwned = ownedAccessories.includes(accessory.name)
 
             return (
               <div
                 key={accessory.name}
-                className='bg-white rounded-xl p-4 border-2 border-latte-200 hover:border-blueberry-300 transition-all hover:shadow-lg'
+                className={`bg-white rounded-xl p-4 border-2 transition-all hover:shadow-lg ${isOwned
+                  ? 'border-green-400 bg-green-50'
+                  : 'border-latte-200 hover:border-blueberry-300'
+                  }`}
               >
-                {/* Badge de rareté */}
+                {/* Badge de rareté et statut */}
                 <div className='flex justify-between items-start mb-3'>
                   <span
                     className={`text-xs px-3 py-1 rounded-full font-semibold ${RARITY_COLORS[accessory.rarity]}`}
                   >
                     {getRarityLabel(accessory.rarity)}
                   </span>
-                  <span className='text-2xl'>{accessory.emoji}</span>
+                  <div className='flex items-center gap-2'>
+                    {isOwned && (
+                      <span className='text-xs px-2 py-1 bg-green-500 text-white rounded-full font-semibold'>
+                        ✓ Possédé
+                      </span>
+                    )}
+                    <span className='text-2xl'>{accessory.emoji}</span>
+                  </div>
                 </div>
 
                 {/* Prévisualisation SVG */}
@@ -217,13 +231,15 @@ export default function AccessoryShopModal ({
 
                     <button
                       onClick={() => { void handlePurchase(accessory) }}
-                      disabled={!canAfford || isPurchasing}
-                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${canAfford && !isPurchasing
+                      disabled={!canAfford || isPurchasing || isOwned}
+                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${isOwned
+                        ? 'bg-green-500 text-white cursor-default'
+                        : canAfford && !isPurchasing
                           ? 'bg-strawberry-500 text-white hover:bg-strawberry-600 hover:scale-105'
                           : 'bg-latte-300 text-latte-500 cursor-not-allowed'
                         }`}
                     >
-                      {isPurchasing ? '⏳' : canAfford ? 'Acheter' : '🔒'}
+                      {isPurchasing ? '⏳' : isOwned ? '✓ Acheté' : canAfford ? 'Acheter' : '🔒'}
                     </button>
                   </div>
                 </div>
