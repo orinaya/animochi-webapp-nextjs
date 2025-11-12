@@ -1,9 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { FiSettings, FiLogOut, FiUser } from 'react-icons/fi'
+import { FiSettings, FiLogOut } from 'react-icons/fi'
 import { useRouter } from 'next/navigation'
-import ButtonParticle from '../ui/button-particle'
 import Button from './button'
 import Link from 'next/link'
 
