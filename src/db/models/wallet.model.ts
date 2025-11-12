@@ -14,8 +14,7 @@ const walletSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-      unique: true, // Un utilisateur = un wallet
-      index: true // Optimisation des recherches par ownerId
+      unique: true // Un utilisateur = un wallet
     },
     balance: {
       type: Number,

@@ -11,14 +11,12 @@ const purchaseSchema = new Schema(
   {
     userId: {
       type: String,
-      required: true,
-      index: true
+      required: true
     },
     type: {
       type: String,
       required: true,
-      enum: ['xp-boost', 'animoneys-package', 'food', 'accessory', 'customization'],
-      index: true
+      enum: ['xp-boost', 'animoneys-package', 'food', 'accessory', 'customization']
     },
     itemId: {
       type: String,
@@ -45,18 +43,15 @@ const purchaseSchema = new Schema(
       type: String,
       required: true,
       enum: ['pending', 'processing', 'succeeded', 'failed', 'refunded', 'canceled'],
-      default: 'pending',
-      index: true
+      default: 'pending'
     },
     stripeSessionId: {
       type: String,
       unique: true,
-      sparse: true, // Permet null/undefined
-      index: true
+      sparse: true // Permet null/undefined
     },
     stripePaymentIntentId: {
-      type: String,
-      index: true
+      type: String
     },
     targetMonsterId: {
       type: Schema.Types.ObjectId,

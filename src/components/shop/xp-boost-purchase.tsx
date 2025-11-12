@@ -15,7 +15,7 @@ interface XpBoostPurchaseProps {
   userKoins: number
 }
 
-export function XpBoostPurchase ({ monsterId, userKoins }: XpBoostPurchaseProps): JSX.Element {
+export function XpBoostPurchase ({ monsterId, userKoins }: XpBoostPurchaseProps): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)

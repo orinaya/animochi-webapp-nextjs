@@ -18,8 +18,7 @@ const userSchema = new Schema(
       required: true,
       unique: true, // Évite les doublons d'email
       lowercase: true, // Normalise l'email
-      trim: true,
-      index: true // Optimisation des recherches par email
+      trim: true
     },
     name: {
       type: String,

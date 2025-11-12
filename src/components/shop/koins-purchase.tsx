@@ -14,7 +14,7 @@ interface KoinsPurchaseProps {
   userId: string
 }
 
-export function KoinsPurchase ({ userId }: KoinsPurchaseProps): JSX.Element {
+export function KoinsPurchase ({ userId }: KoinsPurchaseProps): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
