@@ -12,6 +12,7 @@ import { authClient } from '@/lib/auth/auth-client'
 import { FiUsers, FiPlus } from 'react-icons/fi'
 import Button from '@/components/ui/button'
 import { CreateMonsterModal } from './create-monster-modal'
+import { createMonster, getMonsters } from '@/actions/monsters.action'
 import type { Monster } from '@/types/monster'
 
 type Session = typeof authClient.$Infer.Session
@@ -141,43 +142,23 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
     { label: 'Mes Monstres' }
   ]
 
-  // Simulation de données pour le moment (à remplacer par un vraai appel API)
-  useEffect(() => {
-    const loadMonsters = async (): Promise<void> => {
-      try {
-        setIsLoading(true)
-        // TODO: Remplacer par un vrai appel API
-        // const data = await getMonsters()
+  const loadMonsters = async (): Promise<void> => {
+    try {
+      setIsLoading(true)
 
-        // Simulation de données pour le développement
-        const mockMonsters: Monster[] = [
-          {
-            id: '1',
-            name: 'Mochi',
-            emoji: '🐱',
-            level: 5,
-            state: 'happy',
-            color: 'blueberry'
-          },
-          {
-            id: '2',
-            name: 'Bubbles',
-            emoji: '🐸',
-            level: 3,
-            state: 'sleepy',
-            color: 'strawberry'
-          }
-        ]
-
-        setMonsters(mockMonsters)
-      } catch (error) {
-        console.error('Erreur lors du chargement des monstres:', error)
-        setMonsters([])
-      } finally {
-        setIsLoading(false)
-      }
+      // Récupération des monstres depuis la base de données
+      const data = await getMonsters()
+      setMonsters(data)
+    } catch (error) {
+      console.error('Erreur lors du chargement des monstres:', error)
+      setMonsters([])
+    } finally {
+      setIsLoading(false)
     }
+  }
 
+  // Chargement initial des monstres au montage du composant
+  useEffect(() => {
     void loadMonsters()
   }, [])
 
@@ -189,28 +170,30 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
   const handleCreateMonsterSubmit = async (newMonster: Partial<Monster>): Promise<void> => {
     try {
       console.log('Création du monstre:', newMonster)
-      // TODO: Implémenter l'appel API pour créer le monstre
-      // const createdMonster = await createMonster(newMonster)
 
-      // Simuler l'ajout du monstre à la liste existante
-      const mockCreatedMonster: Monster = {
-        id: Date.now().toString(),
+      // Préparer les données pour le modèle MongoDB
+      const monsterToCreate: Monster = {
         name: newMonster.name ?? 'Monstre sans nom',
+        draw: newMonster.draw ?? 'placeholder',
+        state: newMonster.state ?? 'happy',
+        level: newMonster.level ?? 1,
+        experience: newMonster.experience ?? 0,
+        experienceToNextLevel: newMonster.experienceToNextLevel ?? 150,
         description: newMonster.description,
         color: newMonster.color,
         emoji: newMonster.emoji,
         rarity: newMonster.rarity,
-        level: newMonster.level ?? 1,
-        state: newMonster.state,
-        experience: newMonster.experience ?? 0,
-        experienceToNextLevel: newMonster.experienceToNextLevel ?? 150,
-        equippedAccessories: newMonster.equippedAccessories,
-        equippedBackground: newMonster.equippedBackground,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        equippedAccessories: newMonster.equippedAccessories ?? null,
+        equippedBackground: newMonster.equippedBackground ?? null
       }
 
-      setMonsters(prev => [...prev, mockCreatedMonster])
+      // Appel à la server action
+      await createMonster(monsterToCreate)
+
+      // Recharger la liste des monstres
+      await loadMonsters()
+
+      console.log('Monstre créé avec succès')
     } catch (error) {
       console.error('Erreur lors de la création du monstre:', error)
       throw error // Relancer l'erreur pour que le modal puisse l'afficher
