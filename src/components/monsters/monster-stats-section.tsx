@@ -17,6 +17,8 @@ import type { Monster, MonsterState } from '@/types/monster'
 interface MonsterStatsSectionProps {
   /** Données du monstre */
   monster: Monster
+  /** Composant actions à insérer */
+  actionsComponent?: React.ReactNode
 }
 
 /**
@@ -111,17 +113,25 @@ function getEmotionalStats (state: string | null): Array<StatConfig & { value: n
  * @returns {React.ReactNode} La section des stats
  */
 export default function MonsterStatsSection ({
-  monster
+  monster,
+  actionsComponent
 }: MonsterStatsSectionProps): React.ReactNode {
   const stats = getEmotionalStats(monster.state ?? null)
 
   return (
-    <div className='bg-white rounded-3xl p-6 shadow-lg border border-latte-100'>
+    <div className='bg-white rounded-3xl p-6 shadow-lg border border-latte-100 h-full flex flex-col'>
       <h2 className='text-xl font-bold text-blueberry-950 mb-4'>
         État émotionnel
       </h2>
 
-      <div className='grid grid-cols-2 gap-4'>
+      {/* Actions intégrées */}
+      {actionsComponent != null && (
+        <div className='mb-6'>
+          {actionsComponent}
+        </div>
+      )}
+
+      <div className='grid grid-cols-2 gap-4 flex-1'>
         {stats.map((stat) => (
           <div
             key={stat.id}

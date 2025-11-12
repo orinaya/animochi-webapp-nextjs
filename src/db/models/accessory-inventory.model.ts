@@ -33,7 +33,7 @@ const accessoryInventorySchema = new Schema(
     isEquipped: {
       type: Boolean,
       default: false
-    },
+    }
   },
   {
     bufferCommands: false,

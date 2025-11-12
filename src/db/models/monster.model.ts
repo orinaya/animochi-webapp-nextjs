@@ -59,20 +59,17 @@ const monsterSchema = new Schema(
     },
     equippedAccessories: {
       hat: {
-        type: Schema.Types.ObjectId,
-        ref: 'Accessory',
+        type: String,
         required: false,
         default: null
       },
       glasses: {
-        type: Schema.Types.ObjectId,
-        ref: 'Accessory',
+        type: String,
         required: false,
         default: null
       },
       shoes: {
-        type: Schema.Types.ObjectId,
-        ref: 'Accessory',
+        type: String,
         required: false,
         default: null
       }
@@ -90,4 +87,11 @@ const monsterSchema = new Schema(
   }
 )
 
-export default mongoose.models.Monster ?? mongoose.model('Monster', monsterSchema)
+// Supprimer le modèle existant du cache pour forcer le rechargement
+if (mongoose.models.Monster != null) {
+  delete mongoose.models.Monster
+}
+
+const Monster = mongoose.model('Monster', monsterSchema)
+
+export default Monster

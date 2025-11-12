@@ -353,6 +353,492 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
       </g>
     `
   },
+
+  // ============================================================================
+  // NOUVEAUX CHAPEAUX
+  // ============================================================================
+  {
+    name: 'Casquette de Baseball',
+    category: 'hat',
+    emoji: '🧢',
+    description: 'Casquette sportive pour chat cool',
+    price: 120,
+    rarity: 'common',
+    svg: `
+      <g id="baseball-cap">
+        <!-- Visière -->
+        <rect x="28" y="12" width="8" height="4" fill="#1a1a1a"/>
+        <rect x="36" y="12" width="8" height="4" fill="#2a2a2a"/>
+        <rect x="44" y="12" width="8" height="4" fill="#1a1a1a"/>
+        <!-- Corps de la casquette -->
+        <rect x="28" y="4" width="8" height="8" fill="#ff0000"/>
+        <rect x="36" y="4" width="8" height="8" fill="#ff0000"/>
+        <rect x="44" y="4" width="8" height="8" fill="#ff0000"/>
+        <rect x="32" y="0" width="8" height="4" fill="#cc0000"/>
+        <rect x="40" y="0" width="8" height="4" fill="#cc0000"/>
+        <!-- Logo -->
+        <rect x="38" y="6" width="4" height="4" fill="#ffffff"/>
+      </g>
+    `
+  },
+  {
+    name: 'Chapeau de Cowboy',
+    category: 'hat',
+    emoji: '🤠',
+    description: "Yee-haw ! Pour le chat de l'Ouest",
+    price: 180,
+    rarity: 'rare',
+    svg: `
+      <g id="cowboy-hat">
+        <!-- Bord large -->
+        <rect x="16" y="12" width="8" height="4" fill="#8b4513"/>
+        <rect x="24" y="12" width="8" height="4" fill="#a0522d"/>
+        <rect x="32" y="12" width="8" height="4" fill="#8b4513"/>
+        <rect x="40" y="12" width="8" height="4" fill="#a0522d"/>
+        <rect x="48" y="12" width="8" height="4" fill="#8b4513"/>
+        <rect x="56" y="12" width="8" height="4" fill="#a0522d"/>
+        <!-- Couronne -->
+        <rect x="28" y="4" width="8" height="8" fill="#8b4513"/>
+        <rect x="36" y="0" width="8" height="12" fill="#a0522d"/>
+        <rect x="44" y="4" width="8" height="8" fill="#8b4513"/>
+        <!-- Ruban décoratif -->
+        <rect x="30" y="10" width="20" height="2" fill="#000000"/>
+      </g>
+    `
+  },
+  {
+    name: 'Bonnet à Pompon',
+    category: 'hat',
+    emoji: '🧶',
+    description: "Bonnet chaud pour l'hiver",
+    price: 100,
+    rarity: 'common',
+    svg: `
+      <g id="winter-beanie">
+        <!-- Pompon -->
+        <rect x="36" y="-4" width="8" height="4" fill="#ff6b9d"/>
+        <rect x="32" y="0" width="4" height="4" fill="#ff6b9d"/>
+        <rect x="44" y="0" width="4" height="4" fill="#ff6b9d"/>
+        <!-- Corps du bonnet -->
+        <rect x="24" y="4" width="8" height="8" fill="#ff1493"/>
+        <rect x="32" y="4" width="8" height="8" fill="#ff69b4"/>
+        <rect x="40" y="4" width="8" height="8" fill="#ff1493"/>
+        <rect x="48" y="4" width="8" height="8" fill="#ff69b4"/>
+        <!-- Bord replié -->
+        <rect x="24" y="12" width="8" height="4" fill="#c71585"/>
+        <rect x="32" y="12" width="8" height="4" fill="#c71585"/>
+        <rect x="40" y="12" width="8" height="4" fill="#c71585"/>
+        <rect x="48" y="12" width="8" height="4" fill="#c71585"/>
+      </g>
+    `
+  },
+  {
+    name: 'Casque de Chevalier',
+    category: 'hat',
+    emoji: '⚔️',
+    description: 'Casque médiéval pour chat valeureux',
+    price: 250,
+    rarity: 'epic',
+    svg: `
+      <g id="knight-helmet">
+        <!-- Base du casque -->
+        <rect x="28" y="4" width="8" height="12" fill="#c0c0c0"/>
+        <rect x="36" y="0" width="8" height="16" fill="#d3d3d3"/>
+        <rect x="44" y="4" width="8" height="12" fill="#c0c0c0"/>
+        <!-- Visière -->
+        <rect x="32" y="10" width="4" height="2" fill="#1a1a1a"/>
+        <rect x="38" y="10" width="4" height="2" fill="#1a1a1a"/>
+        <rect x="44" y="10" width="4" height="2" fill="#1a1a1a"/>
+        <!-- Crête -->
+        <rect x="38" y="-4" width="4" height="4" fill="#ff0000"/>
+        <rect x="38" y="-8" width="4" height="4" fill="#cc0000"/>
+        <!-- Reflets métalliques -->
+        <rect x="37" y="2" width="2" height="4" fill="#ffffff" opacity="0.6"/>
+      </g>
+    `
+  },
+  {
+    name: 'Chapeau de Sorcier',
+    category: 'hat',
+    emoji: '🧙',
+    description: 'Chapeau pointu magique avec étoiles',
+    price: 200,
+    rarity: 'rare',
+    svg: `
+      <g id="wizard-hat">
+        <!-- Bord -->
+        <rect x="20" y="12" width="8" height="4" fill="#1a0a4a"/>
+        <rect x="28" y="12" width="8" height="4" fill="#2a1a5a"/>
+        <rect x="36" y="12" width="8" height="4" fill="#1a0a4a"/>
+        <rect x="44" y="12" width="8" height="4" fill="#2a1a5a"/>
+        <rect x="52" y="12" width="8" height="4" fill="#1a0a4a"/>
+        <!-- Cône pointu -->
+        <rect x="32" y="8" width="16" height="4" fill="#2a1a5a"/>
+        <rect x="34" y="4" width="12" height="4" fill="#3a2a6a"/>
+        <rect x="36" y="0" width="8" height="4" fill="#2a1a5a"/>
+        <rect x="38" y="-4" width="4" height="4" fill="#3a2a6a"/>
+        <!-- Étoiles dorées -->
+        <rect x="36" y="6" width="2" height="2" fill="#ffd700"/>
+        <rect x="42" y="9" width="2" height="2" fill="#ffd700"/>
+        <circle cx="40" cy="-2" r="1" fill="#ffd700">
+          <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+    `
+  },
+  {
+    name: 'Bandeau de Ninja',
+    category: 'hat',
+    emoji: '🥷',
+    description: 'Bandeau noir des ninjas furtifs',
+    price: 140,
+    rarity: 'common',
+    svg: `
+      <g id="ninja-headband">
+        <!-- Bandeau principal -->
+        <rect x="24" y="8" width="32" height="6" fill="#1a1a1a"/>
+        <!-- Nœud derrière -->
+        <rect x="56" y="6" width="8" height="4" fill="#2a2a2a"/>
+        <rect x="60" y="10" width="8" height="6" fill="#1a1a1a"/>
+        <rect x="56" y="16" width="6" height="8" fill="#2a2a2a"/>
+        <!-- Plaque métallique -->
+        <rect x="34" y="9" width="12" height="4" fill="#808080"/>
+        <rect x="36" y="10" width="2" height="2" fill="#ffffff" opacity="0.5"/>
+      </g>
+    `
+  },
+  {
+    name: 'Couronne de Fleurs',
+    category: 'hat',
+    emoji: '🌸',
+    description: 'Couronne romantique avec fleurs colorées',
+    price: 130,
+    rarity: 'common',
+    svg: `
+      <g id="flower-crown">
+        <!-- Base verte -->
+        <rect x="24" y="10" width="32" height="4" fill="#228b22"/>
+        <!-- Fleurs roses -->
+        <rect x="26" y="6" width="4" height="4" fill="#ff69b4"/>
+        <rect x="34" y="6" width="4" height="4" fill="#ff1493"/>
+        <rect x="42" y="6" width="4" height="4" fill="#ff69b4"/>
+        <rect x="50" y="6" width="4" height="4" fill="#ff1493"/>
+        <!-- Centres jaunes des fleurs -->
+        <rect x="27" y="7" width="2" height="2" fill="#ffd700"/>
+        <rect x="35" y="7" width="2" height="2" fill="#ffd700"/>
+        <rect x="43" y="7" width="2" height="2" fill="#ffd700"/>
+        <rect x="51" y="7" width="2" height="2" fill="#ffd700"/>
+        <!-- Feuilles -->
+        <rect x="30" y="9" width="3" height="2" fill="#32cd32"/>
+        <rect x="46" y="9" width="3" height="2" fill="#32cd32"/>
+      </g>
+    `
+  },
+
+  // ============================================================================
+  // NOUVELLES LUNETTES
+  // ============================================================================
+  {
+    name: 'Lunettes Aviateur',
+    category: 'glasses',
+    emoji: '😎',
+    description: 'Lunettes de pilote ultra cool',
+    price: 150,
+    rarity: 'common',
+    svg: `
+      <g id="aviator-glasses">
+        <!-- Monture dorée -->
+        <rect x="20" y="32" width="16" height="2" fill="#ffd700"/>
+        <rect x="44" y="32" width="16" height="2" fill="#ffd700"/>
+        <rect x="36" y="32" width="8" height="2" fill="#ffd700"/>
+        <!-- Verres gauche -->
+        <rect x="20" y="28" width="16" height="8" fill="#1a5f7a" opacity="0.7"/>
+        <rect x="22" y="30" width="4" height="2" fill="#ffffff" opacity="0.4"/>
+        <!-- Verres droite -->
+        <rect x="44" y="28" width="16" height="8" fill="#1a5f7a" opacity="0.7"/>
+        <rect x="46" y="30" width="4" height="2" fill="#ffffff" opacity="0.4"/>
+        <!-- Branches -->
+        <rect x="16" y="32" width="4" height="2" fill="#ffd700"/>
+        <rect x="60" y="32" width="4" height="2" fill="#ffd700"/>
+      </g>
+    `
+  },
+  {
+    name: 'Lunettes Cœur',
+    category: 'glasses',
+    emoji: '❤️',
+    description: 'Lunettes en forme de cœur pour chat romantique',
+    price: 140,
+    rarity: 'rare',
+    svg: `
+      <g id="heart-glasses">
+        <!-- Cœur gauche -->
+        <rect x="22" y="30" width="4" height="4" fill="#ff1493"/>
+        <rect x="26" y="30" width="4" height="4" fill="#ff69b4"/>
+        <rect x="30" y="30" width="4" height="4" fill="#ff1493"/>
+        <rect x="24" y="34" width="8" height="4" fill="#ff69b4"/>
+        <rect x="26" y="38" width="4" height="4" fill="#ff1493"/>
+        <!-- Cœur droit -->
+        <rect x="46" y="30" width="4" height="4" fill="#ff1493"/>
+        <rect x="50" y="30" width="4" height="4" fill="#ff69b4"/>
+        <rect x="54" y="30" width="4" height="4" fill="#ff1493"/>
+        <rect x="48" y="34" width="8" height="4" fill="#ff69b4"/>
+        <rect x="50" y="38" width="4" height="4" fill="#ff1493"/>
+        <!-- Pont -->
+        <rect x="36" y="32" width="8" height="2" fill="#ff1493"/>
+        <!-- Reflets -->
+        <rect x="24" y="31" width="2" height="2" fill="#ffffff" opacity="0.6"/>
+        <rect x="48" y="31" width="2" height="2" fill="#ffffff" opacity="0.6"/>
+      </g>
+    `
+  },
+  {
+    name: 'Lunettes Pixel',
+    category: 'glasses',
+    emoji: '😏',
+    description: 'Deal with it - Lunettes de mème légendaires',
+    price: 300,
+    rarity: 'legendary',
+    svg: `
+      <g id="pixel-glasses">
+        <!-- Verres noirs épais -->
+        <rect x="20" y="30" width="18" height="8" fill="#000000"/>
+        <rect x="42" y="30" width="18" height="8" fill="#000000"/>
+        <!-- Pont -->
+        <rect x="38" y="32" width="4" height="4" fill="#000000"/>
+        <!-- Reflets blancs stylés -->
+        <rect x="22" y="31" width="6" height="2" fill="#ffffff"/>
+        <rect x="44" y="31" width="6" height="2" fill="#ffffff"/>
+        <!-- Glow effect -->
+        <rect x="19" y="29" width="20" height="1" fill="#00ff00" opacity="0.3"/>
+        <rect x="41" y="29" width="20" height="1" fill="#00ff00" opacity="0.3"/>
+      </g>
+    `
+  },
+  {
+    name: 'Monocle',
+    category: 'glasses',
+    emoji: '🧐',
+    description: 'Monocle distingué pour chat gentleman',
+    price: 180,
+    rarity: 'rare',
+    svg: `
+      <g id="monocle">
+        <!-- Cercle doré -->
+        <rect x="42" y="28" width="16" height="2" fill="#ffd700"/>
+        <rect x="42" y="38" width="16" height="2" fill="#ffd700"/>
+        <rect x="40" y="30" width="2" height="8" fill="#ffd700"/>
+        <rect x="58" y="30" width="2" height="8" fill="#ffd700"/>
+        <!-- Verre -->
+        <rect x="44" y="30" width="12" height="8" fill="#87ceeb" opacity="0.5"/>
+        <!-- Reflet -->
+        <rect x="46" y="31" width="4" height="3" fill="#ffffff" opacity="0.6"/>
+        <!-- Chaînette -->
+        <rect x="60" y="34" width="4" height="1" fill="#ffd700"/>
+        <rect x="64" y="35" width="2" height="2" fill="#ffd700"/>
+      </g>
+    `
+  },
+  {
+    name: 'Lunettes Steampunk',
+    category: 'glasses',
+    emoji: '⚙️',
+    description: 'Lunettes rétro-futuristes avec engrenages',
+    price: 220,
+    rarity: 'epic',
+    svg: `
+      <g id="steampunk-goggles">
+        <!-- Monture cuivre -->
+        <rect x="20" y="28" width="16" height="12" fill="#b87333"/>
+        <rect x="44" y="28" width="16" height="12" fill="#b87333"/>
+        <!-- Verres verts -->
+        <rect x="22" y="30" width="12" height="8" fill="#228b22" opacity="0.7"/>
+        <rect x="46" y="30" width="12" height="8" fill="#228b22" opacity="0.7"/>
+        <!-- Engrenages décoratifs -->
+        <rect x="26" y="26" width="4" height="4" fill="#8b7355"/>
+        <rect x="50" y="26" width="4" height="4" fill="#8b7355"/>
+        <circle cx="28" cy="28" r="1" fill="#ffd700"/>
+        <circle cx="52" cy="28" r="1" fill="#ffd700"/>
+        <!-- Pont en cuir -->
+        <rect x="36" y="32" width="8" height="4" fill="#654321"/>
+        <!-- Rivets -->
+        <circle cx="21" cy="29" r="1" fill="#696969"/>
+        <circle cx="33" cy="29" r="1" fill="#696969"/>
+        <circle cx="45" cy="29" r="1" fill="#696969"/>
+        <circle cx="59" cy="29" r="1" fill="#696969"/>
+      </g>
+    `
+  },
+
+  // ============================================================================
+  // NOUVELLES CHAUSSURES
+  // ============================================================================
+  {
+    name: 'Baskets Colorées',
+    category: 'shoes',
+    emoji: '👟',
+    description: 'Baskets arc-en-ciel pour chat sportif',
+    price: 160,
+    rarity: 'common',
+    svg: `
+      <g id="colorful-sneakers">
+        <!-- Chaussure gauche -->
+        <rect x="20" y="64" width="12" height="8" fill="#ff0000"/>
+        <rect x="22" y="62" width="8" height="2" fill="#ffa500"/>
+        <rect x="24" y="60" width="6" height="2" fill="#ffff00"/>
+        <rect x="26" y="66" width="4" height="2" fill="#ffffff"/>
+        <!-- Chaussure droite -->
+        <rect x="48" y="64" width="12" height="8" fill="#0000ff"/>
+        <rect x="50" y="62" width="8" height="2" fill="#00ff00"/>
+        <rect x="52" y="60" width="6" height="2" fill="#00ffff"/>
+        <rect x="54" y="66" width="4" height="2" fill="#ffffff"/>
+        <!-- Lacets -->
+        <rect x="24" y="64" width="1" height="6" fill="#ffffff" opacity="0.8"/>
+        <rect x="52" y="64" width="1" height="6" fill="#ffffff" opacity="0.8"/>
+      </g>
+    `
+  },
+  {
+    name: 'Bottes de Pluie',
+    category: 'shoes',
+    emoji: '🥾',
+    description: 'Bottes imperméables pour les jours pluvieux',
+    price: 140,
+    rarity: 'common',
+    svg: `
+      <g id="rain-boots">
+        <!-- Botte gauche -->
+        <rect x="22" y="60" width="10" height="12" fill="#ffff00"/>
+        <rect x="20" y="66" width="2" height="6" fill="#ffd700"/>
+        <rect x="24" y="62" width="4" height="2" fill="#ffffff" opacity="0.4"/>
+        <!-- Botte droite -->
+        <rect x="48" y="60" width="10" height="12" fill="#ffff00"/>
+        <rect x="58" y="66" width="2" height="6" fill="#ffd700"/>
+        <rect x="50" y="62" width="4" height="2" fill="#ffffff" opacity="0.4"/>
+        <!-- Reflets brillants -->
+        <rect x="26" y="64" width="2" height="4" fill="#ffffff" opacity="0.5"/>
+        <rect x="52" y="64" width="2" height="4" fill="#ffffff" opacity="0.5"/>
+      </g>
+    `
+  },
+  {
+    name: 'Bottes de Cowboy',
+    category: 'shoes',
+    emoji: '🤠',
+    description: 'Bottes western avec éperons',
+    price: 190,
+    rarity: 'rare',
+    svg: `
+      <g id="cowboy-boots">
+        <!-- Botte gauche -->
+        <rect x="20" y="58" width="12" height="14" fill="#8b4513"/>
+        <rect x="22" y="60" width="8" height="2" fill="#a0522d"/>
+        <rect x="24" y="64" width="6" height="2" fill="#654321"/>
+        <!-- Éperon gauche -->
+        <circle cx="18" cy="70" r="2" fill="#c0c0c0"/>
+        <rect x="16" y="70" width="4" height="1" fill="#808080"/>
+        <!-- Botte droite -->
+        <rect x="48" y="58" width="12" height="14" fill="#8b4513"/>
+        <rect x="50" y="60" width="8" height="2" fill="#a0522d"/>
+        <rect x="52" y="64" width="6" height="2" fill="#654321"/>
+        <!-- Éperon droit -->
+        <circle cx="62" cy="70" r="2" fill="#c0c0c0"/>
+        <rect x="60" y="70" width="4" height="1" fill="#808080"/>
+        <!-- Motifs décoratifs -->
+        <rect x="24" y="66" width="4" height="1" fill="#ffd700"/>
+        <rect x="52" y="66" width="4" height="1" fill="#ffd700"/>
+      </g>
+    `
+  },
+  {
+    name: "Pantoufles Patte d'Ours",
+    category: 'shoes',
+    emoji: '🐾',
+    description: 'Pantoufles douillettes en forme de pattes',
+    price: 120,
+    rarity: 'common',
+    svg: `
+      <g id="bear-slippers">
+        <!-- Pantoufle gauche -->
+        <rect x="20" y="64" width="14" height="8" fill="#8b4513"/>
+        <rect x="22" y="66" width="10" height="4" fill="#deb887"/>
+        <!-- Coussinets gauche -->
+        <rect x="24" y="68" width="2" height="2" fill="#654321"/>
+        <rect x="27" y="68" width="2" height="2" fill="#654321"/>
+        <rect x="25" y="70" width="3" height="2" fill="#654321"/>
+        <!-- Pantoufle droite -->
+        <rect x="46" y="64" width="14" height="8" fill="#8b4513"/>
+        <rect x="48" y="66" width="10" height="4" fill="#deb887"/>
+        <!-- Coussinets droit -->
+        <rect x="50" y="68" width="2" height="2" fill="#654321"/>
+        <rect x="53" y="68" width="2" height="2" fill="#654321"/>
+        <rect x="51" y="70" width="3" height="2" fill="#654321"/>
+      </g>
+    `
+  },
+  {
+    name: 'Sneakers LED',
+    category: 'shoes',
+    emoji: '✨',
+    description: "Baskets futuristes qui s'illuminent",
+    price: 250,
+    rarity: 'epic',
+    svg: `
+      <g id="led-sneakers">
+        <!-- Chaussure gauche noire -->
+        <rect x="20" y="64" width="12" height="8" fill="#1a1a1a"/>
+        <rect x="22" y="62" width="8" height="2" fill="#2a2a2a"/>
+        <!-- LED gauche -->
+        <rect x="22" y="70" width="8" height="2" fill="#00ff00">
+          <animate attributeName="fill" values="#00ff00;#00ffff;#ff00ff;#00ff00" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Chaussure droite noire -->
+        <rect x="48" y="64" width="12" height="8" fill="#1a1a1a"/>
+        <rect x="50" y="62" width="8" height="2" fill="#2a2a2a"/>
+        <!-- LED droite -->
+        <rect x="50" y="70" width="8" height="2" fill="#ff00ff">
+          <animate attributeName="fill" values="#ff00ff;#00ff00;#00ffff;#ff00ff" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Reflets -->
+        <rect x="24" y="64" width="3" height="2" fill="#ffffff" opacity="0.3"/>
+        <rect x="52" y="64" width="3" height="2" fill="#ffffff" opacity="0.3"/>
+      </g>
+    `
+  },
+  {
+    name: 'Chaussures Ailées',
+    category: 'shoes',
+    emoji: '🪽',
+    description: "Sandales mythologiques d'Hermès",
+    price: 300,
+    rarity: 'legendary',
+    svg: `
+      <g id="winged-sandals">
+        <!-- Sandale gauche -->
+        <rect x="22" y="68" width="10" height="4" fill="#ffd700"/>
+        <rect x="24" y="66" width="6" height="2" fill="#daa520"/>
+        <!-- Aile gauche -->
+        <rect x="18" y="66" width="4" height="2" fill="#ffffff"/>
+        <rect x="16" y="67" width="4" height="3" fill="#f0f0f0"/>
+        <rect x="14" y="68" width="4" height="2" fill="#e0e0e0"/>
+        <animate attributeName="transform" values="translate(0,0);translate(0,-2);translate(0,0)" dur="1.5s" repeatCount="indefinite"/>
+        <!-- Sandale droite -->
+        <rect x="48" y="68" width="10" height="4" fill="#ffd700"/>
+        <rect x="50" y="66" width="6" height="2" fill="#daa520"/>
+        <!-- Aile droite -->
+        <rect x="58" y="66" width="4" height="2" fill="#ffffff"/>
+        <rect x="60" y="67" width="4" height="3" fill="#f0f0f0"/>
+        <rect x="62" y="68" width="4" height="2" fill="#e0e0e0"/>
+        <!-- Particules magiques -->
+        <circle cx="20" cy="68" r="1" fill="#ffd700" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="60" cy="68" r="1" fill="#ffd700" opacity="0.7">
+          <animate attributeName="opacity" values="0.7;1;0.7" dur="1.2s" repeatCount="indefinite"/>
+        </circle>
+      </g>
+    `
+  }
 ]
 
 /**

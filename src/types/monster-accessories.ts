@@ -51,10 +51,12 @@ export interface Accessory extends AccessoryData {
  * Accessoire possédé par un utilisateur
  */
 export interface OwnedAccessory {
-  /** ID de l'accessoire possédé */
+  /** ID unique de l'accessoire possédé */
+  id?: string
+  /** ID MongoDB */
   _id?: string
-  /** ID de référence vers l'accessoire */
-  accessoryId: string
+  /** Nom de l'accessoire (référence vers le catalogue) */
+  accessoryName: string
   /** ID du propriétaire */
   ownerId: string
   /** ID du monstre auquel il est attaché (si équipé) */
@@ -63,6 +65,9 @@ export interface OwnedAccessory {
   purchasedAt: string
   /** Est-il actuellement équipé */
   isEquipped: boolean
+  /** Dates de création/modification */
+  createdAt?: string
+  updatedAt?: string
 }
 
 /**

@@ -16,10 +16,9 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import Button from '@/components/ui/button'
-import AccessoryShopModal from '@/components/accessories/accessory-shop-modal'
 import AccessoryInventoryModal from '@/components/accessories/accessory-inventory-modal'
 import type { Monster } from '@/types/monster'
-import type { AccessoryData, OwnedAccessory } from '@/types/monster-accessories'
+import type { AccessoryData, OwnedAccessory, AccessoryCategory } from '@/types/monster-accessories'
 import { useWallet } from '@/hooks/use-wallet'
 import { walletEvents } from '@/lib/wallet-events'
 
@@ -28,6 +27,10 @@ interface MonsterDetailHeaderProps {
   monster: Monster
   /** ID du monstre */
   monsterId: string
+  /** Catégorie initiale pour le filtre du modal d'inventaire */
+  initialInventoryCategory?: AccessoryCategory | null
+  /** Callback pour réinitialiser la catégorie */
+  onInventoryCategoryReset?: () => void
 }
 
 /**
@@ -36,16 +39,25 @@ interface MonsterDetailHeaderProps {
  * @param {MonsterDetailHeaderProps} props - Les propriétés du composant
  * @returns {React.ReactNode} Le header avec nom et navigation
  */
-export default function MonsterDetailHeader ({
+export default function MonsterDetailHeader({
   monster,
-  monsterId
+  monsterId,
+  initialInventoryCategory = null,
+  onInventoryCategoryReset
 }: MonsterDetailHeaderProps): React.ReactNode {
   const router = useRouter()
   const { wallet, refetch: refetchWallet } = useWallet()
-  const [showShop, setShowShop] = useState(false)
-  const [showInventory, setShowInventory] = useState(false)
-  const [ownedAccessories, setOwnedAccessories] = useState<string[]>([])
+  const [showModal, setShowModal] = useState(false)
+  const [modalTab, setModalTab] = useState<'inventory' | 'shop'>('inventory')
   const [ownedAccessoriesDetails, setOwnedAccessoriesDetails] = useState<Array<OwnedAccessory & { details: AccessoryData }>>([])
+
+  // Ouvrir automatiquement la modal sur l'onglet inventaire si une catégorie est spécifiée
+  useEffect(() => {
+    if (initialInventoryCategory != null) {
+      setModalTab('inventory')
+      setShowModal(true)
+    }
+  }, [initialInventoryCategory])
 
   // Charger les accessoires possédés
   useEffect(() => {
@@ -54,7 +66,6 @@ export default function MonsterDetailHeader ({
         const response = await fetch('/api/accessories/owned')
         if (response.ok) {
           const data = await response.json() as { accessories: Array<OwnedAccessory & { details: AccessoryData }> }
-          setOwnedAccessories(data.accessories.map((acc) => acc.details.name))
           setOwnedAccessoriesDetails(data.accessories)
         }
       } catch (error) {
@@ -85,7 +96,6 @@ export default function MonsterDetailHeader ({
 
         // Rafraîchir le wallet local et la liste des accessoires possédés
         void refetchWallet()
-        setOwnedAccessories((prev) => [...prev, accessory.name])
 
         // Rafraîchir les détails des accessoires
         const refreshResponse = await fetch('/api/accessories/owned')
@@ -107,19 +117,21 @@ export default function MonsterDetailHeader ({
   /**
    * Gère l'équipement d'un accessoire
    */
-  const handleEquipAccessory = async (accessoryId: string, category: string): Promise<void> => {
+  const handleEquipAccessory = async (accessoryName: string, category: string): Promise<void> => {
     try {
-      // TODO: Implémenter l'appel API pour équiper un accessoire
-      toast.info(`Équipement de l'accessoire ${accessoryId} - API à implémenter`)
-      // const response = await fetch('/api/accessories/equip', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ accessoryId, monsterId, category })
-      // })
-      // if (response.ok) {
-      //   toast.success('Accessoire équipé !')
-      //   router.refresh()
-      // }
+      const response = await fetch('/api/accessories/equip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accessoryName, monsterId, category })
+      })
+
+      if (response.ok) {
+        toast.success('Accessoire équipé !')
+        router.refresh()
+      } else {
+        const error = await response.json()
+        toast.error(error.error ?? 'Erreur lors de l\'équipement')
+      }
     } catch (error) {
       console.error('Erreur lors de l\'équipement:', error)
       toast.error('Impossible d\'équiper cet accessoire')
@@ -131,20 +143,32 @@ export default function MonsterDetailHeader ({
    */
   const handleUnequipAccessory = async (category: string): Promise<void> => {
     try {
-      // TODO: Implémenter l'appel API pour retirer un accessoire
-      toast.info(`Retrait de l'accessoire ${category} - API à implémenter`)
-      // const response = await fetch('/api/accessories/unequip', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ monsterId, category })
-      // })
-      // if (response.ok) {
-      //   toast.success('Accessoire retiré !')
-      //   router.refresh()
-      // }
+      const response = await fetch('/api/accessories/unequip', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ monsterId, category })
+      })
+
+      if (response.ok) {
+        toast.success('Accessoire retiré !')
+        router.refresh()
+      } else {
+        const error = await response.json()
+        toast.error(error.error ?? 'Erreur lors du retrait')
+      }
     } catch (error) {
       console.error('Erreur lors du retrait:', error)
       toast.error('Impossible de retirer cet accessoire')
+    }
+  }
+
+  /**
+   * Ferme la modal et réinitialise la catégorie
+   */
+  const handleCloseModal = (): void => {
+    setShowModal(false)
+    if (onInventoryCategoryReset != null) {
+      onInventoryCategoryReset()
     }
   }
 
@@ -167,7 +191,10 @@ export default function MonsterDetailHeader ({
             variant='outline'
             color='latte'
             size='md'
-            onClick={() => { setShowInventory(true) }}
+            onClick={() => {
+              setModalTab('inventory')
+              setShowModal(true)
+            }}
           >
             🎒 Inventaire
           </Button>
@@ -175,31 +202,29 @@ export default function MonsterDetailHeader ({
             variant='outline'
             color='latte'
             size='md'
-            onClick={() => { setShowShop(true) }}
+            onClick={() => {
+              setModalTab('shop')
+              setShowModal(true)
+            }}
           >
             🛍️ Boutique
           </Button>
         </div>
       </header>
 
-      {/* Modal de la boutique d'accessoires */}
-      <AccessoryShopModal
-        isOpen={showShop}
-        onClose={() => { setShowShop(false) }}
-        animoneysBalance={wallet?.balance ?? 0}
-        onPurchase={handlePurchaseAccessory}
-        ownedAccessories={ownedAccessories}
-      />
-
-      {/* Modal de l'inventaire d'accessoires */}
+      {/* Modal unifiée Inventaire + Boutique */}
       <AccessoryInventoryModal
-        isOpen={showInventory}
-        onClose={() => { setShowInventory(false) }}
+        isOpen={showModal}
+        onClose={handleCloseModal}
         ownedAccessories={ownedAccessoriesDetails}
         equippedAccessories={monster.equippedAccessories ?? {}}
         monsterId={monsterId}
         onEquip={handleEquipAccessory}
         onUnequip={handleUnequipAccessory}
+        initialCategory={initialInventoryCategory ?? undefined}
+        initialTab={modalTab}
+        animoneysBalance={wallet?.balance ?? 0}
+        onPurchase={handlePurchaseAccessory}
       />
     </>
   )

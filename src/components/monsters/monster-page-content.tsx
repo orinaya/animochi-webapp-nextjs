@@ -16,12 +16,12 @@
 import { useState } from 'react'
 import type { Monster } from '@/types/monster'
 import type { MonsterAction } from '@/types/monster-actions'
+import type { AccessoryCategory } from '@/types/monster-accessories'
 import { DashboardLayout } from '@/components/layout'
 import { useAuth } from '@/hooks/use-auth'
 import MonsterDetailHeader from './monster-detail-header'
-import MonsterDetailAvatar from './monster-detail-avatar'
+import MonsterAvatarWithEquipment from './monster-avatar-with-equipment'
 import MonsterExperienceSection from './monster-experience-section'
-import MonsterEquipmentSection from './monster-equipment-section'
 import MonsterStatsSection from './monster-stats-section'
 import MonsterActionsSection from './monster-actions-section'
 
@@ -56,6 +56,7 @@ export default function MonstrePageContent ({
 }: MonstrePageContentProps): React.ReactNode {
   const { logout } = useAuth()
   const [currentAnimation, setCurrentAnimation] = useState<MonsterAction | null>(null)
+  const [inventoryCategory, setInventoryCategory] = useState<AccessoryCategory | null>(null)
 
   // Données du fil d'Ariane
   const breadcrumbItems = [
@@ -72,32 +73,50 @@ export default function MonstrePageContent ({
     }
   }
 
+  /**
+   * Ouvre l'inventaire avec un filtre de catégorie
+   */
+  const handleOpenInventory = (category?: AccessoryCategory): void => {
+    setInventoryCategory(category ?? null)
+  }
+
   return (
     <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
       {/* Header avec nom et navigation */}
-      <MonsterDetailHeader monster={monster} monsterId={monsterId} />
+      <MonsterDetailHeader
+        monster={monster}
+        monsterId={monsterId}
+        initialInventoryCategory={inventoryCategory}
+        onInventoryCategoryReset={() => { setInventoryCategory(null) }}
+      />
 
-      {/* Layout principal en grille */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-        {/* Colonne gauche : Avatar et Actions */}
-        <div className='space-y-8'>
-          <MonsterDetailAvatar
+      {/* Layout principal en grille - optimisé pour remplir l'écran sans scroll */}
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6' style={{ height: 'calc(100vh - 280px)' }}>
+        {/* Colonne gauche : Avatar + Équipement compact */}
+        <div className='h-full'>
+          <MonsterAvatarWithEquipment
             monster={monster}
             currentAnimation={currentAnimation}
             onAnimationComplete={() => { setCurrentAnimation(null) }}
-          />
-          <MonsterActionsSection
-            monster={monster}
-            monsterId={monsterId}
-            onActionStart={(action: MonsterAction) => { setCurrentAnimation(action) }}
+            onOpenInventory={handleOpenInventory}
           />
         </div>
 
-        {/* Colonne droite : Progression XP, Stats et Équipement */}
-        <div className='space-y-8'>
+        {/* Colonne droite : XP, Stats avec Actions intégrées - Pleine hauteur */}
+        <div className='space-y-4 flex flex-col h-full'>
           <MonsterExperienceSection monster={monster} />
-          <MonsterStatsSection monster={monster} />
-          <MonsterEquipmentSection monster={monster} />
+          <div className='flex-1 min-h-0'>
+            <MonsterStatsSection
+              monster={monster}
+              actionsComponent={
+                <MonsterActionsSection
+                  monster={monster}
+                  monsterId={monsterId}
+                  onActionStart={(action: MonsterAction) => { setCurrentAnimation(action) }}
+                />
+              }
+            />
+          </div>
         </div>
       </div>
     </DashboardLayout>

@@ -221,9 +221,9 @@ export async function getMonsterById (id: string): Promise<Monster | null> {
       equippedAccessories:
         monster.equippedAccessories != null
           ? {
-              hat: monster.equippedAccessories.hat?.toString() ?? null,
-              glasses: monster.equippedAccessories.glasses?.toString() ?? null,
-              shoes: monster.equippedAccessories.shoes?.toString() ?? null
+              hat: monster.equippedAccessories.hat ?? null,
+              glasses: monster.equippedAccessories.glasses ?? null,
+              shoes: monster.equippedAccessories.shoes ?? null
             }
           : null,
       equippedBackground: monster.equippedBackground?.toString() ?? null,

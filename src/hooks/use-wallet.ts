@@ -34,7 +34,7 @@ export function useWallet (): UseWalletReturn {
       const response = await fetch('/api/wallet', {
         cache: 'no-store', // Ne pas utiliser le cache pour avoir les données fraîches
         headers: {
-          'Cache-Control': 'no-cache',
+          'Cache-Control': 'no-cache'
         }
       })
 

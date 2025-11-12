@@ -94,7 +94,7 @@ export async function POST (request: Request): Promise<NextResponse> {
         accessoryName,
         accessoryCategory: accessoryData.category,
         accessoryRarity: accessoryData.rarity
-      },
+      }
     })
 
     // Ajouter l'accessoire à l'inventaire

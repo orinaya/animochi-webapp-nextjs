@@ -80,17 +80,6 @@ export default function MonsterExperienceSection ({
         </span>
         <span className='font-semibold text-blueberry-700'>{progress}%</span>
       </div>
-
-      {/* Message d'encouragement */}
-      <div className='mt-4 bg-peach-50 rounded-xl p-3 border border-peach-200'>
-        <p className='text-xs text-latte-700 text-center'>
-          {progress >= 80
-            ? '🔥 Presque au niveau suivant ! Continue comme ça !'
-            : progress >= 50
-              ? '💪 Tu es à mi-chemin du prochain niveau !'
-              : '✨ Prends soin de ton monstre pour gagner de l\'XP !'}
-        </p>
-      </div>
     </div>
   )
 }

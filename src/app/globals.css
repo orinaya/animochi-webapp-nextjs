@@ -196,6 +196,36 @@ body {
   animation: emoji-float 1.5s ease-out forwards;
 }
 
+/* Animation flottante douce pour le chapeau/couronne */
+@keyframes float-gentle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float-gentle {
+  animation: float-gentle 3s ease-in-out infinite;
+}
+
+/* Animation de rebond vertical pour les chaussures (comme les pattes) */
+@keyframes bounce-vertical {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-bounce-vertical {
+  animation: bounce-vertical 0.6s ease-in-out infinite;
+}
+
 /* Pixel Art Rendering */
 .pixelated {
   image-rendering: pixelated;

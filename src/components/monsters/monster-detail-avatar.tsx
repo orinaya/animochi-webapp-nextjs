@@ -65,9 +65,15 @@ export default function MonsterDetailAvatar ({
     const equipped = monster.equippedAccessories ?? {}
     const accessories: Array<{ svg: string, category: string }> = []
 
+    console.log('🎨 MonsterDetailAvatar - Accessoires équipés:', {
+      equipped,
+      monsterName: monster.name
+    })
+
     // Récupérer chaque accessoire équipé depuis le catalogue
     if (equipped.hat != null) {
       const hatData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.hat)
+      console.log('🎩 Chapeau:', { name: equipped.hat, found: hatData != null })
       if (hatData?.svg != null) {
         accessories.push({ svg: hatData.svg, category: 'hat' })
       }
@@ -75,6 +81,7 @@ export default function MonsterDetailAvatar ({
 
     if (equipped.glasses != null) {
       const glassesData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.glasses)
+      console.log('👓 Lunettes:', { name: equipped.glasses, found: glassesData != null })
       if (glassesData?.svg != null) {
         accessories.push({ svg: glassesData.svg, category: 'glasses' })
       }
@@ -82,16 +89,54 @@ export default function MonsterDetailAvatar ({
 
     if (equipped.shoes != null) {
       const shoesData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.shoes)
+      console.log('👟 Chaussures:', { name: equipped.shoes, found: shoesData != null })
       if (shoesData?.svg != null) {
         accessories.push({ svg: shoesData.svg, category: 'shoes' })
       }
     }
 
+    console.log('📦 Total accessoires à afficher:', accessories.length)
+
     return accessories
-  }, [monster.equippedAccessories])
+  }, [monster.equippedAccessories, monster.name])
+
+  /**
+   * Retourne les styles de positionnement et taille pour chaque catégorie d'accessoire
+   */
+  const getAccessoryStyles = (category: string): { position: string, size: string, animation: string } => {
+    switch (category) {
+      case 'hat':
+        // Chapeau au-dessus de la tête du chat - animation flottante douce
+        return {
+          position: 'top-[-10%] left-[46%] -translate-x-1/2',
+          size: 'w-[50%] h-auto',
+          animation: 'animate-float-gentle'
+        }
+      case 'glasses':
+        // Lunettes devant les yeux du chat - pas d'animation
+        return {
+          position: 'top-[2%] left-[46%] -translate-x-1/2',
+          size: 'w-[38%] h-auto',
+          animation: ''
+        }
+      case 'shoes':
+        // Chaussures au bas du chat - rebond vertical comme les pattes
+        return {
+          position: 'bottom-[1%] left-[46%] -translate-x-1/2',
+          size: 'w-[28%] h-auto',
+          animation: 'animate-bounce-vertical'
+        }
+      default:
+        return {
+          position: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+          size: 'w-[50%] h-auto',
+          animation: ''
+        }
+    }
+  }
 
   return (
-    <div className='relative bg-linear-to-br from-blueberry-50 to-peach-50 rounded-3xl p-8 shadow-lg overflow-hidden'>
+    <div className='relative bg-linear-to-br from-blueberry-50 to-peach-50 rounded-3xl p-4 shadow-lg overflow-hidden w-full'>
       {/* Animation d'action - couvre toute la carte */}
       {currentAnimation !== null && (
         <ActionAnimation
@@ -101,34 +146,35 @@ export default function MonsterDetailAvatar ({
       )}
 
       {/* Badge d'état */}
-      <div className='absolute top-4 right-4 bg-white rounded-full px-4 py-2 shadow-md z-10'>
-        <span className='text-2xl'>{stateEmoji}</span>
+      <div className='absolute top-3 right-3 bg-white rounded-full px-3 py-1.5 shadow-md z-10'>
+        <span className='text-xl'>{stateEmoji}</span>
       </div>
 
-      {/* Image SVG du monstre avec accessoires */}
-      <div className='relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] z-0'>
+      {/* Image SVG du monstre avec accessoires - Hauteur réduite */}
+      <div className='relative flex items-center justify-center min-h-[200px] sm:min-h-[280px] z-0'>
         {monster.draw != null && monster.draw !== ''
           ? (
-            <div className='relative w-full max-w-md mx-auto'>
+            <div className='relative w-full max-w-sm mx-auto'>
               {/* SVG du monstre */}
               <div
                 className='w-full flex items-center justify-center'
                 dangerouslySetInnerHTML={{ __html: monster.draw }}
               />
 
-              {/* Overlay des accessoires équipés */}
-              {equippedAccessoriesData.length > 0 && (
-                <div className='absolute inset-0 pointer-events-none'>
-                  <svg viewBox='0 0 80 80' className='w-full h-full'>
-                    {equippedAccessoriesData.map((accessory, index) => (
-                      <g
-                        key={`${accessory.category}-${index}`}
-                        dangerouslySetInnerHTML={{ __html: accessory.svg }}
-                      />
-                    ))}
-                  </svg>
-                </div>
-              )}
+              {/* Overlay des accessoires équipés avec positionnement précis */}
+              {equippedAccessoriesData.map((accessory, index) => {
+                const styles = getAccessoryStyles(accessory.category)
+                return (
+                  <div
+                    key={`${accessory.category}-${index}`}
+                    className={`absolute pointer-events-none ${styles.position} ${styles.size} ${styles.animation}`}
+                  >
+                    <svg viewBox='0 0 80 80' className='w-full h-full'>
+                      <g dangerouslySetInnerHTML={{ __html: accessory.svg }} />
+                    </svg>
+                  </div>
+                )
+              })}
             </div>
             )
           : (

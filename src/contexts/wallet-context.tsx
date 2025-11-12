@@ -22,7 +22,7 @@ interface WalletProviderProps {
   children: ReactNode
 }
 
-export function WalletProvider({ children }: WalletProviderProps): React.ReactNode {
+export function WalletProvider ({ children }: WalletProviderProps): React.ReactNode {
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -61,7 +61,7 @@ export function WalletProvider({ children }: WalletProviderProps): React.ReactNo
   )
 }
 
-export function useWalletContext(): WalletContextType {
+export function useWalletContext (): WalletContextType {
   const context = useContext(WalletContext)
   if (context === undefined) {
     throw new Error('useWalletContext must be used within a WalletProvider')
