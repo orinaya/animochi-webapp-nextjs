@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { authClient } from '@/lib/auth/auth-client'
 import { FiUsers, FiPlus } from 'react-icons/fi'
 import Button from '@/components/ui/button'
+import { MonsterCard } from '@/components/ui'
 import { CreateMonsterModal } from './create-monster-modal'
 import { createMonster, getMonsters } from '@/actions/monsters.action'
 import type { Monster } from '@/types/monster'
@@ -91,7 +92,7 @@ function EmptyMonstersState ({ onCreateMonster }: { onCreateMonster: () => void 
 }
 
 /**
- * Grille de monstres (placeholder pour le moment)
+ * Grille de monstres avec MonsterCard
  */
 function MonstersGrid ({ monsters }: { monsters: Monster[] }): React.ReactNode {
   if (monsters.length === 0) {
@@ -101,21 +102,14 @@ function MonstersGrid ({ monsters }: { monsters: Monster[] }): React.ReactNode {
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
       {monsters.map((monster, index) => (
-        <div
+        <MonsterCard
           key={monster.id ?? monster._id ?? index}
-          className='bg-white rounded-xl p-6 shadow-sm border border-latte-200 hover:shadow-md transition-all duration-200'
-        >
-          <div className='text-center'>
-            <div className='w-16 h-16 bg-linear-to-br from-blueberry-100 to-strawberry-100 rounded-full flex items-center justify-center mx-auto mb-4'>
-              <span className='text-2xl'>{monster.emoji ?? '🐾'}</span>
-            </div>
-            <h3 className='font-bold text-blueberry-950 mb-2'>{monster.name}</h3>
-            <p className='text-sm text-latte-600 mb-4'>Niveau {monster.level ?? 1}</p>
-            <div className='text-xs text-latte-500'>
-              État: {monster.state ?? 'content'}
-            </div>
-          </div>
-        </div>
+          monster={monster}
+          onClick={() => {
+            console.log('Monstre cliqué:', monster.name)
+            // TODO: Navigation vers la page détail du monstre
+          }}
+        />
       ))}
     </div>
   )

@@ -29,8 +29,8 @@ export function DashboardLayout ({ session, onLogout, children, breadcrumbItems 
       {/* Sidebar fixe */}
       <Sidebar session={session} onLogout={onLogout} />
 
-      {/* Container principal avec barre de navigation supérieure */}
-      <div className='flex-6'>
+      {/* Container principal avec barre de navigation supérieure - scrollable */}
+      <div className='flex-6 h-screen overflow-y-auto'>
         {/* Barre de navigation fixe en haut */}
         <TopNavBar session={session} onLogout={onLogout} breadcrumbItems={breadcrumbItems} />
 
