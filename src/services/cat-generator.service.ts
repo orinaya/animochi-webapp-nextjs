@@ -34,6 +34,8 @@ type ElementType =
   | 'base' // Cercles verts - couleur de base
   | 'contour' // Coeurs rouges - contour fixe #5E174F
   | 'eyes' // Coeurs verts - yeux fixes #5E174F
+  | 'eyes_outer' // Parties extérieures des yeux (G6/G12) - animées
+  | 'eyes_white' // Parties blanches des yeux ouverts (F7/F11)
   | 'ears_tongue' // Coeurs jaunes - oreilles/langue fixes #FF9994
   | 'whiskers' // Etoiles rouges - moustaches (variables)
   | 'paws' // Etoiles roses - pattes (variables)
@@ -88,7 +90,7 @@ const PREDEFINED_PALETTES: CatPalette[] = [
 const FIXED_COLORS = {
   contour: '#5E174F',
   eyes: '#5E174F',
-  ears_tongue: '#FF9994'
+  ears_tongue: '#FF9994',
 } as const
 
 /**
@@ -247,7 +249,7 @@ class CatPatternService {
       'T17',
       'T18',
       'T19',
-      'T20'
+      'T20',
     ]
 
     // Cercles verts / couleur de base du chat
@@ -332,7 +334,7 @@ class CatPatternService {
       'P11',
       'P12',
       'Q6',
-      'Q12'
+      'Q12',
     ]
 
     // Coeurs rouges / contours du chat
@@ -395,7 +397,7 @@ class CatPatternService {
       'S7',
       'S8',
       'S10',
-      'S11'
+      'S11',
     ]
 
     // Ajouter les positions de base
@@ -410,10 +412,15 @@ class CatPatternService {
     })
 
     // Éléments avec positions spécifiques
-    pattern.set('G6', 'eyes')
+    // Yeux : G7 et G11 sont toujours la couleur des yeux
     pattern.set('G7', 'eyes')
     pattern.set('G11', 'eyes')
-    pattern.set('G12', 'eyes')
+    // G6 et G12 alternent entre couleur des yeux (fermés) et couleur de base (ouverts)
+    pattern.set('G6', 'eyes_outer')
+    pattern.set('G12', 'eyes_outer')
+    // F7 et F11 sont blancs quand les yeux sont ouverts
+    pattern.set('F7', 'eyes_white')
+    pattern.set('F11', 'eyes_white')
 
     pattern.set('D4', 'ears_tongue')
     pattern.set('D14', 'ears_tongue')
@@ -529,7 +536,7 @@ class CatPatternService {
       'Q5',
       'Q9',
       'Q13',
-      'Q14'
+      'Q14',
     ]
     bodyAccentPositions.forEach((pos) => {
       pattern.set(pos, 'body_accent')
@@ -551,7 +558,7 @@ class CatPatternService {
       'J7',
       'J8',
       'J10',
-      'J11'
+      'J11',
     ]
     muzzlePositions.forEach((pos) => {
       pattern.set(pos, 'muzzle')
@@ -603,6 +610,14 @@ class CatPatternService {
       case 'eyes':
         return FIXED_COLORS.eyes
 
+      case 'eyes_outer':
+        // Ces pixels alternent : #5E174F (fermés) ou base (ouverts)
+        return FIXED_COLORS.eyes
+
+      case 'eyes_white':
+        // Ces pixels sont transparents (fermés) ou blancs (ouverts)
+        return 'transparent'
+
       case 'ears_tongue':
         return FIXED_COLORS.ears_tongue
 
@@ -645,7 +660,7 @@ class CatPatternService {
   }
 
   /**
-   * Génère un chat SVG complet
+   * Génère un chat SVG complet avec animations
    */
   generateCat (): string {
     // Choisir une palette (70% prédéfinie, 30% générée)
@@ -671,8 +686,81 @@ class CatPatternService {
     // Obtenir le pattern complet
     const pattern = this.getCatPattern()
 
-    // Générer le SVG
+    // Définir les positions exactes pour chaque partie animée
+    const tailPositions = new Set([
+      'H17',
+      'H18',
+      'I16',
+      'I19',
+      'J19',
+      'K18',
+      'L18',
+      'M18',
+      'N19',
+      'O19',
+      'P18',
+      'Q16',
+      'Q17',
+      'J15',
+      'K15',
+      'L15',
+      'M16',
+      'N16',
+      'O16',
+      'P16',
+      'J16',
+      'K16',
+      'L16',
+      'L17',
+      'M17',
+      'N17',
+      'N18',
+      'O17',
+      'O18',
+      'P17',
+      'I17',
+      'I18',
+      'J17',
+      'J18',
+    ])
+
+    const pawPositions = new Set([
+      'P7',
+      'P8',
+      'Q7',
+      'Q8',
+      'R7',
+      'R8',
+      'S7',
+      'S8',
+      'P10',
+      'P11',
+      'Q10',
+      'Q11',
+      'R10',
+      'R11',
+      'S10',
+      'S11',
+    ])
+
+    const whiskerPositions = new Set([
+      'G2',
+      'G3',
+      'G4',
+      'I2',
+      'I3',
+      'I4',
+      'G14',
+      'G15',
+      'G16',
+      'I14',
+      'I15',
+      'I16',
+    ])
+
+    // Générer le SVG avec animations CSS
     const pixels: string[] = []
+    const animationId = `cat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
     // Parcourir chaque position de la grille 20x20
     for (let row = 1; row <= 20; row++) {
@@ -685,13 +773,232 @@ class CatPatternService {
           const x = (col - 1) * 10 // Chaque pixel fait 10x10 unités SVG
           const y = (row - 1) * 10
 
-          pixels.push(`<rect x="${x}" y="${y}" width="10" height="10" fill="${color}"/>`)
+          // Déterminer si ce pixel fait partie d'une zone animée
+          const isTail = tailPositions.has(posKey)
+          const isPaw = pawPositions.has(posKey)
+          const isWhisker = whiskerPositions.has(posKey)
+
+          // Gérer les animations pour différents éléments
+          if (elementType === 'eyes_outer') {
+            // G6 et G12 : alternent entre #5E174F (fermés) et couleur de base (ouverts)
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="eye-outer-${animationId}"/>`
+            )
+          } else if (elementType === 'eyes_white') {
+            // F7 et F11 : transparents (fermés) ou blancs (ouverts)
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="eye-white-${animationId} shine-${animationId}"/>`
+            )
+          } else if (elementType === 'eyes') {
+            // Yeux avec effet de brillance
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="shine-${animationId}"/>`
+            )
+          } else if (elementType === 'cheeks') {
+            // Joues avec effet blush
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="cheek-${animationId}"/>`
+            )
+          } else if (isTail) {
+            // Tous les pixels de la queue
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="tail-${animationId}"/>`
+            )
+          } else if (isPaw) {
+            // Tous les pixels des pattes
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="paw-${animationId}"/>`
+            )
+          } else if (isWhisker) {
+            // Tous les pixels des moustaches
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="whisker-${animationId}"/>`
+            )
+          } else if (
+            elementType === 'base' ||
+            elementType === 'body_accent' ||
+            elementType === 'muzzle'
+          ) {
+            // Corps avec respiration
+            pixels.push(
+              `<rect x="${x}" y="${y}" width="10" height="10" fill="${color}" class="body-${animationId}"/>`
+            )
+          } else {
+            pixels.push(`<rect x="${x}" y="${y}" width="10" height="10" fill="${color}"/>`)
+          }
         }
       }
     }
 
+    // Durée aléatoire entre clignements (2-5 secondes)
+    const blinkDuration = 2 + Math.random() * 3
+    const blinkDelay = Math.random() * 2 // Délai initial aléatoire
+
+    // Couleur de blush plus rose
+    const blushColor = '#FFB3D9'
+
     return `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+        <style>
+          /* Animation des yeux - clignement */
+          @keyframes blink-outer-${animationId} {
+            0%, 50%, 100% {
+              fill: ${palette.base};
+            }
+            52%, 62% {
+              fill: ${FIXED_COLORS.eyes};
+            }
+          }
+
+          @keyframes blink-white-${animationId} {
+            0%, 50%, 100% {
+              fill: white;
+            }
+            52%, 62% {
+              fill: transparent;
+            }
+          }
+
+          /* Animation de blush */
+          @keyframes blush-${animationId} {
+            0%, 100% {
+              fill: ${variableColors.cheeks};
+            }
+            50% {
+              fill: ${blushColor};
+            }
+          }
+
+          /* Animation de brillance sur les yeux */
+          @keyframes shine-${animationId} {
+            0%, 80%, 100% {
+              opacity: 1;
+            }
+            85%, 95% {
+              opacity: 0.7;
+            }
+          }
+
+          /* Animation de respiration (idle) */
+          @keyframes breathe-${animationId} {
+            0%, 100% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.01);
+            }
+          }
+
+          /* Animation des moustaches - vibration légère */
+          @keyframes whisker-wiggle-${animationId} {
+            0%, 100% {
+              transform: translate(0, 0) rotate(0deg);
+            }
+            15% {
+              transform: translate(0.5px, -0.3px) rotate(1deg);
+            }
+            30% {
+              transform: translate(0.8px, -0.2px) rotate(1.5deg);
+            }
+            50% {
+              transform: translate(0, 0) rotate(0deg);
+            }
+            65% {
+              transform: translate(-0.5px, 0.3px) rotate(-1deg);
+            }
+            80% {
+              transform: translate(-0.8px, 0.2px) rotate(-1.5deg);
+            }
+          }
+
+          /* Animation de la queue qui remue - plus naturelle */
+          @keyframes tail-wag-${animationId} {
+            0%, 100% {
+              transform: translate(0, 0) rotate(0deg);
+            }
+            15% {
+              transform: translate(1px, -0.5px) rotate(3deg);
+            }
+            30% {
+              transform: translate(2px, -0.3px) rotate(5deg);
+            }
+            50% {
+              transform: translate(0, 0) rotate(0deg);
+            }
+            65% {
+              transform: translate(-1px, -0.5px) rotate(-3deg);
+            }
+            80% {
+              transform: translate(-2px, -0.3px) rotate(-5deg);
+            }
+          }
+
+          /* Animation des pattes qui tapotent - alternance gauche/droite */
+          @keyframes paw-tap-${animationId} {
+            0%, 100% {
+              transform: translateY(0);
+            }
+            12% {
+              transform: translateY(-4px);
+            }
+            24% {
+              transform: translateY(-2px);
+            }
+            36% {
+              transform: translateY(0);
+            }
+            62% {
+              transform: translateY(-5px);
+            }
+            74% {
+              transform: translateY(-3px);
+            }
+            86% {
+              transform: translateY(0);
+            }
+          }
+
+          .eye-outer-${animationId} {
+            animation: blink-outer-${animationId} ${blinkDuration}s ease-in-out infinite;
+            animation-delay: ${blinkDelay}s;
+          }
+
+          .eye-white-${animationId} {
+            animation: blink-white-${animationId} ${blinkDuration}s ease-in-out infinite;
+            animation-delay: ${blinkDelay}s;
+          }
+
+          .cheek-${animationId} {
+            animation: blush-${animationId} 3s ease-in-out infinite;
+            animation-delay: ${blinkDelay + 0.5}s;
+          }
+
+          .shine-${animationId} {
+            animation: shine-${animationId} 4s ease-in-out infinite;
+            animation-delay: ${blinkDelay + 1}s;
+          }
+
+          .body-${animationId} {
+            transform-origin: center;
+            animation: breathe-${animationId} 3s ease-in-out infinite;
+          }
+
+          .whisker-${animationId} {
+            transform-origin: center;
+            animation: whisker-wiggle-${animationId} 2.5s ease-in-out infinite;
+            animation-delay: ${Math.random() * 0.8}s;
+          }
+
+          .tail-${animationId} {
+            transform-origin: center;
+            animation: tail-wag-${animationId} 2.2s ease-in-out infinite;
+          }
+
+          .paw-${animationId} {
+            animation: paw-tap-${animationId} 3.5s ease-in-out infinite;
+            animation-delay: ${Math.random() * 1.5}s;
+          }
+        </style>
         <rect width="200" height="200" fill="transparent"/>
         ${pixels.join('\n        ')}
       </svg>
@@ -706,7 +1013,18 @@ export const catGeneratorService = new CatPatternService()
 
 /**
  * Fonction utilitaire pour générer un chat (interface publique)
+ * Retourne le SVG brut
  */
 export function generatePixelCat (): string {
   return catGeneratorService.generateCat()
+}
+
+/**
+ * Fonction utilitaire pour générer un chat en data URI
+ * Compatible avec les balises <img> et permet les animations CSS
+ */
+export function generatePixelCatDataUri (): string {
+  const svg = catGeneratorService.generateCat()
+  const encoded = encodeURIComponent(svg)
+  return `data:image/svg+xml,${encoded}`
 }

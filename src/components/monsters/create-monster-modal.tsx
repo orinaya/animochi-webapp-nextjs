@@ -58,6 +58,7 @@ export function CreateMonsterModal ({
   const [errors, setErrors] = useState<FormErrors>({})
   const [isLoading, setIsLoading] = useState(false)
   const [generatedCatSvg, setGeneratedCatSvg] = useState<string>('')
+  const [generatedCatDataUri, setGeneratedCatDataUri] = useState<string>('')
 
   /**
    * Gestionnaire de génération d'un nouveau chat
@@ -65,6 +66,9 @@ export function CreateMonsterModal ({
   const handleGenerateCat = (): void => {
     const newCatSvg = generatePixelCat()
     setGeneratedCatSvg(newCatSvg)
+    // Générer aussi le data URI pour l'affichage avec animations
+    const dataUri = `data:image/svg+xml,${encodeURIComponent(newCatSvg)}`
+    setGeneratedCatDataUri(dataUri)
   }
 
   /**
@@ -124,6 +128,7 @@ export function CreateMonsterModal ({
         })
         setErrors({})
         setGeneratedCatSvg('')
+        setGeneratedCatDataUri('')
         onClose()
       } catch (error) {
         console.error('Erreur lors de la création du monstre:', error)
@@ -163,6 +168,7 @@ export function CreateMonsterModal ({
       })
       setErrors({})
       setGeneratedCatSvg('')
+      setGeneratedCatDataUri('')
       onClose()
     }
   }
@@ -181,11 +187,12 @@ export function CreateMonsterModal ({
             Aperçu de votre monstre
           </label>
           <div className='w-full min-h-48 bg-linear-to-br from-latte-50 to-latte-100 border-2 border-dashed border-latte-300 rounded-xl flex items-center justify-center p-4'>
-            {generatedCatSvg !== ''
+            {generatedCatDataUri !== ''
               ? (
-                <div
+                <img
+                  src={generatedCatDataUri}
+                  alt='Aperçu de votre monstre'
                   className='w-48 h-48 shrink-0'
-                  dangerouslySetInnerHTML={{ __html: generatedCatSvg }}
                 />
                 )
               : (
