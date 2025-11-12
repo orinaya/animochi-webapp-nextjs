@@ -1,7 +1,7 @@
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { auth } from '@/lib/auth/auth'
-import { MonstresPageContent } from '@/components/monstres'
+import { MonstresPageContent } from '@/components/monsters'
 
 /**
  * Page Mes Monstres - Point d'entrée pour la gestion des monstres utilisateur

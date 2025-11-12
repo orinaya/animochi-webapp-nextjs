@@ -6,6 +6,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/layout'
 import { useAuth } from '@/hooks/use-auth'
 import { authClient } from '@/lib/auth/auth-client'
@@ -33,7 +34,7 @@ interface MonsterListHeaderProps {
 /**
  * En-tête de la liste des monstres avec compteur et bouton d'action
  */
-function MonsterListHeader ({ count, onCreateMonster }: MonsterListHeaderProps): React.ReactNode {
+function MonsterListHeader({ count, onCreateMonster }: MonsterListHeaderProps): React.ReactNode {
   return (
     <div className='flex items-center justify-between mb-8'>
       <div className='flex items-center gap-3'>
@@ -63,7 +64,7 @@ function MonsterListHeader ({ count, onCreateMonster }: MonsterListHeaderProps):
 /**
  * État vide quand l'utilisateur n'a pas encore de monstres
  */
-function EmptyMonstersState ({ onCreateMonster }: { onCreateMonster: () => void }): React.ReactNode {
+function EmptyMonstersState({ onCreateMonster }: { onCreateMonster: () => void }): React.ReactNode {
   return (
     <div className='text-center py-16'>
       <div className='mb-6'>
@@ -94,9 +95,21 @@ function EmptyMonstersState ({ onCreateMonster }: { onCreateMonster: () => void 
 /**
  * Grille de monstres avec MonsterCard
  */
-function MonstersGrid ({ monsters }: { monsters: Monster[] }): React.ReactNode {
+function MonstersGrid({ monsters }: { monsters: Monster[] }): React.ReactNode {
+  const router = useRouter()
+
   if (monsters.length === 0) {
     return null
+  }
+
+  const handleMonsterClick = (monster: Monster): void => {
+    const monsterId = monster.id ?? monster._id
+    if (monsterId != null) {
+      console.log('Navigation vers le monstre:', monster.name, 'ID:', monsterId)
+      router.push(`/monster/${monsterId}`)
+    } else {
+      console.error('Impossible de naviguer: ID du monstre manquant', monster)
+    }
   }
 
   return (
@@ -105,10 +118,7 @@ function MonstersGrid ({ monsters }: { monsters: Monster[] }): React.ReactNode {
         <MonsterCard
           key={monster.id ?? monster._id ?? index}
           monster={monster}
-          onClick={() => {
-            console.log('Monstre cliqué:', monster.name)
-            // TODO: Navigation vers la page détail du monstre
-          }}
+          onClick={() => handleMonsterClick(monster)}
         />
       ))}
     </div>
@@ -124,7 +134,7 @@ function MonstersGrid ({ monsters }: { monsters: Monster[] }): React.ReactNode {
  * @param {MonstresPageContentProps} props - Les propriétés du composant
  * @returns {React.ReactNode} Le contenu complet de la page monstres
  */
-export function MonstresPageContent ({ session }: MonstresPageContentProps): React.ReactNode {
+export function MonstresPageContent({ session }: MonstresPageContentProps): React.ReactNode {
   const { logout } = useAuth()
   const [monsters, setMonsters] = useState<Monster[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -227,13 +237,13 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
           <div className='flex items-center justify-center py-16'>
             <div className='text-lg text-latte-600'>Chargement de vos monstres...</div>
           </div>
-          )
+        )
         : (
           <div>
             {monsters.length === 0
               ? (
                 <EmptyMonstersState onCreateMonster={handleCreateMonster} />
-                )
+              )
               : (
                 <>
                   <MonsterListHeader
@@ -242,9 +252,9 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
                   />
                   <MonstersGrid monsters={monsters} />
                 </>
-                )}
+              )}
           </div>
-          )}
+        )}
 
       {/* Modal de création de monstre */}
       <CreateMonsterModal
