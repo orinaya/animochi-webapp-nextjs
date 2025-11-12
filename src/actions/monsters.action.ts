@@ -1,13 +1,13 @@
-'use server'
+"use server"
 
-import { connectMongooseToDatabase } from '@/db'
-import monsterModel from '@/db/models/monster.model'
-import { auth } from '@/lib/auth/auth'
-import { applyExperienceGain } from '@/services/experience'
-import type { Monster } from '@/types'
-import type { MonsterAction, MonsterActionResult } from '@/types/monster-actions'
-import { Types } from 'mongoose'
-import { headers } from 'next/headers'
+import {connectMongooseToDatabase} from "@/db"
+import monsterModel from "@/db/models/monster.model"
+import {auth} from "@/lib/auth/auth"
+import {applyExperienceGain} from "@/services/experience"
+import type {Monster} from "@/types"
+import type {MonsterAction, MonsterActionResult} from "@/types/monster-actions"
+import {Types} from "mongoose"
+import {headers} from "next/headers"
 
 /**
  * Crée un nouveau monstre pour l'utilisateur authentifié
@@ -34,16 +34,16 @@ import { headers } from 'next/headers'
  * })
  * ```
  */
-export async function createMonster (monsterData: Monster): Promise<void> {
+export async function createMonster(monsterData: Monster): Promise<void> {
   await connectMongooseToDatabase()
 
   const session = await auth.api.getSession({
-    headers: await headers()
+    headers: await headers(),
   })
-  if (session === null || session === undefined) throw new Error('User not authenticated')
+  if (session === null || session === undefined) throw new Error("User not authenticated")
 
-  console.log('Session utilisateur:', session)
-  console.log('Données du monstre:', monsterData)
+  console.log("Session utilisateur:", session)
+  console.log("Données du monstre:", monsterData)
 
   // Créer le monstre avec les valeurs par défaut nécessaires
   // eslint-disable-next-line new-cap
@@ -53,8 +53,8 @@ export async function createMonster (monsterData: Monster): Promise<void> {
     color: monsterData.color,
     emoji: monsterData.emoji,
     rarity: monsterData.rarity,
-    draw: monsterData.draw ?? 'placeholder',
-    state: monsterData.state ?? 'happy',
+    draw: monsterData.draw ?? "placeholder",
+    state: monsterData.state ?? "happy",
     level: monsterData.level ?? 1,
     experience: monsterData.experience ?? 0,
     experienceToNextLevel: monsterData.experienceToNextLevel ?? 150,
@@ -62,14 +62,14 @@ export async function createMonster (monsterData: Monster): Promise<void> {
     equippedAccessories: monsterData.equippedAccessories ?? {
       hat: null,
       glasses: null,
-      shoes: null
+      shoes: null,
     },
-    equippedBackground: monsterData.equippedBackground ?? null
+    equippedBackground: monsterData.equippedBackground ?? null,
   })
 
-  console.log('Monstre avant sauvegarde:', monster)
+  console.log("Monstre avant sauvegarde:", monster)
   const savedMonster = await monster.save()
-  console.log('Monstre sauvegardé:', savedMonster)
+  console.log("Monstre sauvegardé:", savedMonster)
 }
 
 /**
@@ -91,19 +91,19 @@ export async function createMonster (monsterData: Monster): Promise<void> {
  * console.log(`${monsters.length} monstres trouvés`)
  * ```
  */
-export async function getMonsters (): Promise<Monster[]> {
+export async function getMonsters(): Promise<Monster[]> {
   try {
     await connectMongooseToDatabase()
 
     const session = await auth.api.getSession({
-      headers: await headers()
+      headers: await headers(),
     })
-    if (session === null || session === undefined) throw new Error('User not authenticated')
+    if (session === null || session === undefined) throw new Error("User not authenticated")
 
-    const { user } = session
+    const {user} = session
 
     // Utiliser .lean() pour obtenir des objets JavaScript simples au lieu de documents Mongoose
-    const monstersData = await monsterModel.find({ ownerId: user.id }).lean().exec()
+    const monstersData = await monsterModel.find({ownerId: user.id}).lean().exec()
 
     // Convertir les _id MongoDB en strings et structurer les données pour le client
     return monstersData.map((monster: any) => ({
@@ -125,15 +125,15 @@ export async function getMonsters (): Promise<Monster[]> {
           ? {
               hat: monster.equippedAccessories.hat?.toString() ?? null,
               glasses: monster.equippedAccessories.glasses?.toString() ?? null,
-              shoes: monster.equippedAccessories.shoes?.toString() ?? null
+              shoes: monster.equippedAccessories.shoes?.toString() ?? null,
             }
           : null,
       equippedBackground: monster.equippedBackground?.toString() ?? null,
       createdAt: monster.createdAt?.toISOString(),
-      updatedAt: monster.updatedAt?.toISOString()
+      updatedAt: monster.updatedAt?.toISOString(),
     }))
   } catch (error) {
-    console.error('Error fetching monsters:', error)
+    console.error("Error fetching monsters:", error)
     return []
   }
 }
@@ -160,27 +160,27 @@ export async function getMonsters (): Promise<Monster[]> {
  * }
  * ```
  */
-export async function getMonsterById (id: string): Promise<Monster | null> {
+export async function getMonsterById(id: string): Promise<Monster | null> {
   try {
     await connectMongooseToDatabase()
     const session = await auth.api.getSession({
-      headers: await headers()
+      headers: await headers(),
     })
-    if (session === null || session === undefined) throw new Error('User not authenticated')
-    const { user } = session
+    if (session === null || session === undefined) throw new Error("User not authenticated")
+    const {user} = session
 
     // Extraction de l'ID (peut être un tableau depuis les routes dynamiques Next.js)
     const _id = Array.isArray(id) ? id[0] : id
 
     // Validation du format ObjectId MongoDB
     if (!Types.ObjectId.isValid(_id)) {
-      console.error('Invalid monster ID format:', _id)
+      console.error("Invalid monster ID format:", _id)
       return null
     }
 
-    console.log('🔍 getMonsterById - Recherche du monstre:', { _id, fullId: id, ownerId: user.id })
+    console.log("🔍 getMonsterById - Recherche du monstre:", {_id, fullId: id, ownerId: user.id})
 
-    const monster = await monsterModel.findOne({ _id, ownerId: user.id }).exec()
+    const monster = await monsterModel.findOne({_id, ownerId: user.id}).exec()
 
     if (monster == null) {
       return null
@@ -188,18 +188,18 @@ export async function getMonsterById (id: string): Promise<Monster | null> {
 
     // Initialiser les champs XP s'ils n'existent pas (pour les monstres créés avant le système d'XP)
     if (monster.experience === undefined || monster.experienceToNextLevel === undefined) {
-      console.log('⚠️ Initialisation des champs XP manquants')
+      console.log("⚠️ Initialisation des champs XP manquants")
       monster.experience = monster.experience ?? 0
       monster.experienceToNextLevel = monster.experienceToNextLevel ?? 150
       await monster.save()
     }
 
-    console.log('🔍 getMonsterById - Monstre trouvé:', {
+    console.log("🔍 getMonsterById - Monstre trouvé:", {
       id: monster._id,
       name: monster.name,
       experience: monster.experience,
       level: monster.level,
-      experienceToNextLevel: monster.experienceToNextLevel
+      experienceToNextLevel: monster.experienceToNextLevel,
     })
 
     // Convertir le document Mongoose en objet JavaScript simple
@@ -208,30 +208,30 @@ export async function getMonsterById (id: string): Promise<Monster | null> {
       _id: monster._id.toString(),
       id: monster._id.toString(),
       name: monsterObj.name,
-      description: monsterObj.description,
-      color: monsterObj.color,
-      emoji: monsterObj.emoji,
-      rarity: monsterObj.rarity,
-      draw: monsterObj.draw,
-      state: monsterObj.state,
-      level: monsterObj.level,
-      experience: monsterObj.experience,
-      experienceToNextLevel: monsterObj.experienceToNextLevel,
+      description: monsterObj.description ?? undefined,
+      color: monsterObj.color ?? undefined,
+      emoji: monsterObj.emoji ?? undefined,
+      rarity: monsterObj.rarity ?? undefined,
+      draw: monsterObj.draw ?? undefined,
+      state: monsterObj.state ?? undefined,
+      level: monsterObj.level ?? undefined,
+      experience: monsterObj.experience ?? undefined,
+      experienceToNextLevel: monsterObj.experienceToNextLevel ?? undefined,
       ownerId: monster.ownerId.toString(),
       equippedAccessories:
         monster.equippedAccessories != null
           ? {
               hat: monster.equippedAccessories.hat ?? null,
               glasses: monster.equippedAccessories.glasses ?? null,
-              shoes: monster.equippedAccessories.shoes ?? null
+              shoes: monster.equippedAccessories.shoes ?? null,
             }
           : null,
       equippedBackground: monster.equippedBackground?.toString() ?? null,
       createdAt: monsterObj.createdAt?.toISOString(),
-      updatedAt: monsterObj.updatedAt?.toISOString()
+      updatedAt: monsterObj.updatedAt?.toISOString(),
     }
   } catch (error) {
-    console.error('Error fetching monsters:', error)
+    console.error("Error fetching monsters:", error)
     return null
   }
 }
@@ -259,42 +259,42 @@ export async function getMonsterById (id: string): Promise<Monster | null> {
  * }
  * ```
  */
-export async function deleteMonster (id: string): Promise<{ success: boolean, message: string }> {
+export async function deleteMonster(id: string): Promise<{success: boolean; message: string}> {
   try {
     await connectMongooseToDatabase()
 
     const session = await auth.api.getSession({
-      headers: await headers()
+      headers: await headers(),
     })
 
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Utilisateur non authentifié'
+        message: "Utilisateur non authentifié",
       }
     }
 
-    const { user } = session
+    const {user} = session
 
     // Extraction de l'ID (peut être un tableau depuis les routes dynamiques Next.js)
     const _id = Array.isArray(id) ? id[0] : id
 
     // Validation du format ObjectId MongoDB
     if (!Types.ObjectId.isValid(_id)) {
-      console.error('Invalid monster ID format:', _id)
+      console.error("Invalid monster ID format:", _id)
       return {
         success: false,
-        message: "Format d'ID invalide"
+        message: "Format d'ID invalide",
       }
     }
 
-    console.log('🗑️ deleteMonster - Suppression du monstre:', { _id, ownerId: user.id })
+    console.log("🗑️ deleteMonster - Suppression du monstre:", {_id, ownerId: user.id})
 
     // Supprimer le monstre uniquement s'il appartient à l'utilisateur
     const result = await monsterModel
       .deleteOne({
         _id,
-        ownerId: user.id
+        ownerId: user.id,
       })
       .exec()
 
@@ -302,20 +302,20 @@ export async function deleteMonster (id: string): Promise<{ success: boolean, me
       console.error("❌ Monstre non trouvé ou n'appartient pas à l'utilisateur")
       return {
         success: false,
-        message: 'Monstre non trouvé ou accès refusé'
+        message: "Monstre non trouvé ou accès refusé",
       }
     }
 
-    console.log('✅ Monstre supprimé avec succès')
+    console.log("✅ Monstre supprimé avec succès")
     return {
       success: true,
-      message: 'Monstre supprimé avec succès'
+      message: "Monstre supprimé avec succès",
     }
   } catch (error) {
-    console.error('Error deleting monster:', error)
+    console.error("Error deleting monster:", error)
     return {
       success: false,
-      message: 'Erreur lors de la suppression du monstre'
+      message: "Erreur lors de la suppression du monstre",
     }
   }
 }
@@ -344,38 +344,38 @@ export async function deleteMonster (id: string): Promise<{ success: boolean, me
  * }
  * ```
  */
-export async function updateMonsterName (
+export async function updateMonsterName(
   id: string,
   newName: string
-): Promise<{ success: boolean, message: string }> {
+): Promise<{success: boolean; message: string}> {
   try {
     await connectMongooseToDatabase()
 
     const session = await auth.api.getSession({
-      headers: await headers()
+      headers: await headers(),
     })
 
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Utilisateur non authentifié'
+        message: "Utilisateur non authentifié",
       }
     }
 
-    const { user } = session
+    const {user} = session
 
     // Validation du nom
-    if (newName.trim() === '') {
+    if (newName.trim() === "") {
       return {
         success: false,
-        message: 'Le nom ne peut pas être vide'
+        message: "Le nom ne peut pas être vide",
       }
     }
 
     if (newName.length > 50) {
       return {
         success: false,
-        message: 'Le nom ne peut pas dépasser 50 caractères'
+        message: "Le nom ne peut pas dépasser 50 caractères",
       }
     }
 
@@ -384,17 +384,17 @@ export async function updateMonsterName (
 
     // Validation du format ObjectId MongoDB
     if (!Types.ObjectId.isValid(_id)) {
-      console.error('Invalid monster ID format:', _id)
+      console.error("Invalid monster ID format:", _id)
       return {
         success: false,
-        message: "Format d'ID invalide"
+        message: "Format d'ID invalide",
       }
     }
 
-    console.log('✏️ updateMonsterName - Mise à jour du nom:', {
+    console.log("✏️ updateMonsterName - Mise à jour du nom:", {
       _id,
       ownerId: user.id,
-      newName: newName.trim()
+      newName: newName.trim(),
     })
 
     // Mettre à jour le nom uniquement si le monstre appartient à l'utilisateur
@@ -402,10 +402,10 @@ export async function updateMonsterName (
       .updateOne(
         {
           _id,
-          ownerId: user.id
+          ownerId: user.id,
         },
         {
-          $set: { name: newName.trim() }
+          $set: {name: newName.trim()},
         }
       )
       .exec()
@@ -414,28 +414,28 @@ export async function updateMonsterName (
       console.error("❌ Monstre non trouvé ou n'appartient pas à l'utilisateur")
       return {
         success: false,
-        message: 'Monstre non trouvé ou accès refusé'
+        message: "Monstre non trouvé ou accès refusé",
       }
     }
 
     if (result.modifiedCount === 0) {
-      console.warn('⚠️ Aucune modification effectuée (nom identique ?)')
+      console.warn("⚠️ Aucune modification effectuée (nom identique ?)")
       return {
         success: true,
-        message: 'Aucune modification nécessaire'
+        message: "Aucune modification nécessaire",
       }
     }
 
-    console.log('✅ Nom du monstre mis à jour avec succès')
+    console.log("✅ Nom du monstre mis à jour avec succès")
     return {
       success: true,
-      message: 'Nom mis à jour avec succès'
+      message: "Nom mis à jour avec succès",
     }
   } catch (error) {
-    console.error('Error updating monster name:', error)
+    console.error("Error updating monster name:", error)
     return {
       success: false,
-      message: 'Erreur lors de la mise à jour du nom'
+      message: "Erreur lors de la mise à jour du nom",
     }
   }
 }
@@ -465,43 +465,43 @@ export async function updateMonsterName (
  * }
  * ```
  */
-export async function applyMonsterAction (
+export async function applyMonsterAction(
   monsterId: string,
   action: MonsterAction
 ): Promise<MonsterActionResult> {
-  console.log('🔧 applyMonsterAction appelée:', { monsterId, action })
+  console.log("🔧 applyMonsterAction appelée:", {monsterId, action})
 
   try {
     // Connexion à la base de données Mongoose
     await connectMongooseToDatabase()
-    console.log('✅ Base de données connectée')
+    console.log("✅ Base de données connectée")
 
     // Vérification de l'authentification
     const session = await auth.api.getSession({
-      headers: await headers()
+      headers: await headers(),
     })
     if (session === null || session === undefined) {
-      console.error('❌ Utilisateur non authentifié')
-      throw new Error('User not authenticated')
+      console.error("❌ Utilisateur non authentifié")
+      throw new Error("User not authenticated")
     }
 
-    const { user } = session
-    console.log('✅ Utilisateur authentifié:', user.id)
+    const {user} = session
+    console.log("✅ Utilisateur authentifié:", user.id)
 
     // Extraction de l'ID (peut être un tableau depuis les routes dynamiques)
     const _id = Array.isArray(monsterId) ? monsterId[0] : monsterId
-    console.log('🔑 ID extrait:', { monsterId, _id })
+    console.log("🔑 ID extrait:", {monsterId, _id})
 
     // Validation du format ObjectId MongoDB
     if (!Types.ObjectId.isValid(_id)) {
-      console.error('❌ Invalid monster ID format:', _id)
+      console.error("❌ Invalid monster ID format:", _id)
       return {
         success: false,
         xpGained: 0,
         newLevel: 1,
         leveledUp: false,
         levelsGained: 0,
-        message: 'ID de monstre invalide'
+        message: "ID de monstre invalide",
       }
     }
 
@@ -509,36 +509,36 @@ export async function applyMonsterAction (
     const monster = await monsterModel
       .findOne({
         _id,
-        ownerId: user.id
+        ownerId: user.id,
       })
       .exec()
 
     if (monster === null) {
-      console.error('❌ Monstre non trouvé:', { monsterId, ownerId: user.id })
+      console.error("❌ Monstre non trouvé:", {monsterId, ownerId: user.id})
       return {
         success: false,
         xpGained: 0,
         newLevel: 1,
         leveledUp: false,
         levelsGained: 0,
-        message: 'Monstre non trouvé'
+        message: "Monstre non trouvé",
       }
     }
 
-    console.log('✅ Monstre trouvé:', {
+    console.log("✅ Monstre trouvé:", {
       id: monster._id,
       name: monster.name,
       currentXP: monster.experience,
-      currentLevel: monster.level
+      currentLevel: monster.level,
     })
 
     // Initialiser les champs XP s'ils n'existent pas (pour les monstres créés avant le système d'XP)
     if (monster.experience === undefined) {
-      console.log('⚠️ Initialisation de experience à 0')
+      console.log("⚠️ Initialisation de experience à 0")
       monster.experience = 0
     }
     if (monster.experienceToNextLevel === undefined) {
-      console.log('⚠️ Initialisation de experienceToNextLevel à 150')
+      console.log("⚠️ Initialisation de experienceToNextLevel à 150")
       monster.experienceToNextLevel = 150
     }
 
@@ -546,26 +546,26 @@ export async function applyMonsterAction (
     const currentExperience = monster.experience ?? 0
     const currentLevel = monster.level ?? 1
 
-    console.log('📊 Valeurs actuelles:', { currentExperience, currentLevel, action })
+    console.log("📊 Valeurs actuelles:", {currentExperience, currentLevel, action})
 
     // Calcul du gain d'XP avec le service métier
     const experienceResult = applyExperienceGain(currentExperience, currentLevel, action)
 
-    console.log('🎲 Résultat du calcul XP:', experienceResult)
+    console.log("🎲 Résultat du calcul XP:", experienceResult)
 
     // Mise à jour du monstre en base de données
     monster.experience = experienceResult.newExperience
     monster.level = experienceResult.newLevel
     monster.experienceToNextLevel = experienceResult.experienceToNextLevel
 
-    console.log('💾 Sauvegarde du monstre avec nouvelles valeurs:', {
+    console.log("💾 Sauvegarde du monstre avec nouvelles valeurs:", {
       experience: monster.experience,
       level: monster.level,
-      experienceToNextLevel: monster.experienceToNextLevel
+      experienceToNextLevel: monster.experienceToNextLevel,
     })
 
     await monster.save()
-    console.log('✅ Monstre sauvegardé avec succès')
+    console.log("✅ Monstre sauvegardé avec succès")
 
     // Construction du message de feedback
     let message = `+${experienceResult.xpGained} XP !`
@@ -583,17 +583,17 @@ export async function applyMonsterAction (
       newLevel: experienceResult.newLevel,
       leveledUp: experienceResult.leveledUp,
       levelsGained: experienceResult.levelsGained,
-      message
+      message,
     }
   } catch (error) {
-    console.error('Error applying monster action:', error)
+    console.error("Error applying monster action:", error)
     return {
       success: false,
       xpGained: 0,
       newLevel: 1,
       leveledUp: false,
       levelsGained: 0,
-      message: "Erreur lors de l'application de l'action"
+      message: "Erreur lors de l'application de l'action",
     }
   }
 }
