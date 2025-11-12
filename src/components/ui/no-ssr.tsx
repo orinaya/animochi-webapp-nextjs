@@ -13,7 +13,7 @@ interface NoSSRProps {
  * Utilisé pour éviter les erreurs d'hydratation quand le contenu
  * diffère entre le serveur et le client (comme les avatars dynamiques)
  */
-export function NoSSR({ children, fallback = null }: NoSSRProps): React.ReactNode {
+export function NoSSR ({ children, fallback = null }: NoSSRProps): React.ReactNode {
   const [hasMounted, setHasMounted] = useState(false)
 
   useEffect(() => {

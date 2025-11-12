@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { authClient } from '@/lib/auth/auth-client'
 import { FiUsers, FiPlus } from 'react-icons/fi'
 import Button from '@/components/ui/button'
+import { CreateMonsterModal } from './create-monster-modal'
 import type { Monster } from '@/types/monster'
 
 type Session = typeof authClient.$Infer.Session
@@ -132,6 +133,7 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
   const { logout } = useAuth()
   const [monsters, setMonsters] = useState<Monster[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   // Données du fil d'Ariane
   const breadcrumbItems = [
@@ -180,8 +182,39 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
   }, [])
 
   const handleCreateMonster = (): void => {
-    console.log('Ouvrir la modal de création de monstre')
-    // TODO: Implémenter la modal de création
+    console.log('Ouverture du modal de création de monstre')
+    setIsCreateModalOpen(true)
+  }
+
+  const handleCreateMonsterSubmit = async (newMonster: Partial<Monster>): Promise<void> => {
+    try {
+      console.log('Création du monstre:', newMonster)
+      // TODO: Implémenter l'appel API pour créer le monstre
+      // const createdMonster = await createMonster(newMonster)
+
+      // Simuler l'ajout du monstre à la liste existante
+      const mockCreatedMonster: Monster = {
+        id: Date.now().toString(),
+        name: newMonster.name ?? 'Monstre sans nom',
+        description: newMonster.description,
+        color: newMonster.color,
+        emoji: newMonster.emoji,
+        rarity: newMonster.rarity,
+        level: newMonster.level ?? 1,
+        state: newMonster.state,
+        experience: newMonster.experience ?? 0,
+        experienceToNextLevel: newMonster.experienceToNextLevel ?? 150,
+        equippedAccessories: newMonster.equippedAccessories,
+        equippedBackground: newMonster.equippedBackground,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+
+      setMonsters(prev => [...prev, mockCreatedMonster])
+    } catch (error) {
+      console.error('Erreur lors de la création du monstre:', error)
+      throw error // Relancer l'erreur pour que le modal puisse l'afficher
+    }
   }
 
   const handleLogout = (): void => {
@@ -199,6 +232,13 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
         <h1 className='text-3xl font-semibold text-blueberry-950 mb-2'>
           Mes Monstres
         </h1>
+        {/* Bouton de test temporaire
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className='bg-red-500 text-white px-4 py-2 rounded text-sm'
+        >
+          🔧 TEST: Ouvrir Modal
+        </button> */}
         {/* <p className='text-lg text-latte-600'>
           Découvrez et gérez votre collection de créatures Animochi
         </p> */}
@@ -228,6 +268,13 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
                 )}
           </div>
           )}
+
+      {/* Modal de création de monstre */}
+      <CreateMonsterModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreate={handleCreateMonsterSubmit}
+      />
     </DashboardLayout>
   )
 }

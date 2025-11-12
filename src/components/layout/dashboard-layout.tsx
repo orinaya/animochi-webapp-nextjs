@@ -23,7 +23,7 @@ interface DashboardLayoutProps {
   breadcrumbItems?: BreadcrumbItem[]
 }
 
-export function DashboardLayout({ session, onLogout, children, breadcrumbItems }: DashboardLayoutProps): React.ReactNode {
+export function DashboardLayout ({ session, onLogout, children, breadcrumbItems }: DashboardLayoutProps): React.ReactNode {
   return (
     <div className='flex min-h-screen flex-row'>
       {/* Sidebar fixe */}
