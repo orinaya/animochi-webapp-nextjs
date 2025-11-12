@@ -90,7 +90,7 @@ const PREDEFINED_PALETTES: CatPalette[] = [
 const FIXED_COLORS = {
   contour: '#5E174F',
   eyes: '#5E174F',
-  ears_tongue: '#FF9994',
+  ears_tongue: '#FF9994'
 } as const
 
 /**
@@ -249,7 +249,7 @@ class CatPatternService {
       'T17',
       'T18',
       'T19',
-      'T20',
+      'T20'
     ]
 
     // Cercles verts / couleur de base du chat
@@ -334,7 +334,7 @@ class CatPatternService {
       'P11',
       'P12',
       'Q6',
-      'Q12',
+      'Q12'
     ]
 
     // Coeurs rouges / contours du chat
@@ -397,7 +397,7 @@ class CatPatternService {
       'S7',
       'S8',
       'S10',
-      'S11',
+      'S11'
     ]
 
     // Ajouter les positions de base
@@ -536,7 +536,7 @@ class CatPatternService {
       'Q5',
       'Q9',
       'Q13',
-      'Q14',
+      'Q14'
     ]
     bodyAccentPositions.forEach((pos) => {
       pattern.set(pos, 'body_accent')
@@ -558,7 +558,7 @@ class CatPatternService {
       'J7',
       'J8',
       'J10',
-      'J11',
+      'J11'
     ]
     muzzlePositions.forEach((pos) => {
       pattern.set(pos, 'muzzle')
@@ -721,7 +721,7 @@ class CatPatternService {
       'I17',
       'I18',
       'J17',
-      'J18',
+      'J18'
     ])
 
     const pawPositions = new Set([
@@ -740,7 +740,7 @@ class CatPatternService {
       'R10',
       'R11',
       'S10',
-      'S11',
+      'S11'
     ])
 
     const whiskerPositions = new Set([
@@ -755,7 +755,7 @@ class CatPatternService {
       'G16',
       'I14',
       'I15',
-      'I16',
+      'I16'
     ])
 
     // Générer le SVG avec animations CSS

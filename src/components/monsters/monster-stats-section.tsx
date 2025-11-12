@@ -36,7 +36,7 @@ interface StatConfig {
  * @param {string | null} state - État actuel du monstre
  * @returns {StatConfig[]} Configuration des stats avec valeurs
  */
-function getEmotionalStats(state: string | null): Array<StatConfig & { value: number }> {
+function getEmotionalStats (state: string | null): Array<StatConfig & { value: number }> {
   const currentState = (state ?? 'happy') as MonsterState
 
   // Valeurs de base pour chaque stat
@@ -110,7 +110,7 @@ function getEmotionalStats(state: string | null): Array<StatConfig & { value: nu
  * @param {MonsterStatsSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section des stats
  */
-export default function MonsterStatsSection({
+export default function MonsterStatsSection ({
   monster
 }: MonsterStatsSectionProps): React.ReactNode {
   const stats = getEmotionalStats(monster.state ?? null)

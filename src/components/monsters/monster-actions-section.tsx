@@ -88,7 +88,7 @@ const AVAILABLE_ACTIONS: ActionConfig[] = [
  * @param {MonsterActionsSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section des actions
  */
-export default function MonsterActionsSection({
+export default function MonsterActionsSection ({
   monster,
   monsterId
 }: MonsterActionsSectionProps): React.ReactNode {

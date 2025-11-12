@@ -26,7 +26,7 @@ interface MonsterExperienceSectionProps {
  * @param {number} experienceToNextLevel - Expérience nécessaire pour le niveau suivant
  * @returns {number} Pourcentage de progression (0-100)
  */
-function calculateProgressPercentage(
+function calculateProgressPercentage (
   experience: number | null | undefined,
   experienceToNextLevel: number | null | undefined
 ): number {
@@ -44,7 +44,7 @@ function calculateProgressPercentage(
  * @param {MonsterExperienceSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section d'expérience
  */
-export default function MonsterExperienceSection({
+export default function MonsterExperienceSection ({
   monster
 }: MonsterExperienceSectionProps): React.ReactNode {
   const experience = monster.experience ?? 0

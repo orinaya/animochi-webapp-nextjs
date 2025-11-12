@@ -234,6 +234,206 @@ export async function getMonsterById (id: string): Promise<Monster | null> {
 }
 
 /**
+ * Supprime un monstre de la base de données
+ *
+ * Server Action qui :
+ * - Vérifie l'authentification
+ * - Vérifie que l'ID est un ObjectId MongoDB valide
+ * - Supprime le monstre uniquement s'il appartient à l'utilisateur
+ * - Retourne un résultat avec succès/erreur
+ *
+ * Respecte le principe SRP : Gère uniquement la suppression d'un monstre
+ * Respecte le principe DIP : Utilise l'abstraction auth et le modèle Monster
+ *
+ * @param {string} id - ID du monstre à supprimer
+ * @returns {Promise<{ success: boolean; message: string }>} Résultat de la suppression
+ *
+ * @example
+ * ```tsx
+ * const result = await deleteMonster('507f1f77bcf86cd799439011')
+ * if (result.success) {
+ *   toast.success('Monstre supprimé avec succès')
+ * }
+ * ```
+ */
+export async function deleteMonster (id: string): Promise<{ success: boolean, message: string }> {
+  try {
+    await connectMongooseToDatabase()
+
+    const session = await auth.api.getSession({
+      headers: await headers()
+    })
+
+    if (session === null || session === undefined) {
+      return {
+        success: false,
+        message: 'Utilisateur non authentifié',
+      }
+    }
+
+    const { user } = session
+
+    // Extraction de l'ID (peut être un tableau depuis les routes dynamiques Next.js)
+    const _id = Array.isArray(id) ? id[0] : id
+
+    // Validation du format ObjectId MongoDB
+    if (!Types.ObjectId.isValid(_id)) {
+      console.error('Invalid monster ID format:', _id)
+      return {
+        success: false,
+        message: "Format d'ID invalide"
+      }
+    }
+
+    console.log('🗑️ deleteMonster - Suppression du monstre:', { _id, ownerId: user.id })
+
+    // Supprimer le monstre uniquement s'il appartient à l'utilisateur
+    const result = await MonsterModel.deleteOne({
+      _id,
+      ownerId: user.id
+    }).exec()
+
+    if (result.deletedCount === 0) {
+      console.error("❌ Monstre non trouvé ou n'appartient pas à l'utilisateur")
+      return {
+        success: false,
+        message: 'Monstre non trouvé ou accès refusé',
+      }
+    }
+
+    console.log('✅ Monstre supprimé avec succès')
+    return {
+      success: true,
+      message: 'Monstre supprimé avec succès',
+    }
+  } catch (error) {
+    console.error('Error deleting monster:', error)
+    return {
+      success: false,
+      message: 'Erreur lors de la suppression du monstre',
+    }
+  }
+}
+
+/**
+ * Met à jour le nom d'un monstre
+ *
+ * Server Action qui :
+ * - Vérifie l'authentification
+ * - Vérifie que l'ID est un ObjectId MongoDB valide
+ * - Met à jour le nom uniquement si le monstre appartient à l'utilisateur
+ * - Retourne un résultat avec succès/erreur
+ *
+ * Respecte le principe SRP : Gère uniquement la mise à jour du nom d'un monstre
+ * Respecte le principe DIP : Utilise l'abstraction auth et le modèle Monster
+ *
+ * @param {string} id - ID du monstre à modifier
+ * @param {string} newName - Nouveau nom du monstre
+ * @returns {Promise<{ success: boolean; message: string }>} Résultat de la mise à jour
+ *
+ * @example
+ * ```tsx
+ * const result = await updateMonsterName('507f1f77bcf86cd799439011', 'Nouveau nom')
+ * if (result.success) {
+ *   toast.success('Nom mis à jour avec succès')
+ * }
+ * ```
+ */
+export async function updateMonsterName (
+  id: string,
+  newName: string
+): Promise<{ success: boolean, message: string }> {
+  try {
+    await connectMongooseToDatabase()
+
+    const session = await auth.api.getSession({
+      headers: await headers()
+    })
+
+    if (session === null || session === undefined) {
+      return {
+        success: false,
+        message: 'Utilisateur non authentifié',
+      }
+    }
+
+    const { user } = session
+
+    // Validation du nom
+    if (newName.trim() === '') {
+      return {
+        success: false,
+        message: 'Le nom ne peut pas être vide',
+      }
+    }
+
+    if (newName.length > 50) {
+      return {
+        success: false,
+        message: 'Le nom ne peut pas dépasser 50 caractères',
+      }
+    }
+
+    // Extraction de l'ID (peut être un tableau depuis les routes dynamiques Next.js)
+    const _id = Array.isArray(id) ? id[0] : id
+
+    // Validation du format ObjectId MongoDB
+    if (!Types.ObjectId.isValid(_id)) {
+      console.error('Invalid monster ID format:', _id)
+      return {
+        success: false,
+        message: "Format d'ID invalide"
+      }
+    }
+
+    console.log('✏️ updateMonsterName - Mise à jour du nom:', {
+      _id,
+      ownerId: user.id,
+      newName: newName.trim()
+    })
+
+    // Mettre à jour le nom uniquement si le monstre appartient à l'utilisateur
+    const result = await MonsterModel.updateOne(
+      {
+        _id,
+        ownerId: user.id
+      },
+      {
+        $set: { name: newName.trim() }
+      }
+    ).exec()
+
+    if (result.matchedCount === 0) {
+      console.error("❌ Monstre non trouvé ou n'appartient pas à l'utilisateur")
+      return {
+        success: false,
+        message: 'Monstre non trouvé ou accès refusé',
+      }
+    }
+
+    if (result.modifiedCount === 0) {
+      console.warn('⚠️ Aucune modification effectuée (nom identique ?)')
+      return {
+        success: true,
+        message: 'Aucune modification nécessaire',
+      }
+    }
+
+    console.log('✅ Nom du monstre mis à jour avec succès')
+    return {
+      success: true,
+      message: 'Nom mis à jour avec succès',
+    }
+  } catch (error) {
+    console.error('Error updating monster name:', error)
+    return {
+      success: false,
+      message: 'Erreur lors de la mise à jour du nom',
+    }
+  }
+}
+
+/**
  * Applique une action sur un monstre et calcule le gain d'XP
  *
  * Server Action qui :

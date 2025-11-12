@@ -25,7 +25,7 @@ interface MonsterEquipmentSectionProps {
  * @param {MonsterEquipmentSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section des équipements
  */
-export default function MonsterEquipmentSection({
+export default function MonsterEquipmentSection ({
   monster
 }: MonsterEquipmentSectionProps): React.ReactNode {
   // Liste des types d'équipements disponibles

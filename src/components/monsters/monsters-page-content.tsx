@@ -14,7 +14,7 @@ import { FiUsers, FiPlus } from 'react-icons/fi'
 import Button from '@/components/ui/button'
 import { MonsterCard } from '@/components/ui'
 import { CreateMonsterModal } from './create-monster-modal'
-import { createMonster, getMonsters } from '@/actions/monsters.action'
+import { createMonster, getMonsters, deleteMonster, updateMonsterName } from '@/actions/monsters.action'
 import type { Monster } from '@/types/monster'
 
 type Session = typeof authClient.$Infer.Session
@@ -34,7 +34,7 @@ interface MonsterListHeaderProps {
 /**
  * En-tête de la liste des monstres avec compteur et bouton d'action
  */
-function MonsterListHeader({ count, onCreateMonster }: MonsterListHeaderProps): React.ReactNode {
+function MonsterListHeader ({ count, onCreateMonster }: MonsterListHeaderProps): React.ReactNode {
   return (
     <div className='flex items-center justify-between mb-8'>
       <div className='flex items-center gap-3'>
@@ -64,7 +64,7 @@ function MonsterListHeader({ count, onCreateMonster }: MonsterListHeaderProps): 
 /**
  * État vide quand l'utilisateur n'a pas encore de monstres
  */
-function EmptyMonstersState({ onCreateMonster }: { onCreateMonster: () => void }): React.ReactNode {
+function EmptyMonstersState ({ onCreateMonster }: { onCreateMonster: () => void }): React.ReactNode {
   return (
     <div className='text-center py-16'>
       <div className='mb-6'>
@@ -95,7 +95,7 @@ function EmptyMonstersState({ onCreateMonster }: { onCreateMonster: () => void }
 /**
  * Grille de monstres avec MonsterCard
  */
-function MonstersGrid({ monsters }: { monsters: Monster[] }): React.ReactNode {
+function MonstersGrid ({ monsters, onMonsterDeleted }: { monsters: Monster[], onMonsterDeleted: () => Promise<void> }): React.ReactNode {
   const router = useRouter()
 
   if (monsters.length === 0) {
@@ -112,6 +112,56 @@ function MonstersGrid({ monsters }: { monsters: Monster[] }): React.ReactNode {
     }
   }
 
+  const handleDeleteMonster = async (monster: Monster): Promise<void> => {
+    const monsterId = monster.id ?? monster._id
+    if (monsterId == null) {
+      console.error('ID du monstre manquant', monster)
+      return
+    }
+
+    try {
+      console.log('🗑️ Suppression du monstre:', monster.name, 'ID:', monsterId)
+      const result = await deleteMonster(monsterId)
+
+      if (result.success) {
+        console.log('✅ Monstre supprimé avec succès')
+        // Recharger la liste des monstres
+        await onMonsterDeleted()
+      } else {
+        console.error('❌ Échec de la suppression:', result.message)
+        // TODO: Afficher un toast d'erreur
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la suppression du monstre:', error)
+      // TODO: Afficher un toast d'erreur
+    }
+  }
+
+  const handleEditMonsterName = async (monster: Monster, newName: string): Promise<void> => {
+    const monsterId = monster.id ?? monster._id
+    if (monsterId == null) {
+      console.error('ID du monstre manquant', monster)
+      return
+    }
+
+    try {
+      console.log('✏️ Modification du nom du monstre:', monster.name, '→', newName, 'ID:', monsterId)
+      const result = await updateMonsterName(monsterId, newName)
+
+      if (result.success) {
+        console.log('✅ Nom du monstre mis à jour avec succès')
+        // Recharger la liste des monstres
+        await onMonsterDeleted()
+      } else {
+        console.error('❌ Échec de la mise à jour:', result.message)
+        // TODO: Afficher un toast d'erreur
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la mise à jour du nom:', error)
+      // TODO: Afficher un toast d'erreur
+    }
+  }
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
       {monsters.map((monster, index) => (
@@ -119,6 +169,8 @@ function MonstersGrid({ monsters }: { monsters: Monster[] }): React.ReactNode {
           key={monster.id ?? monster._id ?? index}
           monster={monster}
           onClick={() => handleMonsterClick(monster)}
+          onDelete={() => { void handleDeleteMonster(monster) }}
+          onEdit={async (newName) => { await handleEditMonsterName(monster, newName) }}
         />
       ))}
     </div>
@@ -134,7 +186,7 @@ function MonstersGrid({ monsters }: { monsters: Monster[] }): React.ReactNode {
  * @param {MonstresPageContentProps} props - Les propriétés du composant
  * @returns {React.ReactNode} Le contenu complet de la page monstres
  */
-export function MonstresPageContent({ session }: MonstresPageContentProps): React.ReactNode {
+export function MonstresPageContent ({ session }: MonstresPageContentProps): React.ReactNode {
   const { logout } = useAuth()
   const [monsters, setMonsters] = useState<Monster[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -237,24 +289,24 @@ export function MonstresPageContent({ session }: MonstresPageContentProps): Reac
           <div className='flex items-center justify-center py-16'>
             <div className='text-lg text-latte-600'>Chargement de vos monstres...</div>
           </div>
-        )
+          )
         : (
           <div>
             {monsters.length === 0
               ? (
                 <EmptyMonstersState onCreateMonster={handleCreateMonster} />
-              )
+                )
               : (
                 <>
                   <MonsterListHeader
                     count={monsters.length}
                     onCreateMonster={handleCreateMonster}
                   />
-                  <MonstersGrid monsters={monsters} />
+                  <MonstersGrid monsters={monsters} onMonsterDeleted={loadMonsters} />
                 </>
-              )}
+                )}
           </div>
-        )}
+          )}
 
       {/* Modal de création de monstre */}
       <CreateMonsterModal
