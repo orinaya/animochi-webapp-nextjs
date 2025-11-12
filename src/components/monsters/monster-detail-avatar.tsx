@@ -12,10 +12,16 @@
 'use client'
 
 import type { Monster } from '@/types/monster'
+import type { MonsterAction } from '@/types/monster-actions'
+import ActionAnimation from './action-animation'
 
 interface MonsterDetailAvatarProps {
   /** Données du monstre */
   monster: Monster
+  /** Animation d'action en cours */
+  currentAnimation?: MonsterAction | null
+  /** Callback quand l'animation est terminée */
+  onAnimationComplete?: () => void
 }
 
 /**
@@ -43,23 +49,33 @@ function getStateEmoji (state: string | null): string {
  * @returns {React.ReactNode} L'avatar du monstre
  */
 export default function MonsterDetailAvatar ({
-  monster
+  monster,
+  currentAnimation = null,
+  onAnimationComplete
 }: MonsterDetailAvatarProps): React.ReactNode {
   const stateEmoji = getStateEmoji(monster.state ?? null)
 
   return (
-    <div className='relative bg-linear-to-br from-blueberry-50 to-peach-50 rounded-3xl p-8 shadow-lg'>
+    <div className='relative bg-linear-to-br from-blueberry-50 to-peach-50 rounded-3xl p-8 shadow-lg overflow-hidden'>
+      {/* Animation d'action - couvre toute la carte */}
+      {currentAnimation !== null && (
+        <ActionAnimation
+          action={currentAnimation}
+          onComplete={onAnimationComplete}
+        />
+      )}
+
       {/* Badge d'état */}
-      <div className='absolute top-4 right-4 bg-white rounded-full px-4 py-2 shadow-md'>
+      <div className='absolute top-4 right-4 bg-white rounded-full px-4 py-2 shadow-md z-10'>
         <span className='text-2xl'>{stateEmoji}</span>
       </div>
 
       {/* Image SVG du monstre */}
-      <div className='flex items-center justify-center min-h-[300px] sm:min-h-[400px]'>
+      <div className='relative flex items-center justify-center min-h-[300px] sm:min-h-[400px] z-0'>
         {monster.draw != null && monster.draw !== ''
           ? (
             <div
-              className='w-full max-w-md'
+              className='w-full max-w-md mx-auto flex items-center justify-center'
               dangerouslySetInnerHTML={{ __html: monster.draw }}
             />
             )

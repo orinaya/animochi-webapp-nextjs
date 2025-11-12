@@ -13,7 +13,9 @@
 
 'use client'
 
+import { useState } from 'react'
 import type { Monster } from '@/types/monster'
+import type { MonsterAction } from '@/types/monster-actions'
 import { DashboardLayout } from '@/components/layout'
 import { useAuth } from '@/hooks/use-auth'
 import MonsterDetailHeader from './monster-detail-header'
@@ -53,6 +55,7 @@ export default function MonstrePageContent ({
   session
 }: MonstrePageContentProps): React.ReactNode {
   const { logout } = useAuth()
+  const [currentAnimation, setCurrentAnimation] = useState<MonsterAction | null>(null)
 
   // Données du fil d'Ariane
   const breadcrumbItems = [
@@ -76,20 +79,25 @@ export default function MonstrePageContent ({
 
       {/* Layout principal en grille */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
-        {/* Colonne gauche : Avatar et Expérience */}
+        {/* Colonne gauche : Avatar et Actions */}
         <div className='space-y-8'>
-          <MonsterDetailAvatar monster={monster} />
-          <MonsterExperienceSection monster={monster} />
-        </div>
-
-        {/* Colonne droite : Équipement, Stats et Actions */}
-        <div className='space-y-8'>
-          <MonsterEquipmentSection monster={monster} />
-          <MonsterStatsSection monster={monster} />
+          <MonsterDetailAvatar
+            monster={monster}
+            currentAnimation={currentAnimation}
+            onAnimationComplete={() => { setCurrentAnimation(null) }}
+          />
           <MonsterActionsSection
             monster={monster}
             monsterId={monsterId}
+            onActionStart={(action: MonsterAction) => { setCurrentAnimation(action) }}
           />
+        </div>
+
+        {/* Colonne droite : Progression XP, Stats et Équipement */}
+        <div className='space-y-8'>
+          <MonsterExperienceSection monster={monster} />
+          <MonsterStatsSection monster={monster} />
+          <MonsterEquipmentSection monster={monster} />
         </div>
       </div>
     </DashboardLayout>

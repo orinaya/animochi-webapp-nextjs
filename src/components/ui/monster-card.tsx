@@ -6,6 +6,7 @@
 
 import { useState } from 'react'
 import type { Monster, MonsterState } from '@/types/monster'
+import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience'
 import ProgressBar from './progress-bar'
 import Button from './button'
 import { Modal } from './modal'
@@ -70,7 +71,7 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
+function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
   const config = STATE_CONFIG[state]
 
   return (
@@ -82,35 +83,30 @@ function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
 }
 
 /**
- * Calcule le pourcentage de progression vers le niveau suivant
- * Respecte SRP : Responsabilité unique de calcul de progression
- *
- * @param {number} experience - Expérience actuelle
- * @param {number} experienceToNextLevel - Expérience requise pour le niveau suivant
- * @returns {number} Pourcentage de progression (0-100)
- */
-function calculateProgressPercentage (experience: number, experienceToNextLevel: number): number {
-  if (experienceToNextLevel <= 0) return 0
-  return Math.min(Math.round((experience / experienceToNextLevel) * 100), 100)
-}
-
-/**
  * Section de progression du niveau
  * Respecte SRP : Affiche uniquement la progression de niveau
+ *
+ * Utilise le service d'expérience pour calculer la progression réelle
+ * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
-function LevelProgress ({ level, experience, experienceToNextLevel }: {
+function LevelProgress({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
 }): React.ReactNode {
-  const percentage = calculateProgressPercentage(experience, experienceToNextLevel)
+  // Calculer le pourcentage de progression avec le service métier
+  const percentage = calculateLevelProgress(experience, level)
+
+  // Calculer l'XP dans le niveau actuel (pas l'XP totale)
+  const xpForCurrentLevel = calculateTotalXpForLevel(level)
+  const xpInCurrentLevel = experience - xpForCurrentLevel
 
   return (
     <div className='space-y-2'>
       <div className='flex items-center justify-between text-sm'>
         <span className='font-semibold text-blueberry-950'>Niveau {level}</span>
         <span className='text-xs text-latte-600'>
-          {experience} / {experienceToNextLevel} XP
+          {xpInCurrentLevel} / {experienceToNextLevel} XP
         </span>
       </div>
       <ProgressBar
@@ -148,7 +144,7 @@ function LevelProgress ({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   const level = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150

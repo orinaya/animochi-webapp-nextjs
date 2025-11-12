@@ -12,30 +12,12 @@
 'use client'
 
 import ProgressBar from '@/components/ui/progress-bar'
+import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience'
 import type { Monster } from '@/types/monster'
 
 interface MonsterExperienceSectionProps {
   /** Données du monstre */
   monster: Monster
-}
-
-/**
- * Calcule le pourcentage de progression vers le niveau suivant
- *
- * @param {number} experience - Expérience actuelle
- * @param {number} experienceToNextLevel - Expérience nécessaire pour le niveau suivant
- * @returns {number} Pourcentage de progression (0-100)
- */
-function calculateProgressPercentage (
-  experience: number | null | undefined,
-  experienceToNextLevel: number | null | undefined
-): number {
-  const exp = experience ?? 0
-  const expToNext = experienceToNextLevel ?? 150
-
-  if (expToNext <= 0) return 100
-
-  return Math.min(100, Math.round((exp / expToNext) * 100))
 }
 
 /**
@@ -47,20 +29,38 @@ function calculateProgressPercentage (
 export default function MonsterExperienceSection ({
   monster
 }: MonsterExperienceSectionProps): React.ReactNode {
+  const currentLevel = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
-  const progress = calculateProgressPercentage(experience, experienceToNextLevel)
-  const nextLevel = (monster.level ?? 1) + 1
+
+  // Utiliser le service de calcul d'XP pour calculer la progression réelle
+  const progress = calculateLevelProgress(experience, currentLevel)
+
+  const nextLevel = currentLevel + 1
+
+  // Calculer l'XP dans le niveau actuel
+  const xpForCurrentLevel = calculateTotalXpForLevel(currentLevel)
+  const xpInCurrentLevel = experience - xpForCurrentLevel
+  const remainingXP = experienceToNextLevel - xpInCurrentLevel
 
   return (
     <div className='bg-white rounded-3xl p-6 shadow-lg border border-latte-100'>
+      {/* En-tête avec niveau actuel et prochain niveau */}
       <div className='flex items-center justify-between mb-4'>
-        <h2 className='text-xl font-bold text-blueberry-950'>
-          Progression
-        </h2>
-        <span className='text-sm text-latte-600'>
-          Niveau {nextLevel}
-        </span>
+        <div>
+          <h2 className='text-xl font-bold text-blueberry-950'>
+            Progression
+          </h2>
+          <p className='text-sm text-latte-600 mt-1'>
+            Niveau actuel : <span className='font-semibold text-blueberry-700'>{currentLevel}</span>
+          </p>
+        </div>
+        <div className='text-right'>
+          <span className='text-sm text-latte-600'>Niveau suivant</span>
+          <div className='text-2xl font-bold text-blueberry-950'>
+            {nextLevel}
+          </div>
+        </div>
       </div>
 
       {/* Barre de progression */}
@@ -68,15 +68,28 @@ export default function MonsterExperienceSection ({
         value={progress}
         variant='blueberry'
         size='lg'
-        label={`${experience} / ${experienceToNextLevel} XP`}
+        label={`${xpInCurrentLevel} / ${experienceToNextLevel} XP`}
         showLabel
         animated
       />
 
       {/* Informations additionnelles */}
       <div className='mt-4 flex justify-between text-sm text-latte-600'>
-        <span>XP restante : {experienceToNextLevel - experience}</span>
-        <span>{progress}%</span>
+        <span>
+          XP restante : <span className='font-semibold text-strawberry-600'>{remainingXP}</span>
+        </span>
+        <span className='font-semibold text-blueberry-700'>{progress}%</span>
+      </div>
+
+      {/* Message d'encouragement */}
+      <div className='mt-4 bg-peach-50 rounded-xl p-3 border border-peach-200'>
+        <p className='text-xs text-latte-700 text-center'>
+          {progress >= 80
+            ? '🔥 Presque au niveau suivant ! Continue comme ça !'
+            : progress >= 50
+              ? '💪 Tu es à mi-chemin du prochain niveau !'
+              : '✨ Prends soin de ton monstre pour gagner de l\'XP !'}
+        </p>
       </div>
     </div>
   )

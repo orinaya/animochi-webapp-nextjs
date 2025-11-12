@@ -13,14 +13,21 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
+import { applyMonsterAction } from '@/actions/monsters.action'
+import { getActionXpReward } from '@/services/experience'
 import type { Monster } from '@/types/monster'
 import type { MonsterAction } from '@/types/monster-actions'
+import LevelUpModal from './level-up-modal'
 
 interface MonsterActionsSectionProps {
   /** Données du monstre */
   monster: Monster
   /** ID du monstre */
   monsterId: string
+  /** Callback quand une action démarre */
+  onActionStart?: (action: MonsterAction) => void
 }
 
 /**
@@ -88,11 +95,15 @@ const AVAILABLE_ACTIONS: ActionConfig[] = [
  * @param {MonsterActionsSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section des actions
  */
-export default function MonsterActionsSection ({
+export default function MonsterActionsSection({
   monster,
-  monsterId
+  monsterId,
+  onActionStart
 }: MonsterActionsSectionProps): React.ReactNode {
+  const router = useRouter()
   const [loadingAction, setLoadingAction] = useState<MonsterAction | null>(null)
+  const [showLevelUp, setShowLevelUp] = useState(false)
+  const [levelUpData, setLevelUpData] = useState<{ newLevel: number, levelsGained: number }>({ newLevel: 1, levelsGained: 0 })
 
   /**
    * Gère l'exécution d'une action
@@ -100,63 +111,93 @@ export default function MonsterActionsSection ({
   const handleAction = async (action: MonsterAction): Promise<void> => {
     setLoadingAction(action)
 
-    try {
-      // TODO: Implémenter l'appel API pour exécuter l'action
-      console.log(`Action ${action} sur monstre ${monsterId}`)
+    // Déclencher l'animation sur l'avatar
+    if (onActionStart !== null && onActionStart !== undefined) {
+      onActionStart(action)
+    }
 
-      // Simulation temporaire
-      await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      const result = await applyMonsterAction(monsterId, action)
+
+      if (result.success) {
+        // Afficher le toast de succès
+        toast.success(result.message)
+
+        // Si level up, afficher le modal après l'animation
+        if (result.leveledUp) {
+          setTimeout(() => {
+            setLevelUpData({
+              newLevel: result.newLevel,
+              levelsGained: result.levelsGained
+            })
+            setShowLevelUp(true)
+          }, 1500)
+        }
+
+        // Rafraîchir la page après l'animation pour mettre à jour l'état
+        setTimeout(() => {
+          router.refresh()
+        }, result.leveledUp ? 1500 : 1000)
+      } else {
+        toast.warning(result.message)
+      }
     } catch (error) {
       console.error('Erreur lors de l\'exécution de l\'action:', error)
+      toast.error('Une erreur est survenue')
     } finally {
       setLoadingAction(null)
     }
   }
 
   return (
-    <div className='bg-white rounded-3xl p-6 shadow-lg border border-latte-100'>
-      <h2 className='text-xl font-bold text-blueberry-950 mb-4'>
-        Actions
-      </h2>
-
-      <p className='text-sm text-latte-600 mb-6'>
-        Interagissez avec votre monstre pour le rendre heureux et gagner de l'expérience
-      </p>
-
-      {/* Grille d'actions */}
-      <div className='grid grid-cols-2 sm:grid-cols-3 gap-4'>
-        {AVAILABLE_ACTIONS.map((actionConfig) => (
-          <button
-            key={actionConfig.action}
-            onClick={() => { void handleAction(actionConfig.action) }}
-            disabled={loadingAction !== null}
-            className={`
-              flex flex-col items-center justify-center
-              bg-latte-25 hover:bg-${actionConfig.color}-50
-              rounded-2xl p-6
-              border-2 border-latte-200 hover:border-${actionConfig.color}-300
-              transition-all duration-200
-              disabled:opacity-50 disabled:cursor-not-allowed
-              ${loadingAction === actionConfig.action ? 'scale-95' : 'hover:scale-105'}
-            `}
-          >
-            <span className='text-4xl mb-2'>
-              {actionConfig.emoji}
-            </span>
-            <span className='text-sm font-semibold text-blueberry-950 mb-1'>
-              {actionConfig.label}
-            </span>
-            <span className='text-xs text-latte-500 text-center'>
-              {actionConfig.description}
-            </span>
-            {loadingAction === actionConfig.action && (
-              <span className='text-xs text-latte-400 mt-2'>
-                ⏳
+    <>
+      {/* Actions en ligne sous l'avatar */}
+      <div className='flex gap-2 justify-center flex-wrap'>
+        {AVAILABLE_ACTIONS.map((actionConfig) => {
+          const xpReward = getActionXpReward(actionConfig.action)
+          return (
+            <button
+              key={actionConfig.action}
+              onClick={() => { void handleAction(actionConfig.action) }}
+              disabled={loadingAction !== null}
+              className={`
+                flex flex-col items-center justify-center
+                bg-latte-25 hover:bg-${actionConfig.color}-50
+                rounded-xl px-3 py-2
+                border-2 border-latte-200 hover:border-${actionConfig.color}-300
+                transition-all duration-200
+                disabled:opacity-50 disabled:cursor-not-allowed
+                ${loadingAction === actionConfig.action ? 'scale-95' : 'hover:scale-105'}
+                min-w-[70px]
+              `}
+              title={`${actionConfig.description} (+${xpReward} XP)`}
+            >
+              <span className='text-2xl mb-1'>
+                {actionConfig.emoji}
               </span>
-            )}
-          </button>
-        ))}
+              <span className='text-xs font-semibold text-blueberry-950'>
+                {actionConfig.label}
+              </span>
+              <span className='text-[10px] text-strawberry-600 font-bold mt-0.5'>
+                +{xpReward} XP
+              </span>
+              {loadingAction === actionConfig.action && (
+                <span className='text-xs text-latte-400 mt-1'>
+                  ⏳
+                </span>
+              )}
+            </button>
+          )
+        })}
       </div>
-    </div>
+
+      {/* Modal de level up */}
+      <LevelUpModal
+        isOpen={showLevelUp}
+        newLevel={levelUpData.newLevel}
+        levelsGained={levelUpData.levelsGained}
+        onClose={() => { setShowLevelUp(false) }}
+      />
+    </>
   )
 }
