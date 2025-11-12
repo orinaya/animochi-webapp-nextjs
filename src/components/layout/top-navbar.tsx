@@ -6,6 +6,7 @@ import type { authClient } from '@/lib/auth/auth-client'
 import { FaRegBell } from 'react-icons/fa6'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { WalletHeaderDisplay } from '../wallet/wallet-header-display'
 
 type Session = typeof authClient.$Infer.Session
 
@@ -30,7 +31,7 @@ interface TopNavBarProps {
  * @param {TopNavBarProps} props - Les propriétés de la barre de navigation
  * @returns {React.ReactNode} La barre de navigation supérieure
  */
-function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): React.ReactNode {
+function TopNavBar({ session, onLogout, breadcrumbItems }: TopNavBarProps): React.ReactNode {
   const router = useRouter()
   const pathname = usePathname()
 
@@ -108,17 +109,17 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
                     >
                       {item.label}
                     </Link>
-                    )
+                  )
                   : (
                     <span className='text-strawberry-600 font-medium'>{item.label}</span>
-                    )}
+                  )}
               </div>
             ))}
           </nav>
         )}
       </div>
 
-      {/* Section droite : Recherche + Notifications + Profil */}
+      {/* Section droite : Recherche + Wallet + Notifications + Profil */}
       <div className='flex items-center gap-4'>
         {/* Barre de recherche */}
         <div className='max-w-sm relative'>
@@ -129,6 +130,9 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
             className='w-full pl-10 pr-4 py-2 bg-[#F6F5F4] rounded-full focus:outline-none focus:ring-1 focus:ring-strawberry-400 focus:border-transparent text-sm'
           />
         </div>
+
+        {/* Wallet Display */}
+        <WalletHeaderDisplay />
 
         {/* Cloche de notifications */}
         <button className='relative p-2 text-strawberry-400 hover:text-blueberry-600 hover:bg-blueberry-50 rounded-lg transition-all duration-200'>

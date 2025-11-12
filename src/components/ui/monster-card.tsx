@@ -71,7 +71,7 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
+function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
   const config = STATE_CONFIG[state]
 
   return (
@@ -89,7 +89,7 @@ function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
  * Utilise le service d'expérience pour calculer la progression réelle
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
-function LevelProgress({ level, experience, experienceToNextLevel }: {
+function LevelProgress ({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
@@ -144,7 +144,7 @@ function LevelProgress({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   const level = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150

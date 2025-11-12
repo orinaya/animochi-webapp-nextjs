@@ -75,7 +75,7 @@ export default function MonstrePageContent ({
   return (
     <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
       {/* Header avec nom et navigation */}
-      <MonsterDetailHeader monster={monster} />
+      <MonsterDetailHeader monster={monster} monsterId={monsterId} />
 
       {/* Layout principal en grille */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
