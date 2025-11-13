@@ -23,7 +23,7 @@ export const BACKGROUNDS_CATALOG: AccessoryData[] = [
     description: 'Une plage de sable fin avec des palmiers',
     price: 200,
     rarity: 'common',
-    imagePath: '/assets/images/background/beach.jpg',
+    imagePath: '/assets/images/background/beach.jpg'
   },
   {
     name: 'Champs de Fleurs',
@@ -32,7 +32,7 @@ export const BACKGROUNDS_CATALOG: AccessoryData[] = [
     description: 'Un magnifique champ de fleurs colorées',
     price: 250,
     rarity: 'rare',
-    imagePath: '/assets/images/background/champs.jpg',
+    imagePath: '/assets/images/background/champs.jpg'
   },
   {
     name: 'Cirque Magique',
@@ -41,7 +41,7 @@ export const BACKGROUNDS_CATALOG: AccessoryData[] = [
     description: "L'ambiance festive d'un cirque",
     price: 400,
     rarity: 'epic',
-    imagePath: '/assets/images/background/circus.jpg',
+    imagePath: '/assets/images/background/circus.jpg'
   },
   {
     name: 'Forêt Enchantée',
@@ -50,7 +50,7 @@ export const BACKGROUNDS_CATALOG: AccessoryData[] = [
     description: 'Une forêt mystérieuse et verdoyante',
     price: 300,
     rarity: 'rare',
-    imagePath: '/assets/images/background/forest.jpg',
+    imagePath: '/assets/images/background/forest.jpg'
   },
   {
     name: 'Jardin Zen',
@@ -59,7 +59,7 @@ export const BACKGROUNDS_CATALOG: AccessoryData[] = [
     description: 'Un jardin japonais apaisant',
     price: 500,
     rarity: 'epic',
-    imagePath: '/assets/images/background/garden.jpg',
+    imagePath: '/assets/images/background/garden.jpg'
   },
   {
     name: 'Marché Oriental',
@@ -68,7 +68,7 @@ export const BACKGROUNDS_CATALOG: AccessoryData[] = [
     description: 'Un marché coloré et animé',
     price: 350,
     rarity: 'rare',
-    imagePath: '/assets/images/background/market.jpg',
+    imagePath: '/assets/images/background/market.jpg'
   },
 
   // ============================================================================
@@ -204,5 +204,5 @@ export const BACKGROUNDS_CATALOG: AccessoryData[] = [
     </defs>
     <rect width="100%" height="100%" fill="url(#gradient-diamond)"/>
     <circle cx="50%" cy="50%" r="30%" fill="url(#shine-diamond)"/>`
-  },
+  }
 ]

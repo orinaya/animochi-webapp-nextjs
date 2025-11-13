@@ -27,7 +27,7 @@ interface DashboardContentProps {
  *
  * Respecte le principe SRP : Gère uniquement l'affichage carousel des monstres
  */
-function MonsterCarousel({ monsters }: { monsters: Monster[] }): React.ReactNode {
+function MonsterCarousel ({ monsters }: { monsters: Monster[] }): React.ReactNode {
   const [currentIndex, setCurrentIndex] = useState(0)
   const router = useRouter()
 
@@ -162,7 +162,7 @@ interface QuickActionProps {
   color: 'blueberry' | 'strawberry' | 'peach' | 'latte'
 }
 
-function QuickAction({ icon, label, description, onClick, color }: QuickActionProps): React.ReactNode {
+function QuickAction ({ icon, label, description, onClick, color }: QuickActionProps): React.ReactNode {
   const colorClasses = {
     blueberry: 'bg-blueberry-100 hover:bg-blueberry-200 border-blueberry-300',
     strawberry: 'bg-strawberry-100 hover:bg-strawberry-200 border-strawberry-300',
@@ -203,7 +203,7 @@ function QuickAction({ icon, label, description, onClick, color }: QuickActionPr
  * <DashboardContent session={session} monsters={monsters} />
  * ```
  */
-function DashboardContent({ session, monsters = [] }: DashboardContentProps): React.ReactNode {
+function DashboardContent ({ session, monsters = [] }: DashboardContentProps): React.ReactNode {
   const { logout } = useAuth()
   const router = useRouter()
 

@@ -38,7 +38,7 @@ interface ProfileContentProps {
  * @param {ProfileContentProps} props
  * @returns {React.ReactElement}
  */
-export default function ProfileContent({ session, userProfile }: ProfileContentProps): React.ReactElement {
+export default function ProfileContent ({ session, userProfile }: ProfileContentProps): React.ReactElement {
   const { logout } = useAuth()
   const [refreshKey, setRefreshKey] = useState(0)
 

@@ -16,7 +16,11 @@ async function migrateUser (): Promise<void> {
 
     // Afficher toutes les collections MongoDB
     const mongoose = await import('mongoose')
-    const collections = await mongoose.default.connection.db.listCollections().toArray()
+    const db = mongoose.default.connection.db
+    if (db == null) {
+      throw new Error('Database connection not established')
+    }
+    const collections = await db.listCollections().toArray()
     console.log('\n📦 Collections MongoDB disponibles:')
     for (const coll of collections) {
       console.log(`   - ${coll.name}`)
@@ -27,7 +31,7 @@ async function migrateUser (): Promise<void> {
     const allUsersFirst = await UserModel.find({}).select('email pseudo username _id')
     console.log(`   Total: ${allUsersFirst.length} utilisateur(s)`)
     for (const user of allUsersFirst) {
-      const u = user 
+      const u = user
       console.log(
         `   - ${user.email} | _id: ${user._id.toString()} | pseudo: ${
           u.pseudo ?? 'NULL'

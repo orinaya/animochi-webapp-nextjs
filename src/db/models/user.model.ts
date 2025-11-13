@@ -78,7 +78,7 @@ const userSchema = new Schema(
       theme: {
         type: String,
         enum: ['light', 'dark', 'auto'],
-        default: 'auto',
+        default: 'auto'
       },
       notifications: {
         email: {
@@ -92,7 +92,7 @@ const userSchema = new Schema(
         dailyReminder: {
           type: Boolean,
           default: true
-        },
+        }
       },
       privacy: {
         profilePublic: {
@@ -102,7 +102,7 @@ const userSchema = new Schema(
         showStats: {
           type: Boolean,
           default: true
-        },
+        }
       }
     },
     // Métadonnées
@@ -115,7 +115,7 @@ const userSchema = new Schema(
       type: Boolean,
       required: true,
       default: false
-    },
+    }
   },
   {
     bufferCommands: false,

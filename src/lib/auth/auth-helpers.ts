@@ -4,11 +4,11 @@
  * Respecte les principes SOLID : responsabilité unique de synchronisation
  */
 
-import {connectMongooseToDatabase} from "@/db"
-import UserModel from "@/db/models/user.model"
-import WalletModel from "@/db/models/wallet.model"
-import type {UserDocument} from "@/db/models/user.model"
-import {generateUniqueUsername} from "@/utils/username-generator"
+import { connectMongooseToDatabase } from '@/db'
+import UserModel from '@/db/models/user.model'
+import WalletModel from '@/db/models/wallet.model'
+import type { UserDocument } from '@/db/models/user.model'
+import { generateUniqueUsername } from '@/utils/username-generator'
 
 interface AuthUserData {
   email: string
@@ -32,7 +32,7 @@ interface OAuthProfile {
  * @param profile - Profile OAuth du provider
  * @returns Promise<UserDocument | null>
  */
-export async function createOrUpdateUserFromOAuth(
+export async function createOrUpdateUserFromOAuth (
   authUser: AuthUserData,
   profile?: OAuthProfile
 ): Promise<UserDocument | null> {
@@ -41,14 +41,14 @@ export async function createOrUpdateUserFromOAuth(
     await connectMongooseToDatabase()
 
     if (authUser.email == null || authUser.email.trim().length === 0) {
-      console.error("Email manquant dans les données OAuth")
+      console.error('Email manquant dans les données OAuth')
       return null
     }
 
     const email = authUser.email.trim().toLowerCase()
 
     // Chercher un utilisateur existant par email
-    const user = await UserModel.findOne({email})
+    const user = await UserModel.findOne({ email })
 
     if (user != null) {
       // Utilisateur existant : mettre à jour les informations si nécessaire
@@ -92,7 +92,7 @@ export async function createOrUpdateUserFromOAuth(
       // Générer un pseudo unique
       const pseudo = await generateUniqueUsername(async (name) => {
         const existingUser = await UserModel.findOne({
-          $or: [{username: name}, {pseudo: name}],
+          $or: [{ username: name }, { pseudo: name }]
         })
         return existingUser !== null
       })
@@ -101,11 +101,11 @@ export async function createOrUpdateUserFromOAuth(
         email,
         username: pseudo, // Pour compatibilité
         pseudo, // Pseudo généré automatiquement
-        name: authUser.name ?? profile?.name ?? "",
+        name: authUser.name ?? profile?.name ?? '',
         avatarUrl: authUser.image ?? profile?.avatar_url ?? profile?.image,
-        displayName: profile?.login ?? authUser.name ?? "",
+        displayName: profile?.login ?? authUser.name ?? '',
         isEmailVerified: true, // Les connexions OAuth sont considérées comme vérifiées
-        lastLoginAt: new Date(),
+        lastLoginAt: new Date()
       })
 
       await newUser.save()
@@ -116,7 +116,7 @@ export async function createOrUpdateUserFromOAuth(
       return newUser
     }
   } catch (error) {
-    console.error("Erreur lors de la synchronisation utilisateur OAuth:", error)
+    console.error('Erreur lors de la synchronisation utilisateur OAuth:', error)
     return null
   }
 }
@@ -127,10 +127,10 @@ export async function createOrUpdateUserFromOAuth(
  *
  * @param userId - ID de l'utilisateur
  */
-async function createInitialWallet(userId: string): Promise<void> {
+async function createInitialWallet (userId: string): Promise<void> {
   try {
     // Vérifier qu'un wallet n'existe pas déjà
-    const existingWallet = await WalletModel.findOne({ownerId: userId})
+    const existingWallet = await WalletModel.findOne({ ownerId: userId })
     if (existingWallet != null) {
       return
     }
@@ -138,12 +138,12 @@ async function createInitialWallet(userId: string): Promise<void> {
     // Créer le wallet avec le bonus de bienvenue
     const wallet = new WalletModel({
       ownerId: userId,
-      balance: 100, // Bonus de bienvenue
+      balance: 100 // Bonus de bienvenue
     })
 
     await wallet.save()
   } catch (error) {
-    console.error("Erreur lors de la création du wallet initial:", error)
+    console.error('Erreur lors de la création du wallet initial:', error)
   }
 }
 
@@ -154,7 +154,7 @@ async function createInitialWallet(userId: string): Promise<void> {
  * @param email - Email de l'utilisateur
  * @returns Promise<UserDocument | null>
  */
-export async function findUserByEmail(email: string): Promise<UserDocument | null> {
+export async function findUserByEmail (email: string): Promise<UserDocument | null> {
   try {
     await connectMongooseToDatabase()
 
@@ -163,9 +163,9 @@ export async function findUserByEmail(email: string): Promise<UserDocument | nul
     }
 
     const normalizedEmail = email.trim().toLowerCase()
-    return await UserModel.findOne({email: normalizedEmail})
+    return await UserModel.findOne({ email: normalizedEmail })
   } catch (error) {
-    console.error("Erreur lors de la recherche utilisateur par email:", error)
+    console.error('Erreur lors de la recherche utilisateur par email:', error)
     return null
   }
 }
