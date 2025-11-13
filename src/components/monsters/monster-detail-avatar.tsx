@@ -36,17 +36,6 @@ interface MonsterDetailAvatarProps {
  * @param {string | null} state - État du monstre
  * @returns {string} Emoji représentant l'état
  */
-function getStateEmoji (state: string | null): string {
-  const stateEmojis: Record<string, string> = {
-    happy: '😊',
-    sad: '😢',
-    angry: '😡',
-    hungry: '🍎',
-    sleepy: '😴'
-  }
-
-  return stateEmojis[state ?? 'happy'] ?? '😊'
-}
 
 /**
  * Avatar du monstre en détail avec accessoires
@@ -54,13 +43,13 @@ function getStateEmoji (state: string | null): string {
  * @param {MonsterDetailAvatarProps} props - Les propriétés du composant
  * @returns {React.ReactNode} L'avatar du monstre
  */
-export default function MonsterDetailAvatar ({
+export default function MonsterDetailAvatar({
   monster,
   currentAnimation = null,
   onAnimationComplete,
   onEditBackground
 }: MonsterDetailAvatarProps): React.ReactNode {
-  const stateEmoji = getStateEmoji(monster.state ?? null)
+  // Utilise le vrai badge d'état (comme MonsterCard)
 
   /**
    * Récupère le background équipé depuis le catalogue
@@ -126,21 +115,21 @@ export default function MonsterDetailAvatar ({
       case 'hat':
         // Chapeau au-dessus de la tête du chat - animation flottante douce
         return {
-          position: 'top-[-10%] left-[46%] -translate-x-1/2',
+          position: 'top-[17%] left-[46%] -translate-x-1/2',
           size: 'w-[50%] h-auto',
           animation: 'animate-float-gentle'
         }
       case 'glasses':
         // Lunettes devant les yeux du chat - pas d'animation
         return {
-          position: 'top-[2%] left-[46%] -translate-x-1/2',
+          position: 'top-[22%] left-[46%] -translate-x-1/2',
           size: 'w-[38%] h-auto',
           animation: ''
         }
       case 'shoes':
         // Chaussures au bas du chat - rebond vertical comme les pattes
         return {
-          position: 'bottom-[1%] left-[46%] -translate-x-1/2',
+          position: 'bottom-[21%] left-[46%] -translate-x-1/2',
           size: 'w-[28%] h-auto',
           animation: 'animate-bounce-vertical'
         }
@@ -155,7 +144,7 @@ export default function MonsterDetailAvatar ({
 
   return (
     <div
-      className='relative rounded-3xl p-4 shadow-lg overflow-hidden w-full'
+      className='relative rounded-2xl p-4 shadow-lg overflow-hidden w-full h-full flex flex-col'
       style={equippedBackground?.imagePath != null
         ? { backgroundImage: `url(${equippedBackground.imagePath})`, backgroundSize: 'cover', backgroundPosition: 'center' }
         : {}}
@@ -185,30 +174,15 @@ export default function MonsterDetailAvatar ({
         />
       )}
 
-      {/* Badge d'état */}
-      <div className='absolute top-3 right-3 bg-white rounded-full px-3 py-1.5 shadow-md z-10'>
-        <span className='text-xl'>{stateEmoji}</span>
-      </div>
-
-      {/* Bouton d'édition du background */}
-      {onEditBackground != null && (
-        <button
-          onClick={onEditBackground}
-          className='absolute bottom-3 right-3 bg-white hover:bg-blueberry-50 rounded-full p-2 shadow-md z-10 transition-all hover:scale-110'
-          title='Modifier l&#39;arrière-plan'
-        >
-          <span className='text-xl'>🖼️</span>
-        </button>
-      )}
-
-      {/* Image SVG du monstre avec accessoires - Hauteur réduite */}
-      <div className='relative flex items-center justify-center min-h-[200px] sm:min-h-[280px] z-0'>
+      {/* Image SVG du monstre avec accessoires - Hauteur max, fill container */}
+      <div className='relative flex items-center justify-center min-h-[200px] sm:min-h-[280px] z-0 h-full flex-1'>
         {monster.draw != null && monster.draw !== ''
           ? (
-            <div className='relative w-full max-w-sm mx-auto'>
+            <div className='relative w-full max-w-sm mx-auto h-full flex-1 flex items-stretch'>
               {/* SVG du monstre */}
               <div
-                className='w-full flex items-center justify-center'
+                className='w-full h-full flex items-center justify-center'
+                style={{ minHeight: 0 }}
                 dangerouslySetInnerHTML={{ __html: monster.draw }}
               />
 
@@ -227,13 +201,13 @@ export default function MonsterDetailAvatar ({
                 )
               })}
             </div>
-            )
+          )
           : (
-            <div className='text-center text-latte-600'>
+            <div className='text-center text-latte-600 h-full flex items-center justify-center'>
               <span className='text-6xl mb-4 block'>🐾</span>
               <p>Aucune apparence définie</p>
             </div>
-            )}
+          )}
       </div>
     </div>
   )

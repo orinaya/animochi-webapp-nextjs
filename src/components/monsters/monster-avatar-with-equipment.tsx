@@ -32,7 +32,7 @@ interface MonsterAvatarWithEquipmentProps {
 /**
  * Avatar avec slots d'équipement compacts
  */
-export default function MonsterAvatarWithEquipment ({
+export default function MonsterAvatarWithEquipment({
   monster,
   currentAnimation,
   onAnimationComplete,
@@ -97,36 +97,36 @@ export default function MonsterAvatarWithEquipment ({
               <div className='w-12 h-12 flex items-center justify-center overflow-hidden rounded'>
                 {equippedAccessory != null
                   ? (
-                      slot.id === 'background'
-                        ? (
-                            equippedAccessory.imagePath != null
-                              ? (
-                                <div
-                                  className='w-full h-full bg-cover bg-center'
-                                  style={{ backgroundImage: `url(${equippedAccessory.imagePath})` }}
-                                />
-                                )
-                              : equippedAccessory.svg != null
-                                ? (
-                                  <svg
-                                    viewBox='0 0 100 100'
-                                    className='w-full h-full'
-                                    dangerouslySetInnerHTML={{ __html: equippedAccessory.svg }}
-                                  />
-                                  )
-                                : null
+                    slot.id === 'background'
+                      ? (
+                        equippedAccessory.imagePath != null
+                          ? (
+                            <div
+                              className='w-full h-full bg-cover bg-center'
+                              style={{ backgroundImage: `url(${equippedAccessory.imagePath})` }}
+                            />
                           )
-                        : (
-                          <svg
-                            viewBox='0 0 80 80'
-                            className='w-10 h-10'
-                            dangerouslySetInnerHTML={{ __html: equippedAccessory.svg ?? '' }}
-                          />
-                          )
-                    )
+                          : equippedAccessory.svg != null
+                            ? (
+                              <svg
+                                viewBox='0 0 100 100'
+                                className='w-full h-full'
+                                dangerouslySetInnerHTML={{ __html: equippedAccessory.svg }}
+                              />
+                            )
+                            : null
+                      )
+                      : (
+                        <svg
+                          viewBox='0 0 80 80'
+                          className='w-10 h-10'
+                          dangerouslySetInnerHTML={{ __html: equippedAccessory.svg ?? '' }}
+                        />
+                      )
+                  )
                   : (
                     <span className='text-2xl opacity-30'>{slot.icon}</span>
-                    )}
+                  )}
               </div>
 
               {/* Infos textuelles */}
@@ -143,14 +143,15 @@ export default function MonsterAvatarWithEquipment ({
         })}
       </div>
 
-      {/* Message si rien n'est équipé */}
+      {/* Message si rien n'est équipé (hors background) */}
       {(monster.equippedAccessories?.hat == null &&
         monster.equippedAccessories?.glasses == null &&
-        monster.equippedAccessories?.shoes == null) && (
+        monster.equippedAccessories?.shoes == null &&
+        monster.equippedAccessories?.background == null) && (
           <p className='text-xs text-latte-500 text-center mt-3'>
             Aucun accessoire équipé
           </p>
-      )}
+        )}
     </div>
   )
 }

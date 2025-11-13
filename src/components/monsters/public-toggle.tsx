@@ -3,6 +3,7 @@
 import { toggleMonsterVisibility } from '@/actions/gallery.actions'
 import { useState, useTransition } from 'react'
 import { toast } from 'react-toastify'
+import { FiGlobe, FiLock } from 'react-icons/fi'
 
 interface PublicToggleProps {
   /** ID du monstre */
@@ -36,7 +37,7 @@ interface PublicToggleProps {
  * />
  * ```
  */
-export function PublicToggle ({
+export function PublicToggle({
   monsterId,
   initialIsPublic,
   onToggle,
@@ -63,7 +64,7 @@ export function PublicToggle ({
 
   if (variant === 'compact') {
     return (
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center gap-2 group/toggle relative'>
         <button
           onClick={handleToggle}
           disabled={isPending}
@@ -84,9 +85,31 @@ export function PublicToggle ({
             `}
           />
         </button>
-        <span className='text-sm text-gray-600'>
-          {isPublic ? '🌍 Public' : '🔒 Privé'}
-        </span>
+        {isPublic
+          ? (
+            <div className='flex items-center gap-1 text-xs text-blueberry-600 bg-blueberry-50 px-2 py-1 rounded-full'>
+              <FiGlobe size={14} />
+              <span>Public</span>
+            </div>
+          )
+          : (
+            <div className='flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full'>
+              <FiLock size={14} />
+              <span>Privé</span>
+            </div>
+          )}
+
+        {/* Tooltip */}
+        <div className='absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 invisible group-hover/toggle:opacity-100 group-hover/toggle:visible transition-all duration-200 pointer-events-none z-50'>
+          <div className='bg-blueberry-950 text-white text-xs px-3 py-2 rounded-lg shadow-lg whitespace-nowrap'>
+            {isPublic
+              ? 'Visible dans la galerie communautaire'
+              : 'Visible uniquement par vous'}
+            <div className='absolute top-full left-1/2 -translate-x-1/2 -mt-px'>
+              <div className='border-4 border-transparent border-t-blueberry-950' />
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

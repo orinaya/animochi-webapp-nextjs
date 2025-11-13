@@ -22,8 +22,8 @@ import { useAuth } from '@/hooks/use-auth'
 import MonsterDetailHeader from './monster-detail-header'
 import MonsterAvatarWithEquipment from './monster-avatar-with-equipment'
 import MonsterExperienceSection from './monster-experience-section'
-import MonsterStatsSection from './monster-stats-section'
 import MonsterActionsSection from './monster-actions-section'
+import MonsterStatsSection from './monster-stats-section'
 
 interface MonstrePageContentProps {
   /** Données du monstre */
@@ -49,7 +49,7 @@ interface MonstrePageContentProps {
  * />
  * ```
  */
-export default function MonstrePageContent ({
+export default function MonstrePageContent({
   monster,
   monsterId,
   session
@@ -103,9 +103,11 @@ export default function MonstrePageContent ({
             />
           </div>
 
-          {/* Colonne droite : XP, Stats avec Actions intégrées - Pleine hauteur */}
-          <div className='space-y-4 flex flex-col h-full'>
-            <MonsterExperienceSection monster={monster} />
+          {/* Colonne droite : XP et Actions encadrées - Pleine hauteur */}
+          <div className='flex flex-col h-full gap-6'>
+            <div className='shrink-0'>
+              <MonsterExperienceSection monster={monster} />
+            </div>
             <div className='flex-1 min-h-0'>
               <MonsterStatsSection
                 monster={monster}

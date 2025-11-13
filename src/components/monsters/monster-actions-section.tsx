@@ -13,6 +13,8 @@
 'use client'
 
 import { useState } from 'react'
+import { FaHeart, FaSmile, FaBell, FaWalking, FaDumbbell } from 'react-icons/fa'
+import { MdFastfood } from '@/components/icons/mdfastfood'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { applyMonsterAction } from '@/actions/monsters.action'
@@ -30,62 +32,56 @@ interface MonsterActionsSectionProps {
   onActionStart?: (action: MonsterAction) => void
 }
 
-/**
- * Configuration d'une action disponible
- */
 interface ActionConfig {
   action: MonsterAction
-  emoji: string
+  icon: (props: { className?: string }) => React.ReactElement
   label: string
-  color: 'blueberry' | 'strawberry' | 'peach' | 'latte'
   description: string
+  color: string // ex: 'strawberry', 'blueberry', 'peach', 'latte'
 }
 
-/**
- * Liste des actions disponibles
- */
 const AVAILABLE_ACTIONS: ActionConfig[] = [
   {
     action: 'hug',
-    emoji: '🤗',
+    icon: (props) => <FaHeart {...props} />,
     label: 'Câliner',
-    color: 'peach',
-    description: 'Faire un câlin à votre monstre'
+    description: 'Faire un câlin à votre monstre',
+    color: 'strawberry'
   },
   {
     action: 'feed',
-    emoji: '🍎',
+    icon: (props) => <MdFastfood {...props} />,
     label: 'Nourrir',
-    color: 'strawberry',
-    description: 'Donner à manger'
+    description: 'Donner à manger',
+    color: 'peach'
   },
   {
     action: 'comfort',
-    emoji: '💙',
+    icon: (props) => <FaSmile {...props} />,
     label: 'Consoler',
-    color: 'blueberry',
-    description: 'Réconforter votre monstre'
+    description: 'Réconforter votre monstre',
+    color: 'blueberry'
   },
   {
     action: 'wake',
-    emoji: '⏰',
+    icon: (props) => <FaBell {...props} />,
     label: 'Réveiller',
-    color: 'peach',
-    description: 'Réveiller en douceur'
+    description: 'Réveiller en douceur',
+    color: 'latte'
   },
   {
     action: 'walk',
-    emoji: '🚶',
+    icon: (props) => <FaWalking {...props} />,
     label: 'Promener',
-    color: 'blueberry',
-    description: 'Faire une promenade'
+    description: 'Faire une promenade',
+    color: 'blueberry'
   },
   {
     action: 'train',
-    emoji: '💪',
+    icon: (props) => <FaDumbbell {...props} />,
     label: 'Entraîner',
-    color: 'strawberry',
-    description: 'Session d\'entraînement'
+    description: 'Session d\'entraînement',
+    color: 'strawberry'
   }
 ]
 
@@ -95,7 +91,7 @@ const AVAILABLE_ACTIONS: ActionConfig[] = [
  * @param {MonsterActionsSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section des actions
  */
-export default function MonsterActionsSection ({
+export default function MonsterActionsSection({
   monster,
   monsterId,
   onActionStart
@@ -151,34 +147,36 @@ export default function MonsterActionsSection ({
 
   return (
     <>
-      {/* Actions en ligne sans fond - pour intégration dans stats */}
-      <div className='flex gap-2 justify-center flex-wrap'>
+      {/* Actions en grille responsive 3 colonnes, boutons larges */}
+      <div className='grid grid-cols-1 sm:grid-cols-3 gap-3 w-full h-fit'>
         {AVAILABLE_ACTIONS.map((actionConfig) => {
           const xpReward = getActionXpReward(actionConfig.action)
+          // Palette pastel : fond clair, texte/icône foncé
+          const bg = `bg-${actionConfig.color}-100 hover:bg-${actionConfig.color}-200`
+          const text = `text-${actionConfig.color}-800`
           return (
             <button
               key={actionConfig.action}
               onClick={() => { void handleAction(actionConfig.action) }}
               disabled={loadingAction !== null}
-              className={`
-                flex flex-col items-center justify-center
-                bg-${actionConfig.color}-50 hover:bg-${actionConfig.color}-100
-                rounded-xl px-3 py-2
-                border-2 border-${actionConfig.color}-200 hover:border-${actionConfig.color}-300
-                transition-all duration-200
-                disabled:opacity-50 disabled:cursor-not-allowed
-                ${loadingAction === actionConfig.action ? 'scale-95' : 'hover:scale-105'}
-                min-w-[70px]
-              `}
+              className={[
+                'flex flex-col justify-center items-center w-full',
+                bg,
+                'rounded-xl px-4 py-3',
+                'transition-all duration-200',
+                'disabled:opacity-50 disabled:cursor-not-allowed',
+                loadingAction === actionConfig.action ? 'scale-95' : 'hover:scale-105',
+                'min-h-[70px]'
+              ].join(' ')}
               title={`${actionConfig.description} (+${xpReward} XP)`}
             >
-              <span className='text-2xl mb-1'>
-                {actionConfig.emoji}
+              <span className={`mb-1 ${text}`}>
+                {actionConfig.icon({ className: `${text}` })}
               </span>
-              <span className='text-xs font-semibold text-blueberry-950'>
+              <span className={`text-xs font-semibold ${text}`}>
                 {actionConfig.label}
               </span>
-              <span className='text-[10px] text-strawberry-600 font-bold mt-0.5'>
+              <span className={`text-[10px] font-bold mt-0.5 ${text}`}>
                 +{xpReward} XP
               </span>
             </button>

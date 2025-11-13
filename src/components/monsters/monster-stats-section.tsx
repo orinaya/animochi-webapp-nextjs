@@ -13,6 +13,26 @@
 'use client'
 
 import type { Monster, MonsterState } from '@/types/monster'
+import { STATE_CONFIG } from '@/components/ui/monster-card'
+
+/**
+ * Configuration d'une stat émotionnelle
+ */
+
+/**
+ * Retourne les stats émotionnelles basées sur l'état du monstre
+ *
+ * @param {string | null} state - État actuel du monstre
+ * @returns {StatConfig[]} Configuration des stats avec valeurs
+ */
+
+/**
+ * Section des statistiques émotionnelles du monstre
+ *
+ * @param {MonsterStatsSectionProps} props - Les propriétés du composant
+ * @returns {React.ReactNode} La section des stats
+ */
+import { FiZap } from 'react-icons/fi'
 
 interface MonsterStatsSectionProps {
   /** Données du monstre */
@@ -21,143 +41,52 @@ interface MonsterStatsSectionProps {
   actionsComponent?: React.ReactNode
 }
 
-/**
- * Configuration d'une stat émotionnelle
- */
-interface StatConfig {
-  id: string
-  label: string
-  emoji: string
-  color: string
-  bgColor: string
-}
-
-/**
- * Retourne les stats émotionnelles basées sur l'état du monstre
- *
- * @param {string | null} state - État actuel du monstre
- * @returns {StatConfig[]} Configuration des stats avec valeurs
- */
-function getEmotionalStats (state: string | null): Array<StatConfig & { value: number }> {
-  const currentState = (state ?? 'happy') as MonsterState
-
-  // Valeurs de base pour chaque stat
-  const baseStats: Record<string, StatConfig & { value: number }> = {
-    happy: {
-      id: 'happiness',
-      label: 'Bonheur',
-      emoji: '😊',
-      color: 'text-peach-600',
-      bgColor: 'bg-peach-100',
-      value: 50
-    },
-    sad: {
-      id: 'sadness',
-      label: 'Tristesse',
-      emoji: '😢',
-      color: 'text-blueberry-600',
-      bgColor: 'bg-blueberry-100',
-      value: 50
-    },
-    hungry: {
-      id: 'hunger',
-      label: 'Faim',
-      emoji: '🍎',
-      color: 'text-strawberry-600',
-      bgColor: 'bg-strawberry-100',
-      value: 50
-    },
-    sleepy: {
-      id: 'energy',
-      label: 'Énergie',
-      emoji: '⚡',
-      color: 'text-peach-600',
-      bgColor: 'bg-peach-100',
-      value: 50
-    }
-  }
-
-  // Ajuster les valeurs selon l'état actuel
-  const stats = { ...baseStats }
-
-  switch (currentState) {
-    case 'happy':
-      stats.happy.value = 100
-      stats.sad.value = 0
-      break
-    case 'sad':
-      stats.sad.value = 100
-      stats.happy.value = 20
-      break
-    case 'angry':
-      stats.sad.value = 80
-      stats.happy.value = 10
-      break
-    case 'hungry':
-      stats.hungry.value = 100
-      stats.happy.value = 30
-      break
-    case 'sleepy':
-      stats.sleepy.value = 20
-      stats.happy.value = 40
-      break
-  }
-
-  return Object.values(stats)
-}
-
-/**
- * Section des statistiques émotionnelles du monstre
- *
- * @param {MonsterStatsSectionProps} props - Les propriétés du composant
- * @returns {React.ReactNode} La section des stats
- */
-export default function MonsterStatsSection ({
-  monster,
-  actionsComponent
-}: MonsterStatsSectionProps): React.ReactNode {
-  const stats = getEmotionalStats(monster.state ?? null)
-
+export default function MonsterStatsSection({ monster, actionsComponent }: MonsterStatsSectionProps): React.ReactNode {
+  const state = (monster.state ?? 'happy') as MonsterState
+  const stateConf = STATE_CONFIG[state]
   return (
-    <div className='bg-white rounded-3xl p-6 shadow-lg border border-latte-100 h-full flex flex-col'>
-      <h2 className='text-xl font-bold text-blueberry-950 mb-4'>
-        État émotionnel
-      </h2>
-
-      {/* Actions intégrées */}
-      {actionsComponent != null && (
-        <div className='mb-6'>
-          {actionsComponent}
-        </div>
-      )}
-
-      <div className='grid grid-cols-2 gap-4 flex-1'>
-        {stats.map((stat) => (
-          <div
-            key={stat.id}
-            className='flex flex-col'
-          >
-            <div className='flex items-center justify-between mb-2'>
-              <div className='flex items-center gap-2'>
-                <span className='text-2xl'>{stat.emoji}</span>
-                <span className='text-sm font-semibold text-latte-700'>
-                  {stat.label}
-                </span>
-              </div>
-              <span className={`text-sm font-bold ${stat.color}`}>
-                {stat.value}%
-              </span>
+    <div className='relative bg-white rounded-3xl p-4 sm:p-6 shadow-lg border border-latte-100 h-fit flex flex-col justify-center items-center overflow-hidden gap-8'>
+      {/* Effet décoratif subtil */}
+      <div className='absolute inset-0 pointer-events-none'>
+        <div className='absolute -top-8 -right-8 w-32 h-32 bg-blueberry-100/20 rounded-full blur-2xl' />
+        <div className='absolute -bottom-8 -left-8 w-24 h-24 bg-strawberry-100/20 rounded-full blur-2xl' />
+      </div>
+      <div className='relative z-10 w-full flex flex-col items-center'>
+        {/* Titre + sous-titre alignés à gauche, badge à droite */}
+        <div className='w-full mb-1 mt-1 flex items-start justify-between'>
+          <div className='flex flex-col items-start'>
+            <div className='flex items-center gap-2'>
+              <FiZap className='text-strawberry-500' size={22} />
+              <h2 className='text-lg sm:text-xl font-bold text-blueberry-950'>Actions</h2>
             </div>
-
-            {/* Barre de progression pour chaque stat */}
-            <div className='w-full bg-latte-100 rounded-full h-2.5 overflow-hidden'>
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${stat.bgColor}`}
-                style={{ width: `${stat.value}%` }}
-              />
+            {/* Sous-titre aligné à gauche */}
+            <div className='text-xs text-latte-600 mt-1 mb-4 text-left'>Interagis avec ton monstre</div>
+          </div>
+          {/* Badge d'état animé (glow, scale, ombre colorée) */}
+          <div className='flex flex-col items-end gap-2'>
+            <div
+              className={`flex items-center gap-2 px-4 py-1 rounded-full border-2 font-bold text-base shadow-lg transition-all ${stateConf.className} animate-bounce-slow relative`} // glow + bounce
+              style={{ minWidth: 120, justifyContent: 'center', boxShadow: '0 0 16px 4px rgba(255,255,0,0.25), 0 0 8px 2px ' + (state === 'happy' ? '#22c55e' : state === 'angry' ? '#ef4444' : state === 'sad' ? '#3b82f6' : '#fbbf24') }}
+            >
+              <span className='text-xl drop-shadow-lg'>{stateConf.emoji}</span>
+              <span className='tracking-wide drop-shadow'>{stateConf.label}</span>
+              {/* Particules effet gaming */}
+              <span className='absolute -top-2 -right-2 animate-ping-slow text-yellow-300 text-lg select-none'>★</span>
             </div>
           </div>
-        ))}
+        </div>
+        {actionsComponent != null && (
+          <div className='w-full flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 place-content-center'>
+            {/* On attend que MonsterActionsSection rende chaque bouton dans un fragment ou un tableau */}
+            {Array.isArray(actionsComponent)
+              ? actionsComponent.map((action, i) => (
+                <div key={i} className='w-full flex'>
+                  {action}
+                </div>
+              ))
+              : <div className='col-span-2 w-full flex'>{actionsComponent}</div>}
+          </div>
+        )}
       </div>
     </div>
   )

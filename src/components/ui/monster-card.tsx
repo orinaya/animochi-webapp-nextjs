@@ -44,7 +44,7 @@ interface MonsterCardProps {
  * - hungry = jaune
  * - sleepy = violet
  */
-const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, className: string }> = {
+export const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, className: string }> = {
   happy: {
     label: 'Heureux',
     emoji: '😊',
@@ -76,7 +76,7 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
+export function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
   const config = STATE_CONFIG[state]
 
   return (
@@ -94,7 +94,7 @@ function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
  * Utilise le service d'expérience pour calculer la progression réelle
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
-function LevelProgress ({ level, experience, experienceToNextLevel }: {
+function LevelProgress({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
@@ -149,7 +149,7 @@ function LevelProgress ({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   const level = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
@@ -301,13 +301,13 @@ export default function MonsterCard ({ monster, onClick, onDelete, onEdit, class
                   <FiGlobe size={14} />
                   <span>Public</span>
                 </div>
-                )
+              )
               : (
                 <div className='flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full'>
                   <FiLock size={14} />
                   <span>Privé</span>
                 </div>
-                )}
+              )}
           </div>
           <div
             onClick={(e) => {

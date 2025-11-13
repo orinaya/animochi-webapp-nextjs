@@ -11,8 +11,8 @@
 
 'use client'
 
-import ProgressBar from '@/components/ui/progress-bar'
 import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience'
+import { FiTrendingUp } from 'react-icons/fi'
 import type { Monster } from '@/types/monster'
 
 interface MonsterExperienceSectionProps {
@@ -26,7 +26,7 @@ interface MonsterExperienceSectionProps {
  * @param {MonsterExperienceSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section d'expérience
  */
-export default function MonsterExperienceSection ({
+export default function MonsterExperienceSection({
   monster
 }: MonsterExperienceSectionProps): React.ReactNode {
   const currentLevel = monster.level ?? 1
@@ -44,41 +44,72 @@ export default function MonsterExperienceSection ({
   const remainingXP = experienceToNextLevel - xpInCurrentLevel
 
   return (
-    <div className='bg-white rounded-3xl p-6 shadow-lg border border-latte-100'>
-      {/* En-tête avec niveau actuel et prochain niveau */}
-      <div className='flex items-center justify-between mb-4'>
-        <div>
-          <h2 className='text-xl font-bold text-blueberry-950'>
-            Progression
-          </h2>
-          <p className='text-sm text-latte-600 mt-1'>
-            Niveau actuel : <span className='font-semibold text-blueberry-700'>{currentLevel}</span>
-          </p>
-        </div>
-        <div className='text-right'>
-          <span className='text-sm text-latte-600'>Niveau suivant</span>
-          <div className='text-2xl font-bold text-blueberry-950'>
-            {nextLevel}
+    <div className='relative bg-linear-to-br from-strawberry-100 via-strawberry-150 to-strawberry-200 rounded-3xl p-6 shadow-lg overflow-hidden border border-strawberry-300 pb-8'>
+      {/* Effet de brillance en arrière-plan */}
+      <div className='absolute inset-0 bg-linear-to-tr from-transparent via-white/40 to-transparent' />
+
+      {/* Cercles décoratifs en arrière-plan */}
+      <div className='absolute -top-10 -right-10 w-40 h-40 bg-white/60 rounded-full blur-3xl' />
+      <div className='absolute -bottom-10 -left-10 w-32 h-32 bg-strawberry-200/40 rounded-full blur-3xl' />
+
+      <div className='relative z-10'>
+        {/* En-tête avec niveau actuel et prochain niveau */}
+        <div className='flex items-center justify-between mb-6'>
+          <div>
+            <h2 className='text-2xl font-bold text-strawberry-900 flex items-center gap-2'>
+              <FiTrendingUp className='text-strawberry-700 text-3xl' />
+              Progression
+            </h2>
+            <p className='text-sm text-strawberry-700 mt-1'>
+              Niveau actuel : <span className='font-bold text-strawberry-800'>{currentLevel}</span>
+            </p>
+          </div>
+          {/* Badge "Niveau suivant" style carte blanche + effet gaming */}
+          <div className='text-right bg-white rounded-2xl px-4 py-3 border-2 border-yellow-300 shadow-xl relative animate-glow-gaming'>
+            <span className='text-xs text-yellow-700 block font-bold tracking-wide drop-shadow'>Niveau suivant</span>
+            <div className='text-4xl font-extrabold text-yellow-600 drop-shadow-lg flex items-center justify-end gap-2'>
+              <span className='inline-block animate-bounce-slow'>⭐</span>
+              {nextLevel}
+            </div>
+            {/* Glow animé autour du badge */}
+            <span className='pointer-events-none absolute -inset-1 rounded-2xl border-4 border-yellow-200 opacity-60 blur-lg animate-pulse-gaming' />
           </div>
         </div>
-      </div>
 
-      {/* Barre de progression */}
-      <ProgressBar
-        value={progress}
-        variant='blueberry'
-        size='lg'
-        label={`${xpInCurrentLevel} / ${experienceToNextLevel} XP`}
-        showLabel
-        animated
-      />
+        {/* Barre de progression avec style amélioré */}
+        <div className='bg-white/60 backdrop-blur-sm rounded-full p-1.5 mb-4 border border-strawberry-300'>
+          <div className='relative h-8 bg-strawberry-150 rounded-full overflow-hidden'>
+            <div
+              className='absolute inset-y-0 left-0 bg-linear-to-r from-strawberry-400 via-strawberry-500 to-strawberry-600 rounded-full transition-all duration-500 ease-out flex items-center justify-end pr-3 shadow-md'
+              style={{ width: `${progress}%` }}
+            >
+              {progress > 15 && (
+                <span className='text-xs font-bold text-white drop-shadow-md'>
+                  {progress}%
+                </span>
+              )}
+            </div>
+            {progress <= 15 && (
+              <div className='absolute inset-0 flex items-center justify-center'>
+                <span className='text-xs font-bold text-strawberry-500'>
+                  {progress}%
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
 
-      {/* Informations additionnelles */}
-      <div className='mt-4 flex justify-between text-sm text-latte-600'>
-        <span>
-          XP restante : <span className='font-semibold text-strawberry-600'>{remainingXP}</span>
-        </span>
-        <span className='font-semibold text-blueberry-700'>{progress}%</span>
+        {/* Informations XP */}
+        <div className='flex justify-between items-center text-sm'>
+          <div className='flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-strawberry-300 shadow-sm'>
+            <span className='text-strawberry-700'>XP :</span>
+            <span className='font-bold text-strawberry-800'>{xpInCurrentLevel} / {experienceToNextLevel}</span>
+          </div>
+          <div className='flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 border border-strawberry-300 shadow-sm'>
+            <span className='text-strawberry-700'>Restante :</span>
+            <span className='font-bold text-strawberry-800'>{remainingXP} XP</span>
+          </div>
+        </div>
       </div>
     </div>
   )
