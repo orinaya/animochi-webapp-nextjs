@@ -47,7 +47,7 @@ interface AccessoryInventoryModalProps {
 /**
  * Retourne le label en français pour une catégorie
  */
-function getCategoryLabel(category: AccessoryCategory): string {
+function getCategoryLabel (category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
@@ -60,7 +60,7 @@ function getCategoryLabel(category: AccessoryCategory): string {
 /**
  * Retourne l'emoji pour une catégorie
  */
-function getCategoryEmoji(category: AccessoryCategory): string {
+function getCategoryEmoji (category: AccessoryCategory): string {
   const emojis: Record<AccessoryCategory, string> = {
     hat: '🎩',
     glasses: '👓',
@@ -73,7 +73,7 @@ function getCategoryEmoji(category: AccessoryCategory): string {
 /**
  * Modal de l'inventaire et boutique d'accessoires
  */
-export default function AccessoryInventoryModal({
+export default function AccessoryInventoryModal ({
   isOpen,
   onClose,
   ownedAccessories,
@@ -98,7 +98,7 @@ export default function AccessoryInventoryModal({
   /**
    * Retourne le label en français pour une rareté
    */
-  function getRarityLabel(rarity: AccessoryRarity): string {
+  function getRarityLabel (rarity: AccessoryRarity): string {
     const labels: Record<AccessoryRarity, string> = {
       common: 'Commun',
       rare: 'Rare',
@@ -294,10 +294,10 @@ export default function AccessoryInventoryModal({
                               {processing === category ? '⏳' : 'Retirer'}
                             </button>
                           </>
-                        )
+                          )
                         : (
                           <p className='text-xs text-latte-400 py-4'>Vide</p>
-                        )}
+                          )}
                     </div>
                   )
                 })}
@@ -364,30 +364,30 @@ export default function AccessoryInventoryModal({
                     <div className='bg-latte-50 rounded-lg p-2 mb-2 flex items-center justify-center min-h-[60px] overflow-hidden'>
                       {item.details.category === 'background'
                         ? (
-                          item.details.imagePath != null
-                            ? (
-                              <div
-                                className='w-full h-16 rounded bg-cover bg-center'
-                                style={{ backgroundImage: `url(${item.details.imagePath})` }}
-                              />
-                            )
-                            : item.details.svg != null
+                            item.details.imagePath != null
                               ? (
-                                <svg
-                                  viewBox='0 0 100 100'
-                                  className='w-full h-16 rounded'
-                                  dangerouslySetInnerHTML={{ __html: item.details.svg }}
+                                <div
+                                  className='w-full h-16 rounded bg-cover bg-center'
+                                  style={{ backgroundImage: `url(${item.details.imagePath})` }}
                                 />
-                              )
-                              : null
-                        )
+                                )
+                              : item.details.svg != null
+                                ? (
+                                  <svg
+                                    viewBox='0 0 100 100'
+                                    className='w-full h-16 rounded'
+                                    dangerouslySetInnerHTML={{ __html: item.details.svg }}
+                                  />
+                                  )
+                                : null
+                          )
                         : (
                           <svg
                             viewBox='0 0 80 80'
                             className='w-14 h-14'
                             dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
                           />
-                        )}
+                          )}
                     </div>
 
                     {/* Nom */}
@@ -551,30 +551,30 @@ export default function AccessoryInventoryModal({
                     <div className='bg-latte-50 rounded-lg p-4 mb-3 flex items-center justify-center min-h-[100px] overflow-hidden'>
                       {accessory.category === 'background'
                         ? (
-                          accessory.imagePath != null
-                            ? (
-                              <div
-                                className='w-full h-24 rounded bg-cover bg-center'
-                                style={{ backgroundImage: `url(${accessory.imagePath})` }}
-                              />
-                            )
-                            : accessory.svg != null
+                            accessory.imagePath != null
                               ? (
-                                <svg
-                                  viewBox='0 0 100 100'
-                                  className='w-full h-24 rounded'
-                                  dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                                <div
+                                  className='w-full h-24 rounded bg-cover bg-center'
+                                  style={{ backgroundImage: `url(${accessory.imagePath})` }}
                                 />
-                              )
-                              : null
-                        )
+                                )
+                              : accessory.svg != null
+                                ? (
+                                  <svg
+                                    viewBox='0 0 100 100'
+                                    className='w-full h-24 rounded'
+                                    dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                                  />
+                                  )
+                                : null
+                          )
                         : (
                           <svg
                             viewBox='0 0 80 80'
                             className='w-20 h-20'
                             dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
                           />
-                        )}
+                          )}
                     </div>
 
                     {/* Informations */}

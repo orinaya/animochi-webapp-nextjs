@@ -57,6 +57,11 @@ const monsterSchema = new Schema(
       ref: 'user',
       required: true
     },
+    isPublic: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     equippedAccessories: {
       hat: {
         type: String,

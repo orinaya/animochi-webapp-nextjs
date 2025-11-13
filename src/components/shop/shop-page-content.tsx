@@ -33,7 +33,7 @@ interface ShopPageContentProps {
 /**
  * Retourne le label en français pour une catégorie
  */
-function getCategoryLabel(category: AccessoryCategory): string {
+function getCategoryLabel (category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
@@ -46,7 +46,7 @@ function getCategoryLabel(category: AccessoryCategory): string {
 /**
  * Retourne le label en français pour une rareté
  */
-function getRarityLabel(rarity: AccessoryRarity): string {
+function getRarityLabel (rarity: AccessoryRarity): string {
   const labels: Record<AccessoryRarity, string> = {
     common: 'Commun',
     rare: 'Rare',
@@ -59,7 +59,7 @@ function getRarityLabel(rarity: AccessoryRarity): string {
 /**
  * Contenu de la page boutique d'accessoires
  */
-export function ShopPageContent({ session }: ShopPageContentProps): React.ReactNode {
+export function ShopPageContent ({ session }: ShopPageContentProps): React.ReactNode {
   const router = useRouter()
   const { wallet, refetch: refetchWallet } = useWallet()
   const [ownedAccessories, setOwnedAccessories] = useState<Array<OwnedAccessory & { details: AccessoryData }>>([])
@@ -290,30 +290,30 @@ export function ShopPageContent({ session }: ShopPageContentProps): React.ReactN
                 <div className='bg-latte-50 rounded-lg p-4 mb-4 flex items-center justify-center min-h-[120px] overflow-hidden'>
                   {accessory.category === 'background'
                     ? (
-                      accessory.imagePath != null
-                        ? (
-                          <div
-                            className='w-full h-28 rounded bg-cover bg-center'
-                            style={{ backgroundImage: `url(${accessory.imagePath})` }}
-                          />
-                        )
-                        : accessory.svg != null
+                        accessory.imagePath != null
                           ? (
-                            <svg
-                              viewBox='0 0 100 100'
-                              className='w-full h-28 rounded'
-                              dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                            <div
+                              className='w-full h-28 rounded bg-cover bg-center'
+                              style={{ backgroundImage: `url(${accessory.imagePath})` }}
                             />
-                          )
-                          : null
-                    )
+                            )
+                          : accessory.svg != null
+                            ? (
+                              <svg
+                                viewBox='0 0 100 100'
+                                className='w-full h-28 rounded'
+                                dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                              />
+                              )
+                            : null
+                      )
                     : (
                       <svg
                         viewBox='0 0 80 80'
                         className='w-24 h-24'
                         dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
                       />
-                    )}
+                      )}
                 </div>
 
                 {/* Informations */}

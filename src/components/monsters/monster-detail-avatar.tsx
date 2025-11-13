@@ -36,7 +36,7 @@ interface MonsterDetailAvatarProps {
  * @param {string | null} state - État du monstre
  * @returns {string} Emoji représentant l'état
  */
-function getStateEmoji(state: string | null): string {
+function getStateEmoji (state: string | null): string {
   const stateEmojis: Record<string, string> = {
     happy: '😊',
     sad: '😢',
@@ -54,7 +54,7 @@ function getStateEmoji(state: string | null): string {
  * @param {MonsterDetailAvatarProps} props - Les propriétés du composant
  * @returns {React.ReactNode} L'avatar du monstre
  */
-export default function MonsterDetailAvatar({
+export default function MonsterDetailAvatar ({
   monster,
   currentAnimation = null,
   onAnimationComplete,
@@ -227,13 +227,13 @@ export default function MonsterDetailAvatar({
                 )
               })}
             </div>
-          )
+            )
           : (
             <div className='text-center text-latte-600'>
               <span className='text-6xl mb-4 block'>🐾</span>
               <p>Aucune apparence définie</p>
             </div>
-          )}
+            )}
       </div>
     </div>
   )

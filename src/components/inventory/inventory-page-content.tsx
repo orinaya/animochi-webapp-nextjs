@@ -27,7 +27,7 @@ interface InventoryPageContentProps {
 /**
  * Retourne le label en français pour une catégorie
  */
-function getCategoryLabel(category: AccessoryCategory): string {
+function getCategoryLabel (category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
@@ -40,7 +40,7 @@ function getCategoryLabel(category: AccessoryCategory): string {
 /**
  * Retourne l'emoji pour une catégorie
  */
-function getCategoryEmoji(category: AccessoryCategory): string {
+function getCategoryEmoji (category: AccessoryCategory): string {
   const emojis: Record<AccessoryCategory, string> = {
     hat: '🎩',
     glasses: '👓',
@@ -50,7 +50,7 @@ function getCategoryEmoji(category: AccessoryCategory): string {
   return emojis[category]
 }
 
-export default function InventoryPageContent({ session }: InventoryPageContentProps): React.ReactNode {
+export default function InventoryPageContent ({ session }: InventoryPageContentProps): React.ReactNode {
   const router = useRouter()
   const [ownedAccessories, setOwnedAccessories] = useState<Array<OwnedAccessory & { details: AccessoryData }>>([])
   const [selectedCategory, setSelectedCategory] = useState<AccessoryCategory | 'all'>('all')
@@ -185,7 +185,7 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
             <div className='flex items-center justify-center py-20'>
               <div className='text-lg text-latte-600'>Chargement de votre inventaire...</div>
             </div>
-          )
+            )
           : ownedAccessories.length === 0
             ? (
               <div className='text-center py-20 bg-white rounded-xl shadow-sm border border-latte-200'>
@@ -201,14 +201,14 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
                   🛍️ Aller à la boutique
                 </button>
               </div>
-            )
+              )
             : filteredAccessories.length === 0
               ? (
                 <div className='text-center py-20 bg-white rounded-xl shadow-sm border border-latte-200'>
                   <span className='text-6xl block mb-4'>🔍</span>
                   <p className='text-latte-600 text-lg'>Aucun accessoire dans cette catégorie</p>
                 </div>
-              )
+                )
               : (
                 <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
                   {filteredAccessories.map((item) => (
@@ -230,28 +230,28 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
                       <div className='bg-latte-50 rounded-lg p-3 mb-3 flex items-center justify-center min-h-20'>
                         {item.details.category === 'background'
                           ? (
-                            item.details.imagePath != null
-                              ? (
-                                <div
-                                  className='w-full h-full min-h-20 rounded bg-cover bg-center'
-                                  style={{ backgroundImage: `url(${item.details.imagePath})` }}
-                                />
-                              )
-                              : (
-                                <svg
-                                  viewBox='0 0 200 200'
-                                  className='w-full h-full'
-                                  dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
-                                />
-                              )
-                          )
+                              item.details.imagePath != null
+                                ? (
+                                  <div
+                                    className='w-full h-full min-h-20 rounded bg-cover bg-center'
+                                    style={{ backgroundImage: `url(${item.details.imagePath})` }}
+                                  />
+                                  )
+                                : (
+                                  <svg
+                                    viewBox='0 0 200 200'
+                                    className='w-full h-full'
+                                    dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
+                                  />
+                                  )
+                            )
                           : (
                             <svg
                               viewBox='0 0 80 80'
                               className='w-16 h-16'
                               dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
                             />
-                          )}
+                            )}
                       </div>
 
                       {/* Nom */}
@@ -266,7 +266,7 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
                     </div>
                   ))}
                 </div>
-              )}
+                )}
       </div>
     </DashboardLayout>
   )

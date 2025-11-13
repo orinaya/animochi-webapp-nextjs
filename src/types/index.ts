@@ -14,6 +14,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'goo
 // Export tous les types de monstre (Monster, MonsterState, etc.)
 export * from './monster'
 export * from './monster-actions'
+export * from './gallery'
 
 export type MonsterRarity = 'Commun' | 'Rare' | 'Épique' | 'Légendaire'
 

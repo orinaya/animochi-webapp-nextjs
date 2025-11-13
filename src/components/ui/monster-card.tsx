@@ -10,9 +10,12 @@ import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/exp
 import ProgressBar from './progress-bar'
 import Button from './button'
 import { Modal } from './modal'
-import { FiTrash2, FiEdit } from 'react-icons/fi'
+import { MonsterActionsDropdown } from '@/components/monsters/monster-actions-dropdown'
+import { toggleMonsterVisibility } from '@/actions/gallery.actions'
+import { toast } from 'react-toastify'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
+import { FiGlobe, FiLock } from 'react-icons/fi'
 
 /**
  * Props du composant MonsterCard
@@ -73,7 +76,7 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
+function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
   const config = STATE_CONFIG[state]
 
   return (
@@ -91,7 +94,7 @@ function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
  * Utilise le service d'expérience pour calculer la progression réelle
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
-function LevelProgress({ level, experience, experienceToNextLevel }: {
+function LevelProgress ({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
@@ -146,7 +149,7 @@ function LevelProgress({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   const level = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
@@ -287,35 +290,54 @@ export default function MonsterCard({ monster, onClick, onDelete, onEdit, classN
         `}
         onClick={onClick}
       >
-        {/* Badge de statut et boutons d'action */}
+        {/* Badge de statut et menu actions */}
         <div className='flex justify-between items-center mb-4'>
-          <StateBadge state={state} />
+          <div className='flex items-center gap-2'>
+            <StateBadge state={state} />
+            {/* Icône de visibilité public/privé */}
+            {monster.isPublic === true
+              ? (
+                <div className='flex items-center gap-1 text-xs text-blueberry-600 bg-blueberry-50 px-2 py-1 rounded-full'>
+                  <FiGlobe size={14} />
+                  <span>Public</span>
+                </div>
+                )
+              : (
+                <div className='flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full'>
+                  <FiLock size={14} />
+                  <span>Privé</span>
+                </div>
+                )}
+          </div>
           <div
             onClick={(e) => {
               e.stopPropagation()
             }}
-            className='flex items-center gap-1'
           >
-            <Button
-              onClick={handleOpenEditModal}
-              size='sm'
-              variant='ghost'
-              color='blueberry'
-              className='p-2! min-w-0'
-            >
-              <FiEdit size={18} />
-            </Button>
-            <Button
-              onClick={() => {
+            <MonsterActionsDropdown
+              monsterId={monster._id ?? ''}
+              isPublic={monster.isPublic ?? false}
+              onEdit={handleOpenEditModal}
+              onDelete={() => {
                 setShowDeleteModal(true)
               }}
-              size='sm'
-              variant='ghost'
-              color='danger'
-              className='p-2! min-w-0'
-            >
-              <FiTrash2 size={18} />
-            </Button>
+              onTogglePublic={() => {
+                void (async () => {
+                  try {
+                    const newIsPublic = !(monster.isPublic ?? false)
+                    const result = await toggleMonsterVisibility(monster._id ?? '', newIsPublic)
+                    if (result.success) {
+                      toast.success(result.message)
+                      window.location.reload()
+                    } else {
+                      toast.error(result.message)
+                    }
+                  } catch (error) {
+                    toast.error('Erreur lors du changement de visibilité')
+                  }
+                })()
+              }}
+            />
           </div>
         </div>
 

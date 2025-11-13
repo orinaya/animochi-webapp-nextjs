@@ -51,6 +51,8 @@ export interface Monster {
   experienceToNextLevel?: number | null
   /** Accessoires équipés (optionnel) */
   equippedAccessories?: EquippedAccessories | null
+  /** Indique si le monstre est public */
+  isPublic?: boolean
   /** Date de création (format string ISO) */
   createdAt?: string
   /** Date de dernière modification (format string ISO) */

@@ -59,12 +59,13 @@ export async function createMonster (monsterData: Monster): Promise<void> {
     experience: monsterData.experience ?? 0,
     experienceToNextLevel: monsterData.experienceToNextLevel ?? 150,
     ownerId: new Types.ObjectId(session.user.id),
+    isPublic: false,
     equippedAccessories: monsterData.equippedAccessories ?? {
       hat: null,
       glasses: null,
-      shoes: null
-    },
-    equippedBackground: monsterData.equippedBackground ?? null
+      shoes: null,
+      background: null
+    }
   })
 
   console.log('Monstre avant sauvegarde:', monster)
@@ -120,6 +121,7 @@ export async function getMonsters (): Promise<Monster[]> {
       experience: monster.experience,
       experienceToNextLevel: monster.experienceToNextLevel,
       ownerId: monster.ownerId.toString(),
+      isPublic: monster.isPublic ?? false,
       equippedAccessories:
         monster.equippedAccessories != null
           ? {
@@ -218,6 +220,7 @@ export async function getMonsterById (id: string): Promise<Monster | null> {
       experience: monsterObj.experience ?? undefined,
       experienceToNextLevel: monsterObj.experienceToNextLevel ?? undefined,
       ownerId: monster.ownerId.toString(),
+      isPublic: monsterObj.isPublic ?? false,
       equippedAccessories:
         monster.equippedAccessories != null
           ? {

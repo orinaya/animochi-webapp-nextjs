@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import Button from '@/components/ui/button'
 import AccessoryInventoryModal from '@/components/accessories/accessory-inventory-modal'
+import { PublicToggle } from '@/components/monsters/public-toggle'
 import type { Monster } from '@/types/monster'
 import type { AccessoryData, OwnedAccessory, AccessoryCategory } from '@/types/monster-accessories'
 import { useWallet } from '@/hooks/use-wallet'
@@ -174,42 +175,51 @@ export default function MonsterDetailHeader ({
 
   return (
     <>
-      <header className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8'>
-        {/* Nom du monstre */}
-        <div>
-          <h1 className='text-3xl sm:text-4xl font-bold text-blueberry-950'>
-            {monster.name}
-          </h1>
-          <p className='text-latte-600 mt-1'>
-            Niveau {monster.level ?? 1}
-          </p>
+      <header className='flex flex-col gap-4 mb-8'>
+        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
+          {/* Nom du monstre */}
+          <div>
+            <h1 className='text-3xl sm:text-4xl font-bold text-blueberry-950'>
+              {monster.name}
+            </h1>
+            <p className='text-latte-600 mt-1'>
+              Niveau {monster.level ?? 1}
+            </p>
+          </div>
+
+          {/* Boutons de navigation */}
+          <div className='flex gap-3'>
+            <Button
+              variant='outline'
+              color='latte'
+              size='md'
+              onClick={() => {
+                setModalTab('inventory')
+                setShowModal(true)
+              }}
+            >
+              🎒 Inventaire
+            </Button>
+            <Button
+              variant='outline'
+              color='latte'
+              size='md'
+              onClick={() => {
+                setModalTab('shop')
+                setShowModal(true)
+              }}
+            >
+              🛍️ Boutique
+            </Button>
+          </div>
         </div>
 
-        {/* Boutons de navigation */}
-        <div className='flex gap-3'>
-          <Button
-            variant='outline'
-            color='latte'
-            size='md'
-            onClick={() => {
-              setModalTab('inventory')
-              setShowModal(true)
-            }}
-          >
-            🎒 Inventaire
-          </Button>
-          <Button
-            variant='outline'
-            color='latte'
-            size='md'
-            onClick={() => {
-              setModalTab('shop')
-              setShowModal(true)
-            }}
-          >
-            🛍️ Boutique
-          </Button>
-        </div>
+        {/* Toggle de visibilité publique */}
+        <PublicToggle
+          monsterId={monsterId}
+          initialIsPublic={monster.isPublic ?? false}
+          variant='compact'
+        />
       </header>
 
       {/* Modal unifiée Inventaire + Boutique */}
