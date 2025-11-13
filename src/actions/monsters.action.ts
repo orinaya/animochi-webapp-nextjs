@@ -8,6 +8,8 @@ import type { Monster } from '@/types'
 import type { MonsterAction, MonsterActionResult } from '@/types/monster-actions'
 import { Types } from 'mongoose'
 import { headers } from 'next/headers'
+import { trackQuestProgress } from '@/actions/quests.actions'
+import { QuestType } from '@/domain/entities/quest.entity'
 
 /**
  * Crée un nouveau monstre pour l'utilisateur authentifié
@@ -65,7 +67,7 @@ export async function createMonster (monsterData: Monster): Promise<void> {
       glasses: null,
       shoes: null,
       background: null
-    }
+    },
   })
 
   console.log('Monstre avant sauvegarde:', monster)
@@ -273,7 +275,7 @@ export async function deleteMonster (id: string): Promise<{ success: boolean, me
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Utilisateur non authentifié'
+        message: 'Utilisateur non authentifié',
       }
     }
 
@@ -305,20 +307,20 @@ export async function deleteMonster (id: string): Promise<{ success: boolean, me
       console.error("❌ Monstre non trouvé ou n'appartient pas à l'utilisateur")
       return {
         success: false,
-        message: 'Monstre non trouvé ou accès refusé'
+        message: 'Monstre non trouvé ou accès refusé',
       }
     }
 
     console.log('✅ Monstre supprimé avec succès')
     return {
       success: true,
-      message: 'Monstre supprimé avec succès'
+      message: 'Monstre supprimé avec succès',
     }
   } catch (error) {
     console.error('Error deleting monster:', error)
     return {
       success: false,
-      message: 'Erreur lors de la suppression du monstre'
+      message: 'Erreur lors de la suppression du monstre',
     }
   }
 }
@@ -361,7 +363,7 @@ export async function updateMonsterName (
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Utilisateur non authentifié'
+        message: 'Utilisateur non authentifié',
       }
     }
 
@@ -371,14 +373,14 @@ export async function updateMonsterName (
     if (newName.trim() === '') {
       return {
         success: false,
-        message: 'Le nom ne peut pas être vide'
+        message: 'Le nom ne peut pas être vide',
       }
     }
 
     if (newName.length > 50) {
       return {
         success: false,
-        message: 'Le nom ne peut pas dépasser 50 caractères'
+        message: 'Le nom ne peut pas dépasser 50 caractères',
       }
     }
 
@@ -417,7 +419,7 @@ export async function updateMonsterName (
       console.error("❌ Monstre non trouvé ou n'appartient pas à l'utilisateur")
       return {
         success: false,
-        message: 'Monstre non trouvé ou accès refusé'
+        message: 'Monstre non trouvé ou accès refusé',
       }
     }
 
@@ -425,20 +427,20 @@ export async function updateMonsterName (
       console.warn('⚠️ Aucune modification effectuée (nom identique ?)')
       return {
         success: true,
-        message: 'Aucune modification nécessaire'
+        message: 'Aucune modification nécessaire',
       }
     }
 
     console.log('✅ Nom du monstre mis à jour avec succès')
     return {
       success: true,
-      message: 'Nom mis à jour avec succès'
+      message: 'Nom mis à jour avec succès',
     }
   } catch (error) {
     console.error('Error updating monster name:', error)
     return {
       success: false,
-      message: 'Erreur lors de la mise à jour du nom'
+      message: 'Erreur lors de la mise à jour du nom',
     }
   }
 }
@@ -504,7 +506,7 @@ export async function applyMonsterAction (
         newLevel: 1,
         leveledUp: false,
         levelsGained: 0,
-        message: 'ID de monstre invalide'
+        message: 'ID de monstre invalide',
       }
     }
 
@@ -524,7 +526,7 @@ export async function applyMonsterAction (
         newLevel: 1,
         leveledUp: false,
         levelsGained: 0,
-        message: 'Monstre non trouvé'
+        message: 'Monstre non trouvé',
       }
     }
 
@@ -569,6 +571,18 @@ export async function applyMonsterAction (
 
     await monster.save()
     console.log('✅ Monstre sauvegardé avec succès')
+
+    // Tracker les quêtes selon l'action
+    if (action === 'feed') {
+      await trackQuestProgress(QuestType.FEED_MONSTER, 1)
+    } else if (action === 'play' || action === 'pet') {
+      await trackQuestProgress(QuestType.INTERACT_WITH_MONSTERS, 1)
+    }
+
+    // Tracker l'évolution si niveau gagné
+    if (experienceResult.leveledUp) {
+      await trackQuestProgress(QuestType.EVOLVE_MONSTER, experienceResult.levelsGained)
+    }
 
     // Construction du message de feedback
     let message = `+${experienceResult.xpGained} XP !`

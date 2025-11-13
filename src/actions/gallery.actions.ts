@@ -7,6 +7,8 @@ import { auth } from '@/lib/auth/auth'
 import type { GalleryFilters, GalleryResult, MonsterWithOwner } from '@/types/gallery'
 import { Types } from 'mongoose'
 import { headers } from 'next/headers'
+import { trackQuestProgress } from '@/actions/quests.actions'
+import { QuestType } from '@/domain/entities/quest.entity'
 
 /**
  * Récupère tous les monstres publics pour la galerie communautaire
@@ -192,7 +194,7 @@ export async function toggleMonsterVisibility (
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Vous devez être authentifié pour modifier la visibilité'
+        message: 'Vous devez être authentifié pour modifier la visibilité',
       }
     }
 
@@ -202,7 +204,7 @@ export async function toggleMonsterVisibility (
     if (!Types.ObjectId.isValid(monsterId)) {
       return {
         success: false,
-        message: 'ID de monstre invalide'
+        message: 'ID de monstre invalide',
       }
     }
 
@@ -223,15 +225,20 @@ export async function toggleMonsterVisibility (
     monster.isPublic = isPublic
     await monster.save()
 
+    // Tracker la quête si le monstre devient public
+    if (isPublic) {
+      await trackQuestProgress(QuestType.MAKE_MONSTER_PUBLIC, 1)
+    }
+
     return {
       success: true,
-      message: isPublic ? 'Monstre rendu public !' : 'Monstre rendu privé !'
+      message: isPublic ? 'Monstre rendu public !' : 'Monstre rendu privé !',
     }
   } catch (error) {
     console.error('Error toggling monster visibility:', error)
     return {
       success: false,
-      message: 'Erreur lors de la modification de la visibilité'
+      message: 'Erreur lors de la modification de la visibilité',
     }
   }
 }

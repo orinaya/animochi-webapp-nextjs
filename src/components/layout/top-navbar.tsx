@@ -1,13 +1,13 @@
 'use client'
 
 import { FiSearch, FiArrowLeft, FiHome } from 'react-icons/fi'
-import DropdownProfileParticle from '../ui/dropdown-profile-particle'
 import type { authClient } from '@/lib/auth/auth-client'
 import { FaRegBell } from 'react-icons/fa6'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import Button from '@/components/ui/button'
 import { WalletHeaderDisplay } from '../wallet/wallet-header-display'
-import { useUserPseudo } from '@/hooks/use-user-pseudo'
+import { QuestsButton } from '../quests/quests-button'
 
 type Session = typeof authClient.$Infer.Session
 
@@ -36,34 +36,8 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
   const router = useRouter()
   const pathname = usePathname()
 
-  // Hook pour récupérer le pseudo depuis la base de données
-  const { pseudo } = useUserPseudo()
-
   // Vérifie si on est sur la page d'accueil/dashboard
   const isHomePage = pathname === '/dashboard' || pathname === '/'
-
-  // Génération des initiales depuis le nom ou l'email
-  const getInitials = (): string => {
-    if (session.user.name !== null && session.user.name !== undefined) {
-      return session.user.name
-        .split(' ')
-        .map(word => word.charAt(0))
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
-    }
-
-    if (session.user.email !== null && session.user.email !== undefined) {
-      return session.user.email.charAt(0).toUpperCase()
-    }
-
-    return '?'
-  }
-
-  // Format du nom complet
-  const getFullName = (): string => {
-    return session.user.name ?? session.user.email?.split('@')[0] ?? 'Utilisateur'
-  }
 
   const handleGoBack = (): void => {
     router.back()
@@ -74,26 +48,36 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
   }
 
   return (
-    <div className='bg-white flex items-center justify-between gap-6 z-40 px-8 py-2'>
+    <div className='bg-white flex items-center justify-between gap-6 z-40 px-8 h-16'>
       {/* Section gauche : Navigation et Breadcrumb */}
       <div className='flex items-center gap-4 flex-1'>
         {/* Boutons de navigation - seulement si pas sur l'accueil */}
         {!isHomePage && (
           <div className='flex items-center gap-2'>
-            <button
-              onClick={handleGoBack}
-              className='p-2 text-latte-600 hover:text-blueberry-600 hover:bg-blueberry-50 rounded-lg transition-all duration-200'
-              title='Retour'
-            >
-              <FiArrowLeft className='w-5 h-5' />
-            </button>
-            <button
-              onClick={handleGoHome}
-              className='p-2 text-latte-600 hover:text-blueberry-600 hover:bg-blueberry-50 rounded-lg transition-all duration-200'
-              title='Accueil'
-            >
-              <FiHome className='w-5 h-5' />
-            </button>
+            <div title='Retour'>
+              <Button
+                onClick={handleGoBack}
+                variant='ghost'
+                color='latte'
+                size='sm'
+                className='h-8 w-8 p-0! min-w-0'
+                iconCenter={FiArrowLeft}
+              >
+                <span className='sr-only'>Retour</span>
+              </Button>
+            </div>
+            <div title='Accueil'>
+              <Button
+                onClick={handleGoHome}
+                variant='ghost'
+                color='latte'
+                size='sm'
+                className='h-8 w-8 p-0! min-w-0'
+                iconCenter={FiHome}
+              >
+                <span className='sr-only'>Accueil</span>
+              </Button>
+            </div>
           </div>
         )}
 
@@ -109,13 +93,13 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
                   ? (
                     <Link
                       href={item.href}
-                      className='text-blueberry-950 hover:text-blueberry-800 transition-colors font-medium'
+                      className='text-blueberry-950 hover:text-blueberry-800 transition-colors font-medium text-sm'
                     >
                       {item.label}
                     </Link>
                     )
                   : (
-                    <span className='text-strawberry-600 font-medium'>{item.label}</span>
+                    <span className='text-strawberry-600 font-medium text-sm'>{item.label}</span>
                     )}
               </div>
             ))}
@@ -123,40 +107,43 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
         )}
       </div>
 
-      {/* Section droite : Recherche + Wallet + Notifications + Profil */}
+      {/* Section droite : Recherche + Actions Gaming (Quêtes → Wallet → Notifs) */}
       <div className='flex items-center gap-4'>
         {/* Barre de recherche */}
         <div className='max-w-sm relative'>
-          <FiSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-strawberry-400 w-4 h-4' />
+          <FiSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-strawberry-400 w-3.5 h-3.5' />
           <input
             type='text'
             placeholder='Rechercher...'
-            className='w-full pl-10 pr-4 py-2 bg-[#F6F5F4] rounded-full focus:outline-none focus:ring-1 focus:ring-strawberry-400 focus:border-transparent text-sm'
+            className='w-full h-8 pl-9 pr-4 bg-[#F6F5F4] rounded-full focus:outline-none focus:ring-1 focus:ring-strawberry-400 focus:border-transparent text-sm'
           />
         </div>
 
-        {/* Wallet Display */}
+        {/* Séparateur visuel */}
+        <div className='h-6 w-px bg-latte-200' />
+
+        {/* Bouton Quêtes - Action primaire */}
+        <QuestsButton />
+
+        {/* Wallet Display - Récompenses */}
         <WalletHeaderDisplay />
 
-        {/* Cloche de notifications */}
-        <button className='relative p-2 text-strawberry-400 hover:text-blueberry-600 hover:bg-blueberry-50 rounded-lg transition-all duration-200'>
-          <FaRegBell className='w-5 h-5' />
+        {/* Cloche de notifications - Action secondaire */}
+        <div className='relative'>
+          <Button
+            variant='ghost'
+            color='strawberry'
+            size='sm'
+            className='h-8 w-8 p-0! min-w-0 relative'
+            iconCenter={FaRegBell}
+          >
+            <span className='sr-only'>Notifications</span>
+          </Button>
           {/* Badge de notification (optionnel) */}
-          <span className='absolute -top-1 -right-1 bg-strawberry-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center'>
+          <span className='absolute -top-1 -right-1 bg-strawberry-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-semibold pointer-events-none'>
             3
           </span>
-        </button>
-
-        {/* Section profil cliquable avec dropdown intégré */}
-        <DropdownProfileParticle
-          fullname={getFullName()}
-          email={session.user.email ?? ''}
-          initials={getInitials()}
-          pseudo={pseudo}
-          onLogout={onLogout}
-          showUserInfo
-          userImage={session.user.image}
-        />
+        </div>
       </div>
     </div>
   )

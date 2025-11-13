@@ -9,10 +9,12 @@
 'use client'
 
 import { getPublicMonsters } from '@/actions/gallery.actions'
+import { QuestType } from '@/domain/entities/quest.entity'
 import { GalleryFilters } from '@/components/monsters/gallery-filters'
 import { MonsterGalleryCardInstagram } from '@/components/monsters/monster-gallery-card-instagram'
 import { DashboardLayout } from '@/components/layout'
 import { useAuth } from '@/hooks/use-auth'
+import { useQuestTracking } from '@/hooks/use-quest-tracking'
 import { authClient } from '@/lib/auth/auth-client'
 import type { GalleryFilters as GalleryFiltersType, GalleryResult } from '@/types'
 import { useEffect, useState } from 'react'
@@ -32,6 +34,7 @@ type Session = typeof authClient.$Infer.Session
  * Respecte le principe SRP : Gère uniquement l'affichage de la galerie
  */
 export default function GaleriePage (): React.ReactElement {
+  const { track } = useQuestTracking()
   const [result, setResult] = useState<GalleryResult>({
     monsters: [],
     total: 0,
@@ -66,10 +69,15 @@ export default function GaleriePage (): React.ReactElement {
       const data = await getPublicMonsters(filters)
       setResult(data)
       setIsLoading(false)
+
+      // Tracker la visite de la galerie (seulement au premier chargement)
+      if (filters.page === 1 && data.monsters.length > 0) {
+        await track(QuestType.VISIT_GALLERY, 1)
+      }
     }
 
     void loadMonsters()
-  }, [filters])
+  }, [filters, track])
 
   const handleFiltersChange = (newFilters: GalleryFiltersType): void => {
     setFilters({ ...newFilters, page: 1, limit: 12 })

@@ -5,19 +5,21 @@
 
 'use client'
 
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useWallet } from '@/hooks/use-wallet'
 import { formatAnimochi } from '@/utils/wallet.utils'
+import Button from '@/components/ui/button'
 
 export function WalletHeaderDisplay (): React.ReactNode {
   const { wallet, loading } = useWallet()
+  const router = useRouter()
 
   console.log('🎨 [WalletHeaderDisplay] Render - wallet:', wallet?.balance, 'loading:', loading)
 
   if (loading) {
     return (
-      <div className='bg-blueberry-100 rounded-lg px-3 py-2 animate-pulse'>
-        <div className='h-5 w-20 bg-blueberry-200 rounded' />
+      <div className='bg-blueberry-100 rounded-lg px-3 h-8 flex items-center animate-pulse'>
+        <div className='h-4 w-20 bg-blueberry-200 rounded' />
       </div>
     )
   }
@@ -27,13 +29,14 @@ export function WalletHeaderDisplay (): React.ReactNode {
   }
 
   return (
-    <Link
-      href='/wallet'
-      className='bg-linear-to-r from-blueberry-950 to-blueberry-900 text-white rounded-lg px-4 py-2 hover:shadow-lg transition-all duration-200 hover:scale-105 flex items-center gap-2 border border-blueberry-800'
+    <Button
+      onClick={() => { router.push('/wallet') }}
+      variant='primary'
+      color='blueberry'
+      size='sm'
+      className='h-8 px-3 text-sm font-bold hover:shadow-lg hover:scale-105'
     >
-      <span className='text-lg font-bold'>
-        {formatAnimochi(wallet.balance)}
-      </span>
-    </Link>
+      {formatAnimochi(wallet.balance)}
+    </Button>
   )
 }

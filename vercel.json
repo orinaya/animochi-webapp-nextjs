@@ -2,6 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/cron/reset-daily-quests",
+      "schedule": "0 0 * * *"
+    }
+  ],
   "rewrites": [],
   "headers": [
     {

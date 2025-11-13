@@ -11,6 +11,8 @@ import { StripePaymentRepository } from '@/infrastructure/repositories/stripe-pa
 import { MongoPurchaseRepository } from '@/infrastructure/repositories/mongo-purchase.repository'
 import { MongoWalletRepository } from '@/infrastructure/repositories/mongo-wallet.repository'
 import { MongoMonsterRepository } from '@/infrastructure/repositories/mongo-monster.repository'
+import { trackQuestProgress } from './quests.actions'
+import { QuestType } from '@/domain/entities/quest.entity'
 
 /**
  * Achète un boost XP avec des Animoneys (monnaie virtuelle)
@@ -47,6 +49,9 @@ export async function buyXpBoost (creatureId: string, boostId: string): Promise<
   // Utiliser le repository pour ajouter l'XP
   const monsterRepo = new MongoMonsterRepository()
   await monsterRepo.addXp(creatureId, boost.xpAmount)
+
+  // Tracker la progression de quête
+  await trackQuestProgress(QuestType.BUY_ACCESSORY, 1)
 
   revalidatePath(`/monster/${creatureId}`)
   revalidatePath('/wallet')
@@ -104,7 +109,7 @@ export async function createAnimoneysCheckoutSession (
       metadata: {
         animoneysAmount: amount,
         packagePrice: packageConfig.price
-      }
+      },
     })
 
     if (!result.ok) {
@@ -119,7 +124,7 @@ export async function createAnimoneysCheckoutSession (
   } catch (error) {
     console.error('Error in createAnimoneysCheckoutSession:', error)
     return {
-      error: error instanceof Error ? error.message : 'An unexpected error occurred'
+      error: error instanceof Error ? error.message : 'An unexpected error occurred',
     }
   }
 }
@@ -187,7 +192,7 @@ export async function createXpBoostCheckoutSession (
     metadata: {
       xpAmount: boost.xpAmount,
       boostName: boost.name
-    }
+    },
   })
 
   if (!result.ok) {

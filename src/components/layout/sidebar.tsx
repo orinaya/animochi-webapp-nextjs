@@ -47,7 +47,7 @@ interface NavCategory {
 const navCategories: NavCategory[] = [
   {
     id: 'dashboard',
-    name: 'Dashboard',
+    name: 'Tableau de bord',
     href: '/dashboard',
     icon: FiHome
   },
@@ -72,8 +72,7 @@ const navCategories: NavCategory[] = [
     name: 'Communauté',
     items: [
       { id: 'leaderboard', name: 'Classement', href: '/leaderboard', icon: LuTrophy },
-      { id: 'gallery', name: 'Galerie', href: '/galerie', icon: FiImage },
-      { id: 'achievements', name: 'Succès', href: '/succes', icon: FiAward }
+      { id: 'gallery', name: 'Galerie', href: '/galerie', icon: FiImage }
     ]
   },
   {
@@ -86,7 +85,7 @@ const navCategories: NavCategory[] = [
   }
 ]
 
-export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
+export function Sidebar({ session, onLogout }: SidebarProps): React.ReactNode {
   const pathname = usePathname()
   const [isExpanded, setIsExpanded] = useState(true)
   const [isHydrated, setIsHydrated] = useState(false)
@@ -186,7 +185,7 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
           {/* Navigation */}
           <nav className='px-1 [@media(min-width:900px)]:px-4 space-y-1 mt-0'>
             {navCategories.map((category) => {
-              // Catégorie simple (Dashboard)
+              // Catégorie simple (Tableau de bord)
               if (category.href != null && category.icon != null) {
                 const isActive = pathname === category.href
                 const IconComponent = category.icon
@@ -264,7 +263,7 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
                   <FiLogOut className='w-5 h-5' />
                 </button>
               </div>
-              )
+            )
             : (
               /* Version complète - avec texte */
               <div className='px-3'>
@@ -279,7 +278,7 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
                   Se déconnecter
                 </Button>
               </div>
-              )}
+            )}
         </div>
       </aside>
 

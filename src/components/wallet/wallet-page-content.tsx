@@ -29,6 +29,12 @@ export function WalletPageContent ({ session }: WalletPageContentProps): React.R
     // Logout logic - could be handled via authClient
   }
 
+  // Breadcrumb
+  const breadcrumbItems = [
+    { label: 'Tableau de bord', href: '/dashboard' },
+    { label: 'Wallet' }
+  ]
+
   const handleSubtract = async (amount: number): Promise<void> => {
     setSubtractError(null)
     const result = await deductFunds(amount, 'MANUAL_SUBTRACT')
@@ -44,7 +50,7 @@ export function WalletPageContent ({ session }: WalletPageContentProps): React.R
 
   if (error !== null && error !== '') {
     return (
-      <DashboardLayout session={session} onLogout={handleLogout}>
+      <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
         <div className='max-w-4xl mx-auto'>
           <div className='bg-white rounded-xl p-6 border border-strawberry-400 shadow-sm'>
             <div className='flex items-center gap-3 mb-4'>
@@ -67,7 +73,7 @@ export function WalletPageContent ({ session }: WalletPageContentProps): React.R
   }
 
   return (
-    <DashboardLayout session={session} onLogout={handleLogout}>
+    <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
       {/* Modal de succès de paiement */}
       <PaymentSuccessHandler
         onPaymentSuccess={() => {

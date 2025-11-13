@@ -42,6 +42,12 @@ export default function ProfileContent ({ session, userProfile }: ProfileContent
   const { logout } = useAuth()
   const [refreshKey, setRefreshKey] = useState(0)
 
+  // Breadcrumb
+  const breadcrumbItems = [
+    { label: 'Tableau de bord', href: '/dashboard' },
+    { label: 'Profil' }
+  ]
+
   const handleUsernameUpdate = (): void => {
     // Force un re-render pour afficher le nouveau username
     setRefreshKey(prev => prev + 1)
@@ -50,7 +56,7 @@ export default function ProfileContent ({ session, userProfile }: ProfileContent
   }
 
   return (
-    <DashboardLayout session={session} onLogout={logout}>
+    <DashboardLayout session={session} onLogout={logout} breadcrumbItems={breadcrumbItems}>
       <div className='w-full max-w-4xl mx-auto px-4 py-8'>
         <div className='space-y-8'>
           {/* En-tête */}

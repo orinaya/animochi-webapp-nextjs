@@ -181,11 +181,6 @@ export default function MonsterActionsSection ({
               <span className='text-[10px] text-strawberry-600 font-bold mt-0.5'>
                 +{xpReward} XP
               </span>
-              {loadingAction === actionConfig.action && (
-                <span className='text-xs text-latte-400 mt-1'>
-                  ⏳
-                </span>
-              )}
             </button>
           )
         })}

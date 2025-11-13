@@ -67,6 +67,12 @@ export function ShopPageContent ({ session }: ShopPageContentProps): React.React
   const [shopRarity, setShopRarity] = useState<AccessoryRarity | 'all'>('all')
   const [purchasing, setPurchasing] = useState<string | null>(null)
 
+  // Breadcrumb
+  const breadcrumbItems = [
+    { label: 'Tableau de bord', href: '/dashboard' },
+    { label: 'Boutique' }
+  ]
+
   const handleLogout = (): void => {
     // Logout logic handled via authClient
   }
@@ -148,7 +154,7 @@ export function ShopPageContent ({ session }: ShopPageContentProps): React.React
   }
 
   return (
-    <DashboardLayout session={session} onLogout={handleLogout}>
+    <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
       <div className='max-w-7xl mx-auto'>
         {/* Header */}
         <div className='mb-8'>
@@ -292,18 +298,18 @@ export function ShopPageContent ({ session }: ShopPageContentProps): React.React
                     ? (
                         accessory.imagePath != null
                           ? (
-                            <div
-                              className='w-full h-28 rounded bg-cover bg-center'
-                              style={{ backgroundImage: `url(${accessory.imagePath})` }}
-                            />
+                          <div
+                            className='w-full h-28 rounded bg-cover bg-center'
+                            style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                          />
                             )
                           : accessory.svg != null
                             ? (
-                              <svg
-                                viewBox='0 0 100 100'
-                                className='w-full h-28 rounded'
-                                dangerouslySetInnerHTML={{ __html: accessory.svg }}
-                              />
+                            <svg
+                              viewBox='0 0 100 100'
+                              className='w-full h-28 rounded'
+                              dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                            />
                               )
                             : null
                       )
