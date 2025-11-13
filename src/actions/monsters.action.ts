@@ -575,7 +575,7 @@ export async function applyMonsterAction (
     // Tracker les quêtes selon l'action
     if (action === 'feed') {
       await trackQuestProgress(QuestType.FEED_MONSTER, 1)
-    } else if (action === 'play' || action === 'pet') {
+    } else {
       await trackQuestProgress(QuestType.INTERACT_WITH_MONSTERS, 1)
     }
 
