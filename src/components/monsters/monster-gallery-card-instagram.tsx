@@ -9,6 +9,7 @@
 import type { MonsterWithOwner, MonsterState } from '@/types'
 import Link from 'next/link'
 import { useMemo } from 'react'
+import { FiGlobe } from 'react-icons/fi'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 
@@ -65,25 +66,78 @@ export function MonsterGalleryCardInstagram ({
   monster,
   className = ''
 }: MonsterGalleryCardInstagramProps): React.ReactElement {
-  // Récupérer les accessoires équipés
-  const equippedAccessories = useMemo(() => {
-    if (monster.equippedAccessories == null) return null
-
-    return {
-      hat: monster.equippedAccessories.hat != null
-        ? ACCESSORIES_CATALOG.find(a => a.name === monster.equippedAccessories?.hat)
-        : null,
-      glasses: monster.equippedAccessories.glasses != null
-        ? ACCESSORIES_CATALOG.find(a => a.name === monster.equippedAccessories?.glasses)
-        : null,
-      shoes: monster.equippedAccessories.shoes != null
-        ? ACCESSORIES_CATALOG.find(a => a.name === monster.equippedAccessories?.shoes)
-        : null,
-      background: monster.equippedAccessories.background != null
-        ? BACKGROUNDS_CATALOG.find(b => b.name === monster.equippedAccessories?.background)
-        : null
+  // Récupérer le background équipé
+  const equippedBackground = useMemo(() => {
+    const equipped = monster.equippedAccessories ?? {}
+    if (equipped.background != null) {
+      const bgData = [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG].find(
+        acc => acc.name === equipped.background
+      )
+      return bgData
     }
+    return null
   }, [monster.equippedAccessories])
+
+  // Récupérer les accessoires équipés (SVG)
+  const equippedAccessoriesData = useMemo(() => {
+    const equipped = monster.equippedAccessories ?? {}
+    const accessories: Array<{ svg: string, category: string }> = []
+
+    if (equipped.hat != null) {
+      const hatData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.hat)
+      if (hatData?.svg != null) {
+        accessories.push({ svg: hatData.svg, category: 'hat' })
+      }
+    }
+
+    if (equipped.glasses != null) {
+      const glassesData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.glasses)
+      if (glassesData?.svg != null) {
+        accessories.push({ svg: glassesData.svg, category: 'glasses' })
+      }
+    }
+
+    if (equipped.shoes != null) {
+      const shoesData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.shoes)
+      if (shoesData?.svg != null) {
+        accessories.push({ svg: shoesData.svg, category: 'shoes' })
+      }
+    }
+
+    return accessories
+  }, [monster.equippedAccessories])
+
+  /**
+   * Retourne les styles de positionnement et animations pour chaque catégorie d'accessoire
+   */
+  const getAccessoryStyles = (category: string): { position: string, size: string, animation: string } => {
+    switch (category) {
+      case 'hat':
+        return {
+          position: 'top-[18%] left-[46%] -translate-x-1/2',
+          size: 'w-[46%] h-auto',
+          animation: 'animate-float-gentle'
+        }
+      case 'glasses':
+        return {
+          position: 'top-[20%] left-[46%] -translate-x-1/2',
+          size: 'w-[48%] h-auto',
+          animation: ''
+        }
+      case 'shoes':
+        return {
+          position: 'bottom-[23%] left-[46%] -translate-x-1/2',
+          size: 'w-[29%] h-auto',
+          animation: 'animate-bounce-vertical'
+        }
+      default:
+        return {
+          position: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+          size: 'w-[50%] h-auto',
+          animation: ''
+        }
+    }
+  }
 
   const stateConfig = monster.state != null
     ? STATE_CONFIG[monster.state as MonsterState]
@@ -113,8 +167,8 @@ export function MonsterGalleryCardInstagram ({
             </p>
           </div>
         </div>
-        <div className='bg-blueberry-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1'>
-          <span>🌍</span>
+        <div className='flex items-center gap-1 text-xs text-blueberry-600 bg-blueberry-50 px-2 py-1 rounded-full'>
+          <FiGlobe size={14} />
           <span>Public</span>
         </div>
       </div>
@@ -122,60 +176,60 @@ export function MonsterGalleryCardInstagram ({
       {/* Zone du monstre - Carrée comme Instagram */}
       <Link
         href={`/monster/${String(monster.id ?? monster._id)}`}
-        className='block relative aspect-square bg-latte-25'
+        className='block relative aspect-square overflow-hidden'
       >
-        {/* Arrière-plan */}
-        {equippedAccessories?.background?.imagePath != null && (
+        {/* Arrière-plan image */}
+        {equippedBackground?.imagePath != null && (
           <div
-            className='absolute inset-0 bg-cover bg-center'
+            className='absolute inset-0 bg-cover bg-center z-0'
             style={{
-              backgroundImage: `url(${equippedAccessories.background.imagePath})`
+              backgroundImage: `url(${equippedBackground.imagePath})`
             }}
           />
         )}
 
-        {/* Monstre */}
-        <div className='relative h-full flex items-center justify-center p-8'>
+        {/* Background SVG (gradient) si c'est un gradient */}
+        {equippedBackground?.svg != null && (
+          <div className='absolute inset-0 z-0'>
+            <svg
+              viewBox='0 0 100 100'
+              className='w-full h-full'
+              preserveAspectRatio='none'
+              dangerouslySetInnerHTML={{ __html: equippedBackground.svg }}
+            />
+          </div>
+        )}
+
+        {/* Fond par défaut si pas de background équipé */}
+        {equippedBackground == null && (
+          <div className='absolute inset-0 bg-linear-to-br from-blueberry-50 to-peach-50 z-0' />
+        )}
+
+        {/* Conteneur pour le monstre - centré avec padding */}
+        <div className='relative w-full h-full flex items-center justify-center p-8 z-10'>
+          {/* Monstre SVG */}
           {monster.draw != null && (
             <div
-              className='w-full h-full'
+              className='w-full h-full flex items-center justify-center'
               dangerouslySetInnerHTML={{ __html: monster.draw }}
             />
           )}
-        </div>
 
-        {/* Accessoires par-dessus */}
-        {equippedAccessories != null && (
-          <div className='absolute inset-0 pointer-events-none'>
-            {equippedAccessories.hat?.imagePath != null && (
-              <div className='absolute top-8 left-1/2 -translate-x-1/2 w-24 h-24'>
-                <img
-                  src={equippedAccessories.hat.imagePath}
-                  alt={equippedAccessories.hat.name}
-                  className='w-full h-full object-contain'
-                />
+          {/* Accessoires par-dessus avec SVG */}
+          {equippedAccessoriesData.map((accessory, index) => {
+            const styles = getAccessoryStyles(accessory.category)
+            return (
+              <div
+                key={`${accessory.category}-${index}`}
+                className={`absolute pointer-events-none z-20 ${styles.position} ${styles.size} ${styles.animation}`}
+              >
+                <svg viewBox='0 0 80 80' className='w-full h-full'>
+                  <g dangerouslySetInnerHTML={{ __html: accessory.svg }} />
+                </svg>
               </div>
-            )}
-            {equippedAccessories.glasses?.imagePath != null && (
-              <div className='absolute top-1/3 left-1/2 -translate-x-1/2 w-20 h-20'>
-                <img
-                  src={equippedAccessories.glasses.imagePath}
-                  alt={equippedAccessories.glasses.name}
-                  className='w-full h-full object-contain'
-                />
-              </div>
-            )}
-            {equippedAccessories.shoes?.imagePath != null && (
-              <div className='absolute bottom-8 left-1/2 -translate-x-1/2 w-24 h-24'>
-                <img
-                  src={equippedAccessories.shoes.imagePath}
-                  alt={equippedAccessories.shoes.name}
-                  className='w-full h-full object-contain'
-                />
-              </div>
-            )}
-          </div>
-        )}
+            )
+          })}
+        </div>
       </Link>
 
       {/* Footer type Instagram */}
