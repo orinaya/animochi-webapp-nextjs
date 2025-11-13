@@ -4,13 +4,14 @@
  * @module components/ui/monster-card
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { Monster, MonsterState } from '@/types/monster'
 import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience'
 import ProgressBar from './progress-bar'
 import Button from './button'
 import { Modal } from './modal'
 import { FiTrash2, FiEdit } from 'react-icons/fi'
+import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 
 /**
  * Props du composant MonsterCard
@@ -71,7 +72,7 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
+function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
   const config = STATE_CONFIG[state]
 
   return (
@@ -89,7 +90,7 @@ function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
  * Utilise le service d'expérience pour calculer la progression réelle
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
-function LevelProgress ({ level, experience, experienceToNextLevel }: {
+function LevelProgress({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
@@ -144,7 +145,7 @@ function LevelProgress ({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   const level = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
@@ -155,6 +156,74 @@ export default function MonsterCard ({ monster, onClick, onDelete, onEdit, class
   const [showEditModal, setShowEditModal] = useState(false)
   const [editedName, setEditedName] = useState(monster.name)
   const [isEditLoading, setIsEditLoading] = useState(false)
+
+  /**
+   * Récupère les accessoires équipés depuis le catalogue
+   */
+  const equippedAccessoriesData = useMemo(() => {
+    const equipped = monster.equippedAccessories ?? {}
+    const accessories: Array<{ svg: string, category: string }> = []
+
+    // Récupérer chaque accessoire équipé depuis le catalogue
+    if (equipped.hat != null) {
+      const hatData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.hat)
+      if (hatData?.svg != null) {
+        accessories.push({ svg: hatData.svg, category: 'hat' })
+      }
+    }
+
+    if (equipped.glasses != null) {
+      const glassesData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.glasses)
+      if (glassesData?.svg != null) {
+        accessories.push({ svg: glassesData.svg, category: 'glasses' })
+      }
+    }
+
+    if (equipped.shoes != null) {
+      const shoesData = ACCESSORIES_CATALOG.find(acc => acc.name === equipped.shoes)
+      if (shoesData?.svg != null) {
+        accessories.push({ svg: shoesData.svg, category: 'shoes' })
+      }
+    }
+
+    return accessories
+  }, [monster.equippedAccessories])
+
+  /**
+   * Retourne les styles de positionnement et animations pour chaque catégorie d'accessoire
+   * Adapté aux dimensions réduites de la carte (160px)
+   */
+  const getAccessoryStyles = (category: string): { position: string, size: string, animation: string } => {
+    switch (category) {
+      case 'hat':
+        // Chapeau au-dessus de la tête - animation flottante douce
+        return {
+          position: 'top-[4%] left-[44%] -translate-x-1/2',
+          size: 'w-[69%] h-auto',
+          animation: 'animate-float-gentle'
+        }
+      case 'glasses':
+        // Lunettes devant les yeux - pas d'animation
+        return {
+          position: 'top-[12%] left-[44%] -translate-x-1/2',
+          size: 'w-[57%] h-auto',
+          animation: ''
+        }
+      case 'shoes':
+        // Chaussures au bas - rebond vertical
+        return {
+          position: 'bottom-[10%] left-[44%] -translate-x-1/2',
+          size: 'w-[41%] h-auto',
+          animation: 'animate-bounce-vertical'
+        }
+      default:
+        return {
+          position: 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+          size: 'w-[50%] h-auto',
+          animation: ''
+        }
+    }
+  }
 
   /**
    * Gestionnaire de confirmation de suppression
@@ -242,12 +311,30 @@ export default function MonsterCard ({ monster, onClick, onDelete, onEdit, class
           </h3>
         </div>
 
-        {/* Image SVG du monstre */}
+        {/* Image SVG du monstre avec accessoires */}
         <div className='flex justify-center mb-4'>
-          <div
-            className='w-40 h-40 p-4 flex items-center justify-center bg-linear-to-br from-blueberry-50 to-strawberry-50 rounded-2xl group-hover:scale-105 transition-transform duration-300'
-            dangerouslySetInnerHTML={{ __html: monster.draw ?? '<svg></svg>' }}
-          />
+          <div className='relative w-40 h-40 p-4 flex items-center justify-center bg-linear-to-br from-blueberry-50 to-strawberry-50 rounded-2xl group-hover:scale-105 transition-transform duration-300'>
+            {/* SVG du monstre */}
+            <div
+              className='w-full h-full flex items-center justify-center'
+              dangerouslySetInnerHTML={{ __html: monster.draw ?? '<svg></svg>' }}
+            />
+
+            {/* Overlay des accessoires équipés avec animations */}
+            {equippedAccessoriesData.map((accessory, index) => {
+              const styles = getAccessoryStyles(accessory.category)
+              return (
+                <div
+                  key={`${accessory.category}-${index}`}
+                  className={`absolute pointer-events-none ${styles.position} ${styles.size} ${styles.animation}`}
+                >
+                  <svg viewBox='0 0 80 80' className='w-full h-full'>
+                    <g dangerouslySetInnerHTML={{ __html: accessory.svg }} />
+                  </svg>
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         {/* Progression de niveau */}
