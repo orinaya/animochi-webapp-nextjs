@@ -115,8 +115,7 @@ export function CreateMonsterModal ({
           description: formData.description.trim() !== '' ? formData.description.trim() : undefined,
           draw: generatedCatSvg !== '' ? generatedCatSvg : 'placeholder', // Utilise le SVG généré ou un placeholder
           // Les autres champs (level, state, experience, etc.) auront leurs valeurs par défaut du schéma MongoDB
-          equippedAccessories: null,
-          equippedBackground: null
+          equippedAccessories: null
         }
 
         await onCreate(newMonster)

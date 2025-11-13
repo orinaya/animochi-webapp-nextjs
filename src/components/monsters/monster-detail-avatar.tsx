@@ -16,6 +16,7 @@ import { useMemo } from 'react'
 import type { Monster } from '@/types/monster'
 import type { MonsterAction } from '@/types/monster-actions'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
+import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import ActionAnimation from './action-animation'
 
 interface MonsterDetailAvatarProps {
@@ -25,6 +26,8 @@ interface MonsterDetailAvatarProps {
   currentAnimation?: MonsterAction | null
   /** Callback quand l'animation est terminée */
   onAnimationComplete?: () => void
+  /** Callback pour ouvrir la modal d'inventaire sur la catégorie background */
+  onEditBackground?: () => void
 }
 
 /**
@@ -33,7 +36,7 @@ interface MonsterDetailAvatarProps {
  * @param {string | null} state - État du monstre
  * @returns {string} Emoji représentant l'état
  */
-function getStateEmoji (state: string | null): string {
+function getStateEmoji(state: string | null): string {
   const stateEmojis: Record<string, string> = {
     happy: '😊',
     sad: '😢',
@@ -51,12 +54,27 @@ function getStateEmoji (state: string | null): string {
  * @param {MonsterDetailAvatarProps} props - Les propriétés du composant
  * @returns {React.ReactNode} L'avatar du monstre
  */
-export default function MonsterDetailAvatar ({
+export default function MonsterDetailAvatar({
   monster,
   currentAnimation = null,
-  onAnimationComplete
+  onAnimationComplete,
+  onEditBackground
 }: MonsterDetailAvatarProps): React.ReactNode {
   const stateEmoji = getStateEmoji(monster.state ?? null)
+
+  /**
+   * Récupère le background équipé depuis le catalogue
+   */
+  const equippedBackground = useMemo(() => {
+    const equipped = monster.equippedAccessories ?? {}
+    if (equipped.background != null) {
+      const bgData = [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG].find(
+        acc => acc.name === equipped.background
+      )
+      return bgData
+    }
+    return null
+  }, [monster.equippedAccessories])
 
   /**
    * Récupère les accessoires équipés depuis le catalogue
@@ -136,7 +154,29 @@ export default function MonsterDetailAvatar ({
   }
 
   return (
-    <div className='relative bg-linear-to-br from-blueberry-50 to-peach-50 rounded-3xl p-4 shadow-lg overflow-hidden w-full'>
+    <div
+      className='relative rounded-3xl p-4 shadow-lg overflow-hidden w-full'
+      style={equippedBackground?.imagePath != null
+        ? { backgroundImage: `url(${equippedBackground.imagePath})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+        : {}}
+    >
+      {/* Background SVG (gradient) si c'est un gradient */}
+      {equippedBackground?.svg != null && (
+        <div className='absolute inset-0 -z-10'>
+          <svg
+            viewBox='0 0 100 100'
+            className='w-full h-full'
+            preserveAspectRatio='none'
+            dangerouslySetInnerHTML={{ __html: equippedBackground.svg }}
+          />
+        </div>
+      )}
+
+      {/* Fond par défaut si pas de background équipé */}
+      {equippedBackground == null && (
+        <div className='absolute inset-0 bg-linear-to-br from-blueberry-50 to-peach-50 -z-20' />
+      )}
+
       {/* Animation d'action - couvre toute la carte */}
       {currentAnimation !== null && (
         <ActionAnimation
@@ -149,6 +189,17 @@ export default function MonsterDetailAvatar ({
       <div className='absolute top-3 right-3 bg-white rounded-full px-3 py-1.5 shadow-md z-10'>
         <span className='text-xl'>{stateEmoji}</span>
       </div>
+
+      {/* Bouton d'édition du background */}
+      {onEditBackground != null && (
+        <button
+          onClick={onEditBackground}
+          className='absolute bottom-3 right-3 bg-white hover:bg-blueberry-50 rounded-full p-2 shadow-md z-10 transition-all hover:scale-110'
+          title='Modifier l&#39;arrière-plan'
+        >
+          <span className='text-xl'>🖼️</span>
+        </button>
+      )}
 
       {/* Image SVG du monstre avec accessoires - Hauteur réduite */}
       <div className='relative flex items-center justify-center min-h-[200px] sm:min-h-[280px] z-0'>
@@ -176,13 +227,13 @@ export default function MonsterDetailAvatar ({
                 )
               })}
             </div>
-            )
+          )
           : (
             <div className='text-center text-latte-600'>
               <span className='text-6xl mb-4 block'>🐾</span>
               <p>Aucune apparence définie</p>
             </div>
-            )}
+          )}
       </div>
     </div>
   )

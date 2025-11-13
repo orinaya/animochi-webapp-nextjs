@@ -5,7 +5,8 @@
  * @module data/accessories-catalog
  */
 
-import type { AccessoryData } from '@/types/monster-accessories'
+import type {AccessoryData} from "@/types/monster-accessories"
+import {BACKGROUNDS_CATALOG} from "./backgrounds-catalog"
 
 /**
  * Catalogue complet des accessoires disponibles dans la boutique
@@ -18,12 +19,12 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
   // CHAPEAUX (Hats)
   // ============================================================================
   {
-    name: 'Chapeau Haut-de-Forme',
-    category: 'hat',
-    emoji: '🎩',
-    description: 'Un élégant chapeau noir pour chat distingué',
+    name: "Chapeau Haut-de-Forme",
+    category: "hat",
+    emoji: "🎩",
+    description: "Un élégant chapeau noir pour chat distingué",
     price: 150,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="top-hat">
         <!-- Bord du chapeau -->
@@ -42,15 +43,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Reflet -->
         <rect x="36" y="-4" width="4" height="4" fill="#4a4a4a" opacity="0.5"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Béret Français',
-    category: 'hat',
-    emoji: '🧢',
-    description: 'Un béret rouge très français, parfait pour les chats artistes',
+    name: "Béret Français",
+    category: "hat",
+    emoji: "🧢",
+    description: "Un béret rouge très français, parfait pour les chats artistes",
     price: 250,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="beret">
         <!-- Base du béret -->
@@ -66,15 +67,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Petite tige -->
         <rect x="38" y="-12" width="4" height="4" fill="#901829"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Couronne Dorée',
-    category: 'hat',
-    emoji: '👑',
-    description: 'Une couronne royale pour chat majestueux',
+    name: "Couronne Dorée",
+    category: "hat",
+    emoji: "👑",
+    description: "Une couronne royale pour chat majestueux",
     price: 600,
-    rarity: 'epic',
+    rarity: "epic",
     svg: `
       <g id="crown">
         <!-- Base de la couronne -->
@@ -93,15 +94,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Brillance -->
         <rect x="38" y="-2" width="2" height="2" fill="#ffffff" opacity="0.8"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Auréole Céleste',
-    category: 'hat',
-    emoji: '😇',
-    description: 'Une auréole divine pour les chats angéliques',
+    name: "Auréole Céleste",
+    category: "hat",
+    emoji: "😇",
+    description: "Une auréole divine pour les chats angéliques",
     price: 1500,
-    rarity: 'legendary',
+    rarity: "legendary",
     svg: `
       <g id="halo">
         <!-- Auréole principale -->
@@ -114,19 +115,19 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Effet de lumière -->
         <circle cx="40" cy="-8" r="2" fill="#ffffff" opacity="0.8"/>
       </g>
-    `
+    `,
   },
 
   // ============================================================================
   // LUNETTES (Glasses)
   // ============================================================================
   {
-    name: 'Lunettes Rondes',
-    category: 'glasses',
-    emoji: '🤓',
-    description: 'Des lunettes rondes pour chat intellectuel',
+    name: "Lunettes Rondes",
+    category: "glasses",
+    emoji: "🤓",
+    description: "Des lunettes rondes pour chat intellectuel",
     price: 180,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="round-glasses">
         <!-- Verre gauche -->
@@ -141,15 +142,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <circle cx="26" cy="30" r="2" fill="#ffffff" opacity="0.6"/>
         <circle cx="50" cy="30" r="2" fill="#ffffff" opacity="0.6"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Lunettes de Soleil',
-    category: 'glasses',
-    emoji: '😎',
-    description: 'Des lunettes de soleil cool pour chat branché',
+    name: "Lunettes de Soleil",
+    category: "glasses",
+    emoji: "😎",
+    description: "Des lunettes de soleil cool pour chat branché",
     price: 300,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="sunglasses">
         <!-- Monture gauche -->
@@ -164,15 +165,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="24" y="29" width="4" height="2" fill="#ffffff" opacity="0.4"/>
         <rect x="48" y="29" width="4" height="2" fill="#ffffff" opacity="0.4"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Monocle Chic',
-    category: 'glasses',
-    emoji: '🧐',
-    description: 'Un monocle raffiné pour chat aristocrate',
+    name: "Monocle Chic",
+    category: "glasses",
+    emoji: "🧐",
+    description: "Un monocle raffiné pour chat aristocrate",
     price: 540,
-    rarity: 'epic',
+    rarity: "epic",
     svg: `
       <g id="monocle">
         <!-- Cadre du monocle -->
@@ -186,15 +187,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Reflet -->
         <circle cx="50" cy="30" r="3" fill="#ffffff" opacity="0.7"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Lunettes Arc-en-Ciel',
-    category: 'glasses',
-    emoji: '🌈',
+    name: "Lunettes Arc-en-Ciel",
+    category: "glasses",
+    emoji: "🌈",
     description: "Des lunettes magiques aux couleurs de l'arc-en-ciel",
     price: 1350,
-    rarity: 'legendary',
+    rarity: "legendary",
     svg: `
       <g id="rainbow-glasses">
         <!-- Verre gauche - dégradé arc-en-ciel -->
@@ -223,19 +224,19 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
           </linearGradient>
         </defs>
       </g>
-    `
+    `,
   },
 
   // ============================================================================
   // CHAUSSURES (Shoes)
   // ============================================================================
   {
-    name: 'Baskets Rouges',
-    category: 'shoes',
-    emoji: '👟',
-    description: 'Des baskets sportives pour chat actif',
+    name: "Baskets Rouges",
+    category: "shoes",
+    emoji: "👟",
+    description: "Des baskets sportives pour chat actif",
     price: 120,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="sneakers">
         <!-- Basket gauche -->
@@ -252,15 +253,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Semelle droite -->
         <rect x="48" y="68" width="12" height="3" rx="1" fill="#2a2a2a"/>
       </g>
-    `
+    `,
   },
   {
     name: "Bottes d'Aventurier",
-    category: 'shoes',
-    emoji: '🥾',
-    description: 'Des bottes robustes pour chat explorateur',
+    category: "shoes",
+    emoji: "🥾",
+    description: "Des bottes robustes pour chat explorateur",
     price: 270,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="boots">
         <!-- Botte gauche -->
@@ -283,15 +284,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="18" y="72" width="14" height="4" rx="2" fill="#2a2a2a"/>
         <rect x="48" y="72" width="14" height="4" rx="2" fill="#2a2a2a"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Chaussons de Ballet',
-    category: 'shoes',
-    emoji: '🩰',
-    description: 'Des chaussons roses délicats pour chat danseur',
+    name: "Chaussons de Ballet",
+    category: "shoes",
+    emoji: "🩰",
+    description: "Des chaussons roses délicats pour chat danseur",
     price: 450,
-    rarity: 'epic',
+    rarity: "epic",
     svg: `
       <g id="ballet-shoes">
         <!-- Chausson gauche -->
@@ -312,15 +313,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <ellipse cx="26" cy="68" rx="4" ry="2" fill="#ffffff" opacity="0.3"/>
         <ellipse cx="54" cy="68" rx="4" ry="2" fill="#ffffff" opacity="0.3"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Sabots Magiques',
-    category: 'shoes',
-    emoji: '✨',
-    description: 'Des sabots enchantés qui brillent à chaque pas',
+    name: "Sabots Magiques",
+    category: "shoes",
+    emoji: "✨",
+    description: "Des sabots enchantés qui brillent à chaque pas",
     price: 1260,
-    rarity: 'legendary',
+    rarity: "legendary",
     svg: `
       <g id="magic-clogs">
         <!-- Sabot gauche -->
@@ -351,19 +352,19 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
           <animate attributeName="opacity" values="0.7;1;0.7" dur="1.4s" repeatCount="indefinite"/>
         </circle>
       </g>
-    `
+    `,
   },
 
   // ============================================================================
   // NOUVEAUX CHAPEAUX
   // ============================================================================
   {
-    name: 'Casquette de Baseball',
-    category: 'hat',
-    emoji: '🧢',
-    description: 'Casquette sportive pour chat cool',
+    name: "Casquette de Baseball",
+    category: "hat",
+    emoji: "🧢",
+    description: "Casquette sportive pour chat cool",
     price: 120,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="baseball-cap">
         <!-- Visière -->
@@ -379,15 +380,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Logo -->
         <rect x="38" y="6" width="4" height="4" fill="#ffffff"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Chapeau de Cowboy',
-    category: 'hat',
-    emoji: '🤠',
+    name: "Chapeau de Cowboy",
+    category: "hat",
+    emoji: "🤠",
     description: "Yee-haw ! Pour le chat de l'Ouest",
     price: 180,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="cowboy-hat">
         <!-- Bord large -->
@@ -404,15 +405,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Ruban décoratif -->
         <rect x="30" y="10" width="20" height="2" fill="#000000"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Bonnet à Pompon',
-    category: 'hat',
-    emoji: '🧶',
+    name: "Bonnet à Pompon",
+    category: "hat",
+    emoji: "🧶",
     description: "Bonnet chaud pour l'hiver",
     price: 100,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="winter-beanie">
         <!-- Pompon -->
@@ -430,15 +431,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="40" y="12" width="8" height="4" fill="#c71585"/>
         <rect x="48" y="12" width="8" height="4" fill="#c71585"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Casque de Chevalier',
-    category: 'hat',
-    emoji: '⚔️',
-    description: 'Casque médiéval pour chat valeureux',
+    name: "Casque de Chevalier",
+    category: "hat",
+    emoji: "⚔️",
+    description: "Casque médiéval pour chat valeureux",
     price: 250,
-    rarity: 'epic',
+    rarity: "epic",
     svg: `
       <g id="knight-helmet">
         <!-- Base du casque -->
@@ -455,15 +456,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <!-- Reflets métalliques -->
         <rect x="37" y="2" width="2" height="4" fill="#ffffff" opacity="0.6"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Chapeau de Sorcier',
-    category: 'hat',
-    emoji: '🧙',
-    description: 'Chapeau pointu magique avec étoiles',
+    name: "Chapeau de Sorcier",
+    category: "hat",
+    emoji: "🧙",
+    description: "Chapeau pointu magique avec étoiles",
     price: 200,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="wizard-hat">
         <!-- Bord -->
@@ -484,15 +485,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
           <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
         </circle>
       </g>
-    `
+    `,
   },
   {
-    name: 'Bandeau de Ninja',
-    category: 'hat',
-    emoji: '🥷',
-    description: 'Bandeau noir des ninjas furtifs',
+    name: "Bandeau de Ninja",
+    category: "hat",
+    emoji: "🥷",
+    description: "Bandeau noir des ninjas furtifs",
     price: 140,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="ninja-headband">
         <!-- Bandeau principal -->
@@ -505,15 +506,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="34" y="9" width="12" height="4" fill="#808080"/>
         <rect x="36" y="10" width="2" height="2" fill="#ffffff" opacity="0.5"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Couronne de Fleurs',
-    category: 'hat',
-    emoji: '🌸',
-    description: 'Couronne romantique avec fleurs colorées',
+    name: "Couronne de Fleurs",
+    category: "hat",
+    emoji: "🌸",
+    description: "Couronne romantique avec fleurs colorées",
     price: 130,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="flower-crown">
         <!-- Base verte -->
@@ -532,19 +533,19 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="30" y="9" width="3" height="2" fill="#32cd32"/>
         <rect x="46" y="9" width="3" height="2" fill="#32cd32"/>
       </g>
-    `
+    `,
   },
 
   // ============================================================================
   // NOUVELLES LUNETTES
   // ============================================================================
   {
-    name: 'Lunettes Aviateur',
-    category: 'glasses',
-    emoji: '😎',
-    description: 'Lunettes de pilote ultra cool',
+    name: "Lunettes Aviateur",
+    category: "glasses",
+    emoji: "😎",
+    description: "Lunettes de pilote ultra cool",
     price: 150,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="aviator-glasses">
         <!-- Monture dorée -->
@@ -561,15 +562,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="16" y="32" width="4" height="2" fill="#ffd700"/>
         <rect x="60" y="32" width="4" height="2" fill="#ffd700"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Lunettes Cœur',
-    category: 'glasses',
-    emoji: '❤️',
-    description: 'Lunettes en forme de cœur pour chat romantique',
+    name: "Lunettes Cœur",
+    category: "glasses",
+    emoji: "❤️",
+    description: "Lunettes en forme de cœur pour chat romantique",
     price: 140,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="heart-glasses">
         <!-- Cœur gauche -->
@@ -590,15 +591,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="24" y="31" width="2" height="2" fill="#ffffff" opacity="0.6"/>
         <rect x="48" y="31" width="2" height="2" fill="#ffffff" opacity="0.6"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Lunettes Pixel',
-    category: 'glasses',
-    emoji: '😏',
-    description: 'Deal with it - Lunettes de mème légendaires',
+    name: "Lunettes Pixel",
+    category: "glasses",
+    emoji: "😏",
+    description: "Deal with it - Lunettes de mème légendaires",
     price: 300,
-    rarity: 'legendary',
+    rarity: "legendary",
     svg: `
       <g id="pixel-glasses">
         <!-- Verres noirs épais -->
@@ -613,15 +614,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="19" y="29" width="20" height="1" fill="#00ff00" opacity="0.3"/>
         <rect x="41" y="29" width="20" height="1" fill="#00ff00" opacity="0.3"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Monocle',
-    category: 'glasses',
-    emoji: '🧐',
-    description: 'Monocle distingué pour chat gentleman',
+    name: "Monocle",
+    category: "glasses",
+    emoji: "🧐",
+    description: "Monocle distingué pour chat gentleman",
     price: 180,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="monocle">
         <!-- Cercle doré -->
@@ -637,15 +638,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="60" y="34" width="4" height="1" fill="#ffd700"/>
         <rect x="64" y="35" width="2" height="2" fill="#ffd700"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Lunettes Steampunk',
-    category: 'glasses',
-    emoji: '⚙️',
-    description: 'Lunettes rétro-futuristes avec engrenages',
+    name: "Lunettes Steampunk",
+    category: "glasses",
+    emoji: "⚙️",
+    description: "Lunettes rétro-futuristes avec engrenages",
     price: 220,
-    rarity: 'epic',
+    rarity: "epic",
     svg: `
       <g id="steampunk-goggles">
         <!-- Monture cuivre -->
@@ -667,19 +668,19 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <circle cx="45" cy="29" r="1" fill="#696969"/>
         <circle cx="59" cy="29" r="1" fill="#696969"/>
       </g>
-    `
+    `,
   },
 
   // ============================================================================
   // NOUVELLES CHAUSSURES
   // ============================================================================
   {
-    name: 'Baskets Colorées',
-    category: 'shoes',
-    emoji: '👟',
-    description: 'Baskets arc-en-ciel pour chat sportif',
+    name: "Baskets Colorées",
+    category: "shoes",
+    emoji: "👟",
+    description: "Baskets arc-en-ciel pour chat sportif",
     price: 160,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="colorful-sneakers">
         <!-- Chaussure gauche -->
@@ -696,15 +697,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="24" y="64" width="1" height="6" fill="#ffffff" opacity="0.8"/>
         <rect x="52" y="64" width="1" height="6" fill="#ffffff" opacity="0.8"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Bottes de Pluie',
-    category: 'shoes',
-    emoji: '🥾',
-    description: 'Bottes imperméables pour les jours pluvieux',
+    name: "Bottes de Pluie",
+    category: "shoes",
+    emoji: "🥾",
+    description: "Bottes imperméables pour les jours pluvieux",
     price: 140,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="rain-boots">
         <!-- Botte gauche -->
@@ -719,15 +720,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="26" y="64" width="2" height="4" fill="#ffffff" opacity="0.5"/>
         <rect x="52" y="64" width="2" height="4" fill="#ffffff" opacity="0.5"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Bottes de Cowboy',
-    category: 'shoes',
-    emoji: '🤠',
-    description: 'Bottes western avec éperons',
+    name: "Bottes de Cowboy",
+    category: "shoes",
+    emoji: "🤠",
+    description: "Bottes western avec éperons",
     price: 190,
-    rarity: 'rare',
+    rarity: "rare",
     svg: `
       <g id="cowboy-boots">
         <!-- Botte gauche -->
@@ -748,15 +749,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="24" y="66" width="4" height="1" fill="#ffd700"/>
         <rect x="52" y="66" width="4" height="1" fill="#ffd700"/>
       </g>
-    `
+    `,
   },
   {
     name: "Pantoufles Patte d'Ours",
-    category: 'shoes',
-    emoji: '🐾',
-    description: 'Pantoufles douillettes en forme de pattes',
+    category: "shoes",
+    emoji: "🐾",
+    description: "Pantoufles douillettes en forme de pattes",
     price: 120,
-    rarity: 'common',
+    rarity: "common",
     svg: `
       <g id="bear-slippers">
         <!-- Pantoufle gauche -->
@@ -774,15 +775,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="53" y="68" width="2" height="2" fill="#654321"/>
         <rect x="51" y="70" width="3" height="2" fill="#654321"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Sneakers LED',
-    category: 'shoes',
-    emoji: '✨',
+    name: "Sneakers LED",
+    category: "shoes",
+    emoji: "✨",
     description: "Baskets futuristes qui s'illuminent",
     price: 250,
-    rarity: 'epic',
+    rarity: "epic",
     svg: `
       <g id="led-sneakers">
         <!-- Chaussure gauche noire -->
@@ -803,15 +804,15 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
         <rect x="24" y="64" width="3" height="2" fill="#ffffff" opacity="0.3"/>
         <rect x="52" y="64" width="3" height="2" fill="#ffffff" opacity="0.3"/>
       </g>
-    `
+    `,
   },
   {
-    name: 'Chaussures Ailées',
-    category: 'shoes',
-    emoji: '🪽',
+    name: "Chaussures Ailées",
+    category: "shoes",
+    emoji: "🪽",
     description: "Sandales mythologiques d'Hermès",
     price: 300,
-    rarity: 'legendary',
+    rarity: "legendary",
     svg: `
       <g id="winged-sandals">
         <!-- Sandale gauche -->
@@ -837,8 +838,8 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
           <animate attributeName="opacity" values="0.7;1;0.7" dur="1.2s" repeatCount="indefinite"/>
         </circle>
       </g>
-    `
-  }
+    `,
+  },
 ]
 
 /**
@@ -847,7 +848,7 @@ export const ACCESSORIES_CATALOG: AccessoryData[] = [
  * @param {AccessoryCategory} category - Catégorie à filtrer
  * @returns {AccessoryData[]} Liste des accessoires de la catégorie
  */
-export function getAccessoriesByCategory (category: string): AccessoryData[] {
+export function getAccessoriesByCategory(category: string): AccessoryData[] {
   return ACCESSORIES_CATALOG.filter((acc) => acc.category === category)
 }
 
@@ -857,8 +858,9 @@ export function getAccessoriesByCategory (category: string): AccessoryData[] {
  * @param {string} name - Nom de l'accessoire
  * @returns {AccessoryData | undefined} L'accessoire trouvé ou undefined
  */
-export function getAccessoryByName (name: string): AccessoryData | undefined {
-  return ACCESSORIES_CATALOG.find((acc) => acc.name === name)
+export function getAccessoryByName(name: string): AccessoryData | undefined {
+  const allItems = [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG]
+  return allItems.find((acc) => acc.name === name)
 }
 
 /**
@@ -867,6 +869,6 @@ export function getAccessoryByName (name: string): AccessoryData | undefined {
  * @param {AccessoryRarity} rarity - Niveau de rareté
  * @returns {AccessoryData[]} Liste des accessoires de cette rareté
  */
-export function getAccessoriesByRarity (rarity: string): AccessoryData[] {
+export function getAccessoriesByRarity(rarity: string): AccessoryData[] {
   return ACCESSORIES_CATALOG.filter((acc) => acc.rarity === rarity)
 }

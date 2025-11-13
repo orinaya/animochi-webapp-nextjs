@@ -31,7 +31,8 @@ function getCategoryLabel(category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
-    shoes: '👟 Chaussures'
+    shoes: '👟 Chaussures',
+    background: '🖼️ Arrière-plans'
   }
   return labels[category]
 }
@@ -43,7 +44,8 @@ function getCategoryEmoji(category: AccessoryCategory): string {
   const emojis: Record<AccessoryCategory, string> = {
     hat: '🎩',
     glasses: '👓',
-    shoes: '👟'
+    shoes: '👟',
+    background: '🖼️'
   }
   return emojis[category]
 }
@@ -119,7 +121,7 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
         </div>
 
         {/* Statistiques */}
-        <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8'>
+        <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8'>
           <div className='bg-linear-to-br from-blueberry-100 to-blueberry-50 rounded-xl p-4 text-center'>
             <span className='text-3xl block mb-2'>🎒</span>
             <p className='text-sm text-blueberry-600 font-medium'>Total</p>
@@ -140,6 +142,11 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
             <p className='text-sm text-latte-600 font-medium'>Chaussures</p>
             <p className='text-2xl font-bold text-latte-950'>{countByCategory('shoes')}</p>
           </div>
+          <div className='bg-linear-to-br from-peach-100 to-peach-50 rounded-xl p-4 text-center'>
+            <span className='text-3xl block mb-2'>🖼️</span>
+            <p className='text-sm text-peach-600 font-medium'>Arrière-plans</p>
+            <p className='text-2xl font-bold text-peach-950'>{countByCategory('background')}</p>
+          </div>
         </div>
 
         {/* Filtres par catégorie */}
@@ -157,7 +164,7 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
             >
               Tout ({ownedAccessories.length})
             </button>
-            {(['hat', 'glasses', 'shoes'] as AccessoryCategory[]).map((category) => (
+            {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => (
               <button
                 key={category}
                 onClick={() => { setSelectedCategory(category) }}
@@ -221,11 +228,30 @@ export default function InventoryPageContent({ session }: InventoryPageContentPr
 
                       {/* Prévisualisation SVG */}
                       <div className='bg-latte-50 rounded-lg p-3 mb-3 flex items-center justify-center min-h-20'>
-                        <svg
-                          viewBox='0 0 80 80'
-                          className='w-16 h-16'
-                          dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
-                        />
+                        {item.details.category === 'background'
+                          ? (
+                            item.details.imagePath != null
+                              ? (
+                                <div
+                                  className='w-full h-full min-h-20 rounded bg-cover bg-center'
+                                  style={{ backgroundImage: `url(${item.details.imagePath})` }}
+                                />
+                              )
+                              : (
+                                <svg
+                                  viewBox='0 0 200 200'
+                                  className='w-full h-full'
+                                  dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
+                                />
+                              )
+                          )
+                          : (
+                            <svg
+                              viewBox='0 0 80 80'
+                              className='w-16 h-16'
+                              dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
+                            />
+                          )}
                       </div>
 
                       {/* Nom */}

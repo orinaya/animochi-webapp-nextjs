@@ -44,7 +44,7 @@ interface MenuItem {
  * Composant MobileTopBar
  * Barre supérieure pour mobile uniquement
  */
-export function MobileTopBar({ session, onLogout }: MobileTopBarProps): React.ReactNode {
+export function MobileTopBar ({ session, onLogout }: MobileTopBarProps): React.ReactNode {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)

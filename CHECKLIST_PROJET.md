@@ -10,20 +10,20 @@
 - [x] **Lunettes (glasses)** : 4 accessoires créés (Rondes, Soleil, Monocle, Arc-en-Ciel)
 - [x] **Chaussures (shoes)** : 4 accessoires créés (Baskets, Bottes, Chaussons, Sabots)
 
-#### ✅ Actions disponibles (Interface créée, Backend à finaliser)
+#### ✅ Actions disponibles (Interface et Backend complets)
 
 - [x] **Interface boutique** : Modal créé (`accessory-shop-modal.tsx`)
 - [x] **Interface inventaire** : Modal créé (`accessory-inventory-modal.tsx`)
-- [ ] **Backend - Acheter un accessoire** : API route à créer (`/api/accessories/purchase`)
-- [ ] **Backend - Équiper un accessoire** : API route à créer (`/api/accessories/equip`)
-- [ ] **Backend - Retirer un accessoire** : API route à créer (`/api/accessories/unequip`)
-- [ ] **Backend - Visualiser accessoires possédés** : API route à créer (`/api/accessories/owned`)
-- [ ] **Base de données** : Schema Prisma/MongoDB à créer pour les accessoires
+- [x] **Backend - Acheter un accessoire** : API route créée (`/api/accessories/purchase`)
+- [x] **Backend - Équiper un accessoire** : API route créée (`/api/accessories/equip`)
+- [x] **Backend - Retirer un accessoire** : API route créée (`/api/accessories/unequip`)
+- [x] **Backend - Visualiser accessoires possédés** : API route créée (`/api/accessories/owned`)
+- [x] **Base de données** : Schema MongoDB créé pour les accessoires
 
 #### ✅ Affichage
 
 - [x] **Dans le détail du monstre** : Composant modifié (`monster-detail-avatar.tsx` avec superposition SVG)
-- [ ] **Dans la liste du dashboard** : À implémenter sur les cartes de monstres
+- [x] **Dans la liste du dashboard** : Affichage sur les cartes de monstres (`monster-card.tsx` avec useMemo)
 
 #### ✅ BONUS - Système de rareté
 
@@ -66,9 +66,9 @@
 
 #### ⚠️ Routes à finaliser (Partiellement fait)
 
-- [ ] **Route `/`** : Redirection intelligente (landing page si non connecté, `/app` si connecté)
+- [ ] **Route `/`** : Redirection intelligente (actuellement landing page statique, ajouter logique session)
 - [x] **Routes protégées** : Redirections vers `/sign-in` si non authentifié (déjà implémenté sur `/dashboard`, `/monstres`, `/monster/[id]`, `/wallet`)
-- [ ] **Routes `/sign-in` et `/sign-up`** : Redirection après connexion vers `/app` (à vérifier)
+- [ ] **Routes `/sign-in` et `/sign-up`** : Redirection après connexion vers `/dashboard` (à vérifier dans `auth-form-content.tsx`)
 
 #### ⚠️ Navigation
 
@@ -103,11 +103,17 @@
 
 ### 2.4 Gains de Koins pour les Actions
 
-#### ❌ Système de récompenses (0/3)
+#### ✅ Infrastructure existante (Base solide)
 
-- [ ] **Créer fichier de configuration** : `src/config/rewards.ts` (montants par action)
-- [ ] **Implémenter le gain de Koins** : Modifier les actions pour ajouter des Koins
-  - [ ] Nourrir le monstre → +X Koins
+- [x] **Fichier wallet.actions.ts** : `addFunds()` avec raisons prédéfinies existant
+- [x] **Types de récompenses** : DAILY_REWARD, QUEST_REWARD, LEVEL_UP déjà définis
+- [x] **Système de transactions** : TransactionModel et WalletModel opérationnels
+
+#### ❌ Système de récompenses (0/3 à finaliser)
+
+- [ ] **Créer fichier de configuration** : `src/config/rewards.ts` (montants par action monstre)
+- [ ] **Implémenter le gain de Koins** : Intégrer `addFunds()` dans les actions monstre
+  - [ ] Nourrir le monstre → +X Koins (intégrer dans `applyMonsterAction`)
   - [ ] Jouer avec le monstre → +X Koins
   - [ ] Soigner le monstre → +X Koins
   - [ ] Autres actions
@@ -118,12 +124,16 @@
 
 ### 2.5 Extraction des Configurations
 
-#### ❌ Fichiers de configuration à créer (1/5)
+#### ✅ Fichiers de configuration existants (4/5)
 
 - [x] **`src/config/monster-actions-map.ts`** : Déjà existant
 - [x] **`src/config/pricing.ts`** : Déjà existant
-- [ ] **`src/config/rewards.ts`** : À créer (montants de Koins par action)
-- [ ] **`src/config/accessories.config.ts`** : À créer ou utiliser `accessories-catalog.ts`
+- [x] **`src/config/shop.config.ts`** : Configuration boutique créée
+- [x] **`src/config/wallet.constants.ts`** : Constantes wallet créées
+- [ ] **`src/config/rewards.ts`** : À créer (montants de Koins par action monstre)
+
+#### ❌ Fichiers additionnels à créer (0/2)
+
 - [ ] **`src/config/backgrounds.config.ts`** : À créer (catalogue d'arrière-plans)
 - [ ] **`src/config/quests.config.ts`** : À créer (configuration des quêtes journalières)
 
@@ -141,16 +151,16 @@
 - [x] **Configuration Better Auth** : GitHub OAuth activé dans `src/lib/auth/auth.ts`
 - [x] **Documentation** : Guide complet créé (`docs/auth/GITHUB_AUTH_SETUP.md`)
 - [x] **Variables d'environnement** : `GITHUB_CLIENT_ID` et `GITHUB_CLIENT_SECRET`
-- [ ] **Bouton UI** : Vérifier la présence du bouton "Se connecter avec GitHub"
-- [ ] **Tests de redirection** : Tester le flux complet
+- [x] **Bouton UI** : Bouton "Se connecter avec GitHub" présent dans formulaire auth
+- [ ] **Tests de redirection** : Tester le flux complet en production
 
 #### ✅ BONUS - Google OAuth
 
 - [x] **Configuration Better Auth** : Google OAuth activé dans `src/lib/auth/auth.ts`
 - [x] **Documentation** : Guide complet créé (`docs/auth/GOOGLE_OAUTH_SETUP.md`)
 - [x] **Variables d'environnement** : `GOOGLE_CLIENT_ID` et `GOOGLE_CLIENT_SECRET`
-- [ ] **Bouton UI** : Vérifier la présence du bouton "Se connecter avec Google"
-- [ ] **Tests de redirection** : Tester le flux complet
+- [x] **Bouton UI** : Bouton "Se connecter avec Google" présent dans formulaire auth
+- [ ] **Tests de redirection** : Tester le flux complet en production
 
 ---
 
@@ -165,13 +175,13 @@
   - [ ] Données à mettre en cache
   - [ ] Chargements à optimiser (lazy loading, code splitting)
 
-#### ⚠️ Implémentation (Quelques optimisations existantes)
+#### ✅ Implémentation (Plusieurs optimisations existantes)
 
 - [x] `useMemo` dans `monster-detail-avatar.tsx` pour les accessoires équipés
+- [x] `useMemo` dans `monster-card.tsx` pour les accessoires équipés
 - [x] `useCallback` dans `use-user-avatar.ts` et `use-auth.ts`
-- [ ] **5 optimisations concrètes supplémentaires minimum** :
-  - [ ] Optimisation #3 : À définir
-  - [ ] Optimisation #4 : À définir
+- [x] `.lean()` dans les queries Mongoose pour optimiser les performances (monsters.action.ts)
+- [ ] **3 optimisations concrètes supplémentaires minimum** :
   - [ ] Optimisation #5 : À définir
   - [ ] Optimisation #6 : À définir
   - [ ] Optimisation #7 : À définir
@@ -296,47 +306,52 @@
 
 ### ✅ Complété
 
-- Système d'accessoires (Interface et catalogue) : **~60%**
-- OAuth GitHub et Google (Backend) : **90%**
-- Quelques optimisations React : **~20%**
+- **Système d'accessoires** : **100%** ✅
+  - Interface (boutique + inventaire)
+  - Backend complet (4 API routes)
+  - Base de données
+  - Affichage (détail + cartes)
+  - Système de rareté
+  - Documentation complète
+- **OAuth GitHub et Google** : **95%** ✅ (tests prod à faire)
+- **Fichiers de configuration** : **80%** ✅ (4/5 créés)
+- **Optimisations React** : **40%** ⚡ (4 optimisations actives)
 
 ### ⚠️ Partiellement fait
 
-- Redirections : **~50%**
-- Fichiers de configuration : **~30%**
+- **Redirections** : **50%** (routes protégées ✅, route `/` à améliorer)
+- **Design audit** : **À évaluer** (palette OK, cohérence à vérifier)
 
 ### ❌ À faire
 
-- **Backend Accessoires** : API routes et base de données
+- **Backend Actions → Koins** : Infrastructure prête, intégration à faire
 - **Système d'Arrière-plans** : 0%
 - **Système de Galerie** : 0%
 - **Quêtes Journalières** : 0%
-- **Gains de Koins pour actions** : 0%
 - **Personnalisation Stripe** : 0%
-- **Plan d'optimisation** : 0%
-- **Design audit complet** : À évaluer
+- **Plan d'optimisation** : Document à créer
 
 ---
 
 ## 🎯 Priorités Recommandées
 
-### 🔥 Urgent (Bloquant)
+### 🔥 Urgent (Quick Wins)
 
-1. **Backend Accessoires** : Finaliser les API routes pour débloquer la feature
-2. **Gains de Koins** : Créer `rewards.ts` et implémenter les récompenses
-3. **Redirections** : Finaliser la route `/` et les redirections post-auth
+1. **Gains de Koins pour actions** : Infrastructure prête, créer `rewards.ts` et intégrer dans `applyMonsterAction`
+2. **Redirections** : Finaliser la route `/` avec logique de session
+3. **Tests OAuth** : Valider GitHub et Google en production
 
-### ⚡ Important (Core Features)
+### ⚡ Important (Core Features manquantes)
 
-4. **Système d'Arrière-plans** : Feature complète à implémenter
-5. **Quêtes Journalières** : Feature complète à implémenter
-6. **Galerie Publique** : Feature complète à implémenter
+4. **Système d'Arrière-plans** : Feature complète à implémenter (catalogue, achat, application, affichage)
+5. **Quêtes Journalières** : Feature complète à implémenter (système de renouvellement, UI, récompenses)
+6. **Galerie Publique** : Feature complète à implémenter (champ isPublic, page galerie, filtres)
 
 ### 💎 Améliorations
 
-7. **Plan d'optimisation** : Créer le document et implémenter 5 optimisations
-8. **Personnalisation Stripe** : Branding
-9. **Design audit** : Cohérence visuelle globale
+7. **Plan d'optimisation** : Créer le document et implémenter 3 optimisations supplémentaires
+8. **Personnalisation Stripe** : Branding et customisation checkout
+9. **Design audit** : Cohérence visuelle globale et responsive
 
 ---
 
@@ -349,4 +364,19 @@
 
 ---
 
-**Dernière mise à jour** : 12 novembre 2025
+**Dernière mise à jour** : 13 novembre 2025
+
+**Progression globale estimée** : **~45%**
+
+### 📈 Évolution depuis dernière update
+
+- ✅ **Système d'accessoires** : Passé de 60% à 100% (API routes, DB, affichage cartes)
+- ✅ **OAuth** : Passé de 90% à 95% (boutons UI ajoutés)
+- ✅ **Configuration** : Passé de 30% à 80% (shop.config, wallet.constants ajoutés)
+- ✅ **Optimisations** : Passé de 20% à 40% (monster-card optimisé, .lean() queries)
+
+### 🎯 Prochaines étapes prioritaires
+
+1. Implémenter gains de Koins pour actions monstres (Quick Win)
+2. Créer système d'arrière-plans complet
+3. Implémenter quêtes journalières avec cron jobs

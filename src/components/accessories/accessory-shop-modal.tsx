@@ -12,9 +12,10 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
+import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import { RARITY_COLORS } from '@/types/monster-accessories'
 import type { AccessoryData, AccessoryCategory, AccessoryRarity } from '@/types/monster-accessories'
 
@@ -34,11 +35,12 @@ interface AccessoryShopModalProps {
 /**
  * Retourne le label en français pour une catégorie
  */
-function getCategoryLabel (category: AccessoryCategory): string {
+function getCategoryLabel(category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
-    shoes: '👟 Chaussures'
+    shoes: '👟 Chaussures',
+    background: '🖼️ Arrière-plans'
   }
   return labels[category]
 }
@@ -46,7 +48,7 @@ function getCategoryLabel (category: AccessoryCategory): string {
 /**
  * Retourne le label en français pour une rareté
  */
-function getRarityLabel (rarity: AccessoryRarity): string {
+function getRarityLabel(rarity: AccessoryRarity): string {
   const labels: Record<AccessoryRarity, string> = {
     common: 'Commun',
     rare: 'Rare',
@@ -59,7 +61,7 @@ function getRarityLabel (rarity: AccessoryRarity): string {
 /**
  * Modal de la boutique d'accessoires
  */
-export default function AccessoryShopModal ({
+export default function AccessoryShopModal({
   isOpen,
   onClose,
   animoneysBalance,
@@ -71,9 +73,16 @@ export default function AccessoryShopModal ({
   const [purchasing, setPurchasing] = useState<string | null>(null)
 
   /**
+   * Combine les catalogues d'accessoires et de backgrounds
+   */
+  const allItems = useMemo(() => {
+    return [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG]
+  }, [])
+
+  /**
    * Filtre les accessoires selon les critères sélectionnés
    */
-  const filteredAccessories = ACCESSORIES_CATALOG.filter(accessory => {
+  const filteredAccessories = allItems.filter(accessory => {
     const categoryMatch = selectedCategory === 'all' || accessory.category === selectedCategory
     const rarityMatch = selectedRarity === 'all' || accessory.rarity === selectedRarity
     return categoryMatch && rarityMatch
@@ -124,7 +133,7 @@ export default function AccessoryShopModal ({
               >
                 Tout
               </button>
-              {(['hat', 'glasses', 'shoes'] as AccessoryCategory[]).map((category) => (
+              {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => (
                 <button
                   key={category}
                   onClick={() => { setSelectedCategory(category) }}
@@ -202,13 +211,37 @@ export default function AccessoryShopModal ({
                   </div>
                 </div>
 
-                {/* Prévisualisation SVG */}
-                <div className='bg-latte-50 rounded-lg p-4 mb-3 flex items-center justify-center min-h-[100px]'>
-                  <svg
-                    viewBox='0 0 80 80'
-                    className='w-20 h-20'
-                    dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
-                  />
+                {/* Prévisualisation SVG ou Image */}
+                <div className='bg-latte-50 rounded-lg p-4 mb-3 flex items-center justify-center min-h-[100px] overflow-hidden'>
+                  {accessory.category === 'background'
+                    ? (
+                      accessory.imagePath != null
+                        ? (
+                          // Background image
+                          <div
+                            className='w-full h-24 rounded bg-cover bg-center'
+                            style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                          />
+                        )
+                        : accessory.svg != null
+                          ? (
+                            // Background gradient SVG
+                            <svg
+                              viewBox='0 0 100 100'
+                              className='w-full h-24 rounded'
+                              dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                            />
+                          )
+                          : null
+                    )
+                    : (
+                      // Accessoire SVG
+                      <svg
+                        viewBox='0 0 80 80'
+                        className='w-20 h-20'
+                        dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
+                      />
+                    )}
                 </div>
 
                 {/* Informations */}

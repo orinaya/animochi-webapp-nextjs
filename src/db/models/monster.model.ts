@@ -72,13 +72,12 @@ const monsterSchema = new Schema(
         type: String,
         required: false,
         default: null
+      },
+      background: {
+        type: String,
+        required: false,
+        default: null
       }
-    },
-    equippedBackground: {
-      type: Schema.Types.ObjectId,
-      ref: 'Background',
-      required: false,
-      default: null
     }
   },
   {

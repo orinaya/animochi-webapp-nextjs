@@ -82,40 +82,42 @@ export default function MonstrePageContent ({
 
   return (
     <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
-      {/* Header avec nom et navigation */}
-      <MonsterDetailHeader
-        monster={monster}
-        monsterId={monsterId}
-        initialInventoryCategory={inventoryCategory}
-        onInventoryCategoryReset={() => { setInventoryCategory(null) }}
-      />
+      <div className='max-w-7xl mx-auto'>
+        {/* Header avec nom et navigation */}
+        <MonsterDetailHeader
+          monster={monster}
+          monsterId={monsterId}
+          initialInventoryCategory={inventoryCategory}
+          onInventoryCategoryReset={() => { setInventoryCategory(null) }}
+        />
 
-      {/* Layout principal en grille - optimisé pour remplir l'écran sans scroll */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6' style={{ height: 'calc(100vh - 280px)' }}>
-        {/* Colonne gauche : Avatar + Équipement compact */}
-        <div className='h-full'>
-          <MonsterAvatarWithEquipment
-            monster={monster}
-            currentAnimation={currentAnimation}
-            onAnimationComplete={() => { setCurrentAnimation(null) }}
-            onOpenInventory={handleOpenInventory}
-          />
-        </div>
-
-        {/* Colonne droite : XP, Stats avec Actions intégrées - Pleine hauteur */}
-        <div className='space-y-4 flex flex-col h-full'>
-          <MonsterExperienceSection monster={monster} />
-          <div className='flex-1 min-h-0'>
-            <MonsterStatsSection
+        {/* Layout principal en grille - optimisé pour remplir l'écran sans scroll */}
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-6' style={{ height: 'calc(100vh - 280px)' }}>
+          {/* Colonne gauche : Avatar + Équipement compact */}
+          <div className='h-full'>
+            <MonsterAvatarWithEquipment
               monster={monster}
-              actionsComponent={
-                <MonsterActionsSection
-                  monster={monster}
-                  monsterId={monsterId}
-                  onActionStart={(action: MonsterAction) => { setCurrentAnimation(action) }}
-                />
-              }
+              currentAnimation={currentAnimation}
+              onAnimationComplete={() => { setCurrentAnimation(null) }}
+              onOpenInventory={handleOpenInventory}
             />
+          </div>
+
+          {/* Colonne droite : XP, Stats avec Actions intégrées - Pleine hauteur */}
+          <div className='space-y-4 flex flex-col h-full'>
+            <MonsterExperienceSection monster={monster} />
+            <div className='flex-1 min-h-0'>
+              <MonsterStatsSection
+                monster={monster}
+                actionsComponent={
+                  <MonsterActionsSection
+                    monster={monster}
+                    monsterId={monsterId}
+                    onActionStart={(action: MonsterAction) => { setCurrentAnimation(action) }}
+                  />
+                }
+              />
+            </div>
           </div>
         </div>
       </div>

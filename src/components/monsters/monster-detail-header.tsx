@@ -39,7 +39,7 @@ interface MonsterDetailHeaderProps {
  * @param {MonsterDetailHeaderProps} props - Les propriétés du composant
  * @returns {React.ReactNode} Le header avec nom et navigation
  */
-export default function MonsterDetailHeader({
+export default function MonsterDetailHeader ({
   monster,
   monsterId,
   initialInventoryCategory = null,

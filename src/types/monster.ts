@@ -51,8 +51,6 @@ export interface Monster {
   experienceToNextLevel?: number | null
   /** Accessoires équipés (optionnel) */
   equippedAccessories?: EquippedAccessories | null
-  /** Background équipé (ID du background, optionnel) */
-  equippedBackground?: string | null
   /** Date de création (format string ISO) */
   createdAt?: string
   /** Date de dernière modification (format string ISO) */

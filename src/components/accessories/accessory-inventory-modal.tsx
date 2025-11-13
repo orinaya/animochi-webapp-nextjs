@@ -12,10 +12,11 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { RARITY_COLORS } from '@/types/monster-accessories'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
+import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import type { AccessoryData, AccessoryCategory, OwnedAccessory, EquippedAccessories, AccessoryRarity } from '@/types/monster-accessories'
 
 interface AccessoryInventoryModalProps {
@@ -50,7 +51,8 @@ function getCategoryLabel(category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
-    shoes: '👟 Chaussures'
+    shoes: '👟 Chaussures',
+    background: '🖼️ Arrière-plans'
   }
   return labels[category]
 }
@@ -62,7 +64,8 @@ function getCategoryEmoji(category: AccessoryCategory): string {
   const emojis: Record<AccessoryCategory, string> = {
     hat: '🎩',
     glasses: '👓',
-    shoes: '👟'
+    shoes: '👟',
+    background: '🖼️'
   }
   return emojis[category]
 }
@@ -106,9 +109,16 @@ export default function AccessoryInventoryModal({
   }
 
   /**
+   * Combine les catalogues pour le shop
+   */
+  const allShopItems = useMemo(() => {
+    return [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG]
+  }, [])
+
+  /**
    * Filtre les accessoires du shop selon les critères
    */
-  const shopFilteredAccessories = ACCESSORIES_CATALOG.filter(accessory => {
+  const shopFilteredAccessories = allShopItems.filter(accessory => {
     const categoryMatch = shopCategory === 'all' || accessory.category === shopCategory
     const rarityMatch = shopRarity === 'all' || accessory.rarity === shopRarity
     return categoryMatch && rarityMatch
@@ -190,8 +200,8 @@ export default function AccessoryInventoryModal({
           <button
             onClick={() => { setActiveTab('inventory') }}
             className={`px-6 py-3 font-semibold transition-all relative ${activeTab === 'inventory'
-                ? 'text-blueberry-600 border-b-2 border-blueberry-600 -mb-0.5'
-                : 'text-latte-600 hover:text-blueberry-500'
+              ? 'text-blueberry-600 border-b-2 border-blueberry-600 -mb-0.5'
+              : 'text-latte-600 hover:text-blueberry-500'
               }`}
           >
             �🎒 Mon Inventaire
@@ -204,8 +214,8 @@ export default function AccessoryInventoryModal({
           <button
             onClick={() => { setActiveTab('shop') }}
             className={`px-6 py-3 font-semibold transition-all relative ${activeTab === 'shop'
-                ? 'text-strawberry-600 border-b-2 border-strawberry-600 -mb-0.5'
-                : 'text-latte-600 hover:text-strawberry-500'
+              ? 'text-strawberry-600 border-b-2 border-strawberry-600 -mb-0.5'
+              : 'text-latte-600 hover:text-strawberry-500'
               }`}
           >
             🛍️ Boutique
@@ -216,7 +226,7 @@ export default function AccessoryInventoryModal({
         {activeTab === 'inventory' && (
           <div className='space-y-6'>
             {/* Statistiques */}
-            <div className='grid grid-cols-2 sm:grid-cols-4 gap-3'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3'>
               <div className='bg-linear-to-br from-blueberry-100 to-blueberry-50 rounded-xl p-3 text-center'>
                 <span className='text-2xl block mb-1'>🎒</span>
                 <p className='text-sm text-blueberry-600'>Total</p>
@@ -237,6 +247,11 @@ export default function AccessoryInventoryModal({
                 <p className='text-sm text-latte-600'>Chaussures</p>
                 <p className='text-xl font-bold text-latte-950'>{countByCategory('shoes')}</p>
               </div>
+              <div className='bg-linear-to-br from-blueberry-200 to-blueberry-100 rounded-xl p-3 text-center'>
+                <span className='text-2xl block mb-1'>🖼️</span>
+                <p className='text-sm text-blueberry-600'>Arrière-plans</p>
+                <p className='text-xl font-bold text-blueberry-950'>{countByCategory('background')}</p>
+              </div>
             </div>
 
             {/* Accessoires actuellement équipés */}
@@ -245,8 +260,8 @@ export default function AccessoryInventoryModal({
                 <span>✨</span>
                 Actuellement équipé
               </h3>
-              <div className='grid grid-cols-3 gap-3'>
-                {(['hat', 'glasses', 'shoes'] as AccessoryCategory[]).map((category) => {
+              <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+                {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => {
                   const equippedName = equippedAccessories[category]
                   const equippedItem = equippedName != null
                     ? ownedAccessories.find(item => item.accessoryName === equippedName)
@@ -304,7 +319,7 @@ export default function AccessoryInventoryModal({
                 >
                   Tout
                 </button>
-                {(['hat', 'glasses', 'shoes'] as AccessoryCategory[]).map((category) => (
+                {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => (
                   <button
                     key={category}
                     onClick={() => { setSelectedCategory(category) }}
@@ -345,13 +360,34 @@ export default function AccessoryInventoryModal({
                       )}
                     </div>
 
-                    {/* Prévisualisation SVG */}
-                    <div className='bg-latte-50 rounded-lg p-2 mb-2 flex items-center justify-center min-h-[60px]'>
-                      <svg
-                        viewBox='0 0 80 80'
-                        className='w-14 h-14'
-                        dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
-                      />
+                    {/* Prévisualisation SVG ou Image */}
+                    <div className='bg-latte-50 rounded-lg p-2 mb-2 flex items-center justify-center min-h-[60px] overflow-hidden'>
+                      {item.details.category === 'background'
+                        ? (
+                          item.details.imagePath != null
+                            ? (
+                              <div
+                                className='w-full h-16 rounded bg-cover bg-center'
+                                style={{ backgroundImage: `url(${item.details.imagePath})` }}
+                              />
+                            )
+                            : item.details.svg != null
+                              ? (
+                                <svg
+                                  viewBox='0 0 100 100'
+                                  className='w-full h-16 rounded'
+                                  dangerouslySetInnerHTML={{ __html: item.details.svg }}
+                                />
+                              )
+                              : null
+                        )
+                        : (
+                          <svg
+                            viewBox='0 0 80 80'
+                            className='w-14 h-14'
+                            dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
+                          />
+                        )}
                     </div>
 
                     {/* Nom */}
@@ -433,7 +469,7 @@ export default function AccessoryInventoryModal({
                   >
                     Tout
                   </button>
-                  {(['hat', 'glasses', 'shoes'] as AccessoryCategory[]).map((category) => (
+                  {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => (
                     <button
                       key={category}
                       onClick={() => { setShopCategory(category) }}
@@ -511,13 +547,34 @@ export default function AccessoryInventoryModal({
                       </div>
                     </div>
 
-                    {/* Prévisualisation SVG */}
-                    <div className='bg-latte-50 rounded-lg p-4 mb-3 flex items-center justify-center min-h-[100px]'>
-                      <svg
-                        viewBox='0 0 80 80'
-                        className='w-20 h-20'
-                        dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
-                      />
+                    {/* Prévisualisation SVG ou Image */}
+                    <div className='bg-latte-50 rounded-lg p-4 mb-3 flex items-center justify-center min-h-[100px] overflow-hidden'>
+                      {accessory.category === 'background'
+                        ? (
+                          accessory.imagePath != null
+                            ? (
+                              <div
+                                className='w-full h-24 rounded bg-cover bg-center'
+                                style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                              />
+                            )
+                            : accessory.svg != null
+                              ? (
+                                <svg
+                                  viewBox='0 0 100 100'
+                                  className='w-full h-24 rounded'
+                                  dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                                />
+                              )
+                              : null
+                        )
+                        : (
+                          <svg
+                            viewBox='0 0 80 80'
+                            className='w-20 h-20'
+                            dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
+                          />
+                        )}
                     </div>
 
                     {/* Informations */}

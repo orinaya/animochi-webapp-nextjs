@@ -15,7 +15,7 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { ShopPageContent } from '@/components/shop/shop-page-content'
 
-export default async function ShopPage(): Promise<React.ReactNode> {
+export default async function ShopPage (): Promise<React.ReactNode> {
   // Vérifier l'authentification
   const session = await auth.api.getSession({
     headers: await headers()

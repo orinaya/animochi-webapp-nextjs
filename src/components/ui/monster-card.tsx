@@ -12,6 +12,7 @@ import Button from './button'
 import { Modal } from './modal'
 import { FiTrash2, FiEdit } from 'react-icons/fi'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
+import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 
 /**
  * Props du composant MonsterCard
@@ -156,6 +157,20 @@ export default function MonsterCard({ monster, onClick, onDelete, onEdit, classN
   const [showEditModal, setShowEditModal] = useState(false)
   const [editedName, setEditedName] = useState(monster.name)
   const [isEditLoading, setIsEditLoading] = useState(false)
+
+  /**
+   * Récupère le background équipé depuis le catalogue
+   */
+  const equippedBackground = useMemo(() => {
+    const equipped = monster.equippedAccessories ?? {}
+    if (equipped.background != null) {
+      const bgData = [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG].find(
+        acc => acc.name === equipped.background
+      )
+      return bgData
+    }
+    return null
+  }, [monster.equippedAccessories])
 
   /**
    * Récupère les accessoires équipés depuis le catalogue
@@ -313,10 +328,32 @@ export default function MonsterCard({ monster, onClick, onDelete, onEdit, classN
 
         {/* Image SVG du monstre avec accessoires */}
         <div className='flex justify-center mb-4'>
-          <div className='relative w-40 h-40 p-4 flex items-center justify-center bg-linear-to-br from-blueberry-50 to-strawberry-50 rounded-2xl group-hover:scale-105 transition-transform duration-300'>
+          <div
+            className='relative w-40 h-40 p-4 flex items-center justify-center rounded-2xl group-hover:scale-105 transition-transform duration-300 overflow-hidden'
+            style={equippedBackground?.imagePath != null
+              ? { backgroundImage: `url(${equippedBackground.imagePath})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+              : {}}
+          >
+            {/* Background SVG (gradient) si c'est un gradient */}
+            {equippedBackground?.svg != null && (
+              <div className='absolute inset-0 -z-10'>
+                <svg
+                  viewBox='0 0 100 100'
+                  className='w-full h-full'
+                  preserveAspectRatio='none'
+                  dangerouslySetInnerHTML={{ __html: equippedBackground.svg }}
+                />
+              </div>
+            )}
+
+            {/* Fond par défaut si pas de background équipé */}
+            {equippedBackground == null && (
+              <div className='absolute inset-0 bg-linear-to-br from-blueberry-50 to-strawberry-50 -z-20' />
+            )}
+
             {/* SVG du monstre */}
             <div
-              className='w-full h-full flex items-center justify-center'
+              className='w-full h-full flex items-center justify-center relative z-10'
               dangerouslySetInnerHTML={{ __html: monster.draw ?? '<svg></svg>' }}
             />
 
@@ -326,7 +363,7 @@ export default function MonsterCard({ monster, onClick, onDelete, onEdit, classN
               return (
                 <div
                   key={`${accessory.category}-${index}`}
-                  className={`absolute pointer-events-none ${styles.position} ${styles.size} ${styles.animation}`}
+                  className={`absolute pointer-events-none z-20 ${styles.position} ${styles.size} ${styles.animation}`}
                 >
                   <svg viewBox='0 0 80 80' className='w-full h-full'>
                     <g dangerouslySetInnerHTML={{ __html: accessory.svg }} />

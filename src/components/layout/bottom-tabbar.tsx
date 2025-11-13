@@ -74,7 +74,7 @@ const tabItems: TabItem[] = [
  * Composant BottomTabBar
  * Navigation inférieure pour mobile uniquement
  */
-export function BottomTabBar(): React.ReactNode {
+export function BottomTabBar (): React.ReactNode {
   const pathname = usePathname()
   const router = useRouter()
   const [showCreateModal, setShowCreateModal] = useState(false)

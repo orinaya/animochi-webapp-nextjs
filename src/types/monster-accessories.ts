@@ -6,12 +6,12 @@
 /**
  * Catégories d'accessoires disponibles
  */
-export type AccessoryCategory = 'hat' | 'glasses' | 'shoes'
+export type AccessoryCategory = "hat" | "glasses" | "shoes" | "background"
 
 /**
  * Niveaux de rareté des accessoires
  */
-export type AccessoryRarity = 'common' | 'rare' | 'epic' | 'legendary'
+export type AccessoryRarity = "common" | "rare" | "epic" | "legendary"
 
 /**
  * Données de base d'un accessoire
@@ -80,6 +80,8 @@ export interface EquippedAccessories {
   glasses?: string | null
   /** Chaussures équipées (ID de l'accessoire) */
   shoes?: string | null
+  /** Arrière-plan équipé (ID de l'accessoire) */
+  background?: string | null
 }
 
 /**
@@ -89,34 +91,35 @@ export const RARITY_MULTIPLIERS: Record<AccessoryRarity, number> = {
   common: 1,
   rare: 2,
   epic: 4,
-  legendary: 10
+  legendary: 10,
 }
 
 /**
  * Couleurs associées aux raretés pour l'affichage
  */
 export const RARITY_COLORS: Record<AccessoryRarity, string> = {
-  common: 'bg-latte-200 text-latte-800',
-  rare: 'bg-blueberry-200 text-blueberry-800',
-  epic: 'bg-peach-200 text-peach-800',
-  legendary: 'bg-strawberry-200 text-strawberry-800'
+  common: "bg-latte-200 text-latte-800",
+  rare: "bg-blueberry-200 text-blueberry-800",
+  epic: "bg-peach-200 text-peach-800",
+  legendary: "bg-strawberry-200 text-strawberry-800",
 }
 
 /**
  * Labels d'affichage pour les raretés
  */
 export const RARITY_LABELS: Record<AccessoryRarity, string> = {
-  common: 'Commun',
-  rare: 'Rare',
-  epic: 'Épique',
-  legendary: 'Légendaire'
+  common: "Commun",
+  rare: "Rare",
+  epic: "Épique",
+  legendary: "Légendaire",
 }
 
 /**
  * Labels d'affichage pour les catégories
  */
 export const CATEGORY_LABELS: Record<AccessoryCategory, string> = {
-  hat: 'Chapeau',
-  glasses: 'Lunettes',
-  shoes: 'Chaussures'
+  hat: "Chapeau",
+  glasses: "Lunettes",
+  shoes: "Chaussures",
+  background: "Arrière-plan",
 }

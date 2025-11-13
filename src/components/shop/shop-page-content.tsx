@@ -12,12 +12,13 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { DashboardLayout } from '@/components/layout'
 import { RARITY_COLORS } from '@/types/monster-accessories'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
+import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import { useWallet } from '@/hooks/use-wallet'
 import { walletEvents } from '@/lib/wallet-events'
 import { authClient } from '@/lib/auth/auth-client'
@@ -36,7 +37,8 @@ function getCategoryLabel(category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
-    shoes: '👟 Chaussures'
+    shoes: '👟 Chaussures',
+    background: '🖼️ Arrière-plans'
   }
   return labels[category]
 }
@@ -88,9 +90,16 @@ export function ShopPageContent({ session }: ShopPageContentProps): React.ReactN
   }, [])
 
   /**
+   * Combine les catalogues pour le shop
+   */
+  const allShopItems = useMemo(() => {
+    return [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG]
+  }, [])
+
+  /**
    * Filtre les accessoires du shop selon les critères
    */
-  const shopFilteredAccessories = ACCESSORIES_CATALOG.filter(accessory => {
+  const shopFilteredAccessories = allShopItems.filter(accessory => {
     const categoryMatch = shopCategory === 'all' || accessory.category === shopCategory
     const rarityMatch = shopRarity === 'all' || accessory.rarity === shopRarity
     return categoryMatch && rarityMatch
@@ -188,7 +197,7 @@ export function ShopPageContent({ session }: ShopPageContentProps): React.ReactN
                 >
                   Tout
                 </button>
-                {(['hat', 'glasses', 'shoes'] as AccessoryCategory[]).map((category) => (
+                {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => (
                   <button
                     key={category}
                     onClick={() => { setShopCategory(category) }}
@@ -277,13 +286,34 @@ export function ShopPageContent({ session }: ShopPageContentProps): React.ReactN
                   </div>
                 </div>
 
-                {/* Prévisualisation SVG */}
-                <div className='bg-latte-50 rounded-lg p-4 mb-4 flex items-center justify-center min-h-[120px]'>
-                  <svg
-                    viewBox='0 0 80 80'
-                    className='w-24 h-24'
-                    dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
-                  />
+                {/* Prévisualisation SVG ou Image */}
+                <div className='bg-latte-50 rounded-lg p-4 mb-4 flex items-center justify-center min-h-[120px] overflow-hidden'>
+                  {accessory.category === 'background'
+                    ? (
+                      accessory.imagePath != null
+                        ? (
+                          <div
+                            className='w-full h-28 rounded bg-cover bg-center'
+                            style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                          />
+                        )
+                        : accessory.svg != null
+                          ? (
+                            <svg
+                              viewBox='0 0 100 100'
+                              className='w-full h-28 rounded'
+                              dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                            />
+                          )
+                          : null
+                    )
+                    : (
+                      <svg
+                        viewBox='0 0 80 80'
+                        className='w-24 h-24'
+                        dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
+                      />
+                    )}
                 </div>
 
                 {/* Informations */}
