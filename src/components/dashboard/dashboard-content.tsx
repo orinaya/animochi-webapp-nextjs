@@ -206,7 +206,7 @@ function DashboardContent ({ session, monsters = [] }: DashboardContentProps): R
   const { logout } = useAuth()
   const router = useRouter()
 
-  const userEmail = session.user.email ?? 'Utilisateur'
+  const userDisplayName = (session.user as any).pseudo ?? (session.user as any).username ?? session.user.name ?? session.user.email ?? 'Utilisateur'
 
   console.log('DashboardContent - Nombre de monstres:', monsters.length)
   console.log('DashboardContent - Monstres:', monsters)
@@ -217,7 +217,7 @@ function DashboardContent ({ session, monsters = [] }: DashboardContentProps): R
         {/* Titre de Bienvenue */}
         <div className='text-center'>
           <h1 className='text-4xl font-bold text-blueberry-950 mb-2'>
-            Bienvenue, {userEmail}
+            Bienvenue, {userDisplayName}
           </h1>
         </div>
 

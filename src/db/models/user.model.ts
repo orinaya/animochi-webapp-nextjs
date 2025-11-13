@@ -20,6 +20,24 @@ const userSchema = new Schema(
       lowercase: true, // Normalise l'email
       trim: true
     },
+    username: {
+      type: String,
+      required: false,
+      unique: true, // Chaque username doit être unique
+      sparse: true, // Permet les valeurs null multiples
+      trim: true,
+      minlength: [3, 'Le pseudo doit contenir au moins 3 caractères'],
+      maxlength: [30, 'Le pseudo ne peut pas dépasser 30 caractères']
+    },
+    pseudo: {
+      type: String,
+      required: false,
+      unique: true, // Chaque pseudo doit être unique
+      sparse: true, // Permet les valeurs null multiples
+      trim: true,
+      minlength: [3, 'Le pseudo doit contenir au moins 3 caractères'],
+      maxlength: [30, 'Le pseudo ne peut pas dépasser 30 caractères']
+    },
     name: {
       type: String,
       required: false,
@@ -60,7 +78,7 @@ const userSchema = new Schema(
       theme: {
         type: String,
         enum: ['light', 'dark', 'auto'],
-        default: 'auto'
+        default: 'auto',
       },
       notifications: {
         email: {
@@ -74,7 +92,7 @@ const userSchema = new Schema(
         dailyReminder: {
           type: Boolean,
           default: true
-        }
+        },
       },
       privacy: {
         profilePublic: {
@@ -84,7 +102,7 @@ const userSchema = new Schema(
         showStats: {
           type: Boolean,
           default: true
-        }
+        },
       }
     },
     // Métadonnées
@@ -97,7 +115,7 @@ const userSchema = new Schema(
       type: Boolean,
       required: true,
       default: false
-    }
+    },
   },
   {
     bufferCommands: false,
@@ -106,7 +124,6 @@ const userSchema = new Schema(
 )
 
 // Index composés pour optimiser les requêtes
-userSchema.index({ email: 1 })
 userSchema.index({ level: -1, totalExperience: -1 }) // Leaderboard
 userSchema.index({ createdAt: -1 }) // Nouveaux utilisateurs
 
@@ -140,6 +157,8 @@ userSchema.methods.toJSON = function () {
 export interface UserDocument {
   _id: string
   email: string
+  username?: string
+  pseudo?: string
   name?: string
   avatarUrl?: string
   displayName?: string
@@ -165,4 +184,5 @@ export interface UserDocument {
   updatedAt: Date
 }
 
-export default mongoose.models.user ?? mongoose.model<UserDocument>('user', userSchema)
+// Utiliser la collection 'users' (avec un s) - celle créée par Better Auth
+export default mongoose.models.users ?? mongoose.model<UserDocument>('users', userSchema)

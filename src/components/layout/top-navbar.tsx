@@ -148,6 +148,7 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
           fullname={getFullName()}
           email={session.user.email ?? ''}
           initials={getInitials()}
+          pseudo={(session.user as any).pseudo ?? (session.user as any).username}
           onLogout={onLogout}
           showUserInfo
           userImage={session.user.image}

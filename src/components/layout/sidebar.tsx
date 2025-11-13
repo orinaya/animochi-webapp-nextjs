@@ -167,12 +167,15 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
             </button>
           </div>
 
-          {/* Nom utilisateur */}
+          {/* Pseudo et Email utilisateur */}
           {isExpanded && (
             <div className='px-6 text-center mb-4'>
-              <h3 className='text-base font-semibold text-strawberry-950'>
-                {session.user.name ?? session.user.email?.split('@')[0] ?? 'Utilisateur'}
+              <h3 className='text-base font-semibold text-strawberry-950 mb-0.5'>
+                {(session.user as any).pseudo ?? (session.user as any).username ?? session.user.name ?? 'Utilisateur'}
               </h3>
+              <p className='text-xs text-strawberry-600'>
+                {session.user.email}
+              </p>
             </div>
           )}
 

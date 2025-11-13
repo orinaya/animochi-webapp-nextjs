@@ -10,6 +10,7 @@ interface DropdownProfileParticleProps {
   fullname: string
   email: string
   initials: string
+  pseudo?: string
   onLogout?: () => void
   showUserInfo?: boolean
   userImage?: string | null
@@ -29,6 +30,7 @@ function DropdownProfileParticle ({
   fullname,
   email,
   initials,
+  pseudo,
   onLogout,
   showUserInfo = false,
   userImage
@@ -80,7 +82,7 @@ function DropdownProfileParticle ({
         {/* Informations utilisateur (si showUserInfo est true) */}
         {showUserInfo && (
           <div className='hidden md:flex flex-col text-left'>
-            <span className='text-sm font-medium text-gray-900'>{fullname}</span>
+            <span className='text-sm font-medium text-gray-900'>{pseudo ?? fullname}</span>
             <span className='text-xs text-gray-500 truncate max-w-32'>
               {email !== '' ? email : 'Email non disponible'}
             </span>
@@ -91,7 +93,9 @@ function DropdownProfileParticle ({
       {open && (
         <div className='absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-100'>
           <div className='px-4 py-2 font-semibold border-b border-gray-200'>
-            <p className='text-gray-900 font-bold text-sm truncate'>{fullname}</p>
+            {pseudo != null && (
+              <p className='text-gray-900 font-bold text-sm truncate mb-0.5'>{pseudo}</p>
+            )}
             <p className='text-gray-600 font-normal text-xs truncate'>{email}</p>
           </div>
           <div className='py-1'>

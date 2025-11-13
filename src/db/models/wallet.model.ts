@@ -23,18 +23,15 @@ const walletSchema = new Schema(
       min: [0, 'Le solde ne peut pas être négatif'],
       validate: {
         validator: Number.isInteger,
-        message: 'Le solde doit être un nombre entier'
+        message: 'Le solde doit être un nombre entier',
       }
-    }
+    },
   },
   {
     bufferCommands: false,
     timestamps: true // createdAt, updatedAt automatiques
   }
 )
-
-// Index pour optimiser les recherches
-walletSchema.index({ ownerId: 1 })
 
 // Méthode pour formatter le wallet pour l'API
 walletSchema.methods.toJSON = function () {
