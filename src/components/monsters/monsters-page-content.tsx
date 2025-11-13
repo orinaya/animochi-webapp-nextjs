@@ -34,7 +34,7 @@ interface MonsterListHeaderProps {
 /**
  * En-tête de la liste des monstres avec compteur et bouton d'action
  */
-function MonsterListHeader ({ count, onCreateMonster }: MonsterListHeaderProps): React.ReactNode {
+function MonsterListHeader({ count, onCreateMonster }: MonsterListHeaderProps): React.ReactNode {
   return (
     <div className='flex items-center justify-between mb-8'>
       <div className='flex items-center gap-3'>
@@ -64,7 +64,7 @@ function MonsterListHeader ({ count, onCreateMonster }: MonsterListHeaderProps):
 /**
  * État vide quand l'utilisateur n'a pas encore de monstres
  */
-function EmptyMonstersState ({ onCreateMonster }: { onCreateMonster: () => void }): React.ReactNode {
+function EmptyMonstersState({ onCreateMonster }: { onCreateMonster: () => void }): React.ReactNode {
   return (
     <div className='text-center py-16'>
       <div className='mb-6'>
@@ -95,7 +95,7 @@ function EmptyMonstersState ({ onCreateMonster }: { onCreateMonster: () => void 
 /**
  * Grille de monstres avec MonsterCard
  */
-function MonstersGrid ({ monsters, onMonsterDeleted }: { monsters: Monster[], onMonsterDeleted: () => Promise<void> }): React.ReactNode {
+function MonstersGrid({ monsters, onMonsterDeleted }: { monsters: Monster[], onMonsterDeleted: () => Promise<void> }): React.ReactNode {
   const router = useRouter()
 
   if (monsters.length === 0) {
@@ -186,7 +186,7 @@ function MonstersGrid ({ monsters, onMonsterDeleted }: { monsters: Monster[], on
  * @param {MonstresPageContentProps} props - Les propriétés du composant
  * @returns {React.ReactNode} Le contenu complet de la page monstres
  */
-export function MonstresPageContent ({ session }: MonstresPageContentProps): React.ReactNode {
+export function MonstresPageContent({ session }: MonstresPageContentProps): React.ReactNode {
   const { logout } = useAuth()
   const [monsters, setMonsters] = useState<Monster[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -266,54 +266,56 @@ export function MonstresPageContent ({ session }: MonstresPageContentProps): Rea
 
   return (
     <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
-      {/* Titre de la page en blueberry-950 */}
-      <div className='mb-8'>
-        <h1 className='text-3xl font-semibold text-blueberry-950 mb-2'>
-          Mes Monstres
-        </h1>
-        {/* Bouton de test temporaire
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className='bg-red-500 text-white px-4 py-2 rounded text-sm'
-        >
-          🔧 TEST: Ouvrir Modal
-        </button> */}
-        {/* <p className='text-lg text-latte-600'>
-          Découvrez et gérez votre collection de créatures Animochi
-        </p> */}
-      </div>
+      <div className='max-w-7xl mx-auto'>
+        {/* Titre de la page en blueberry-950 */}
+        <div className='mb-8'>
+          <h1 className='text-3xl font-semibold text-blueberry-950 mb-2'>
+            Mes Monstres
+          </h1>
+          {/* Bouton de test temporaire
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className='bg-red-500 text-white px-4 py-2 rounded text-sm'
+          >
+            🔧 TEST: Ouvrir Modal
+          </button> */}
+          {/* <p className='text-lg text-latte-600'>
+            Découvrez et gérez votre collection de créatures Animochi
+          </p> */}
+        </div>
 
-      {/* Contenu principal */}
-      {isLoading
-        ? (
-          <div className='flex items-center justify-center py-16'>
-            <div className='text-lg text-latte-600'>Chargement de vos monstres...</div>
-          </div>
+        {/* Contenu principal */}
+        {isLoading
+          ? (
+            <div className='flex items-center justify-center py-16'>
+              <div className='text-lg text-latte-600'>Chargement de vos monstres...</div>
+            </div>
           )
-        : (
-          <div>
-            {monsters.length === 0
-              ? (
-                <EmptyMonstersState onCreateMonster={handleCreateMonster} />
+          : (
+            <div>
+              {monsters.length === 0
+                ? (
+                  <EmptyMonstersState onCreateMonster={handleCreateMonster} />
                 )
-              : (
-                <>
-                  <MonsterListHeader
-                    count={monsters.length}
-                    onCreateMonster={handleCreateMonster}
-                  />
-                  <MonstersGrid monsters={monsters} onMonsterDeleted={loadMonsters} />
-                </>
+                : (
+                  <>
+                    <MonsterListHeader
+                      count={monsters.length}
+                      onCreateMonster={handleCreateMonster}
+                    />
+                    <MonstersGrid monsters={monsters} onMonsterDeleted={loadMonsters} />
+                  </>
                 )}
-          </div>
+            </div>
           )}
 
-      {/* Modal de création de monstre */}
-      <CreateMonsterModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreate={handleCreateMonsterSubmit}
-      />
+        {/* Modal de création de monstre */}
+        <CreateMonsterModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onCreate={handleCreateMonsterSubmit}
+        />
+      </div>
     </DashboardLayout>
   )
 }

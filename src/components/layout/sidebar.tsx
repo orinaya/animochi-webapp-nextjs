@@ -10,16 +10,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
-import { FiHome, FiAward, FiUser, FiSettings, FiLogOut, FiEdit, FiChevronLeft, FiChevronRight, FiPackage, FiCreditCard, FiImage, FiDollarSign, FiShoppingBag } from 'react-icons/fi'
+import { FiHome, FiAward, FiUser, FiSettings, FiLogOut, FiEdit, FiChevronLeft, FiChevronRight, FiPackage, FiImage, FiShoppingBag } from 'react-icons/fi'
 import type { authClient } from '@/lib/auth/auth-client'
 import { useState, useEffect, type ComponentType } from 'react'
 import Button from '@/components/ui/button'
 import { ProfileAvatarModal } from '@/components/dashboard/profile/profile-avatar-modal'
 import { useUserAvatar } from '@/hooks/use-user-avatar'
 import { getAnimalImageUrl, getAnimalAvatarByFilename } from '@/lib/avatar/animal-avatar-utils'
-import { FaTrophy, FaCoins } from 'react-icons/fa'
-import { GiMonsterGrasp, GiShop } from 'react-icons/gi'
-import { IoPawOutline, IoTrophyOutline } from 'react-icons/io5'
+import { IoPawOutline } from 'react-icons/io5'
 import { TbPigMoney } from 'react-icons/tb'
 import { LuTrophy } from 'react-icons/lu'
 
@@ -52,21 +50,20 @@ const navCategories: NavCategory[] = [
     href: '/dashboard',
     icon: FiHome
   },
-  // {
-  //   id: 'game',
-  //   name: 'Jeu',
-  //   items: [
-  { id: 'monsters', name: 'Monstres', href: '/monstres', icon: IoPawOutline },
-  // { id: 'inventory', name: 'Inventaire', href: '/inventaire', icon: FiPackage },
-  { id: 'shop', name: 'Boutique', href: '/shop', icon: FiShoppingBag },
-  //   ]
-  // },
+  {
+    id: 'game',
+    name: 'Jeu',
+    items: [
+      { id: 'monsters', name: 'Monstres', href: '/monstres', icon: IoPawOutline },
+      { id: 'shop', name: 'Boutique', href: '/shop', icon: FiShoppingBag },
+      { id: 'inventory', name: 'Inventaire', href: '/inventaire', icon: FiPackage }
+    ]
+  },
   {
     id: 'economy',
     name: 'Économie',
     items: [
-      { id: 'wallet', name: 'Wallet', href: '/wallet', icon: TbPigMoney },
-      { id: 'transactions', name: 'Transactions', href: '/transactions', icon: FiCreditCard }
+      { id: 'wallet', name: 'Wallet', href: '/wallet', icon: TbPigMoney }
     ]
   },
   {
@@ -88,7 +85,7 @@ const navCategories: NavCategory[] = [
   }
 ]
 
-export function Sidebar({ session, onLogout }: SidebarProps): React.ReactNode {
+export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
   const pathname = usePathname()
   const [isExpanded, setIsExpanded] = useState(true)
   const [isHydrated, setIsHydrated] = useState(false)
@@ -260,7 +257,7 @@ export function Sidebar({ session, onLogout }: SidebarProps): React.ReactNode {
                   <FiLogOut className='w-5 h-5' />
                 </button>
               </div>
-            )
+              )
             : (
               /* Version complète - avec texte */
               <div className='px-3'>
@@ -275,7 +272,7 @@ export function Sidebar({ session, onLogout }: SidebarProps): React.ReactNode {
                   Se déconnecter
                 </Button>
               </div>
-            )}
+              )}
         </div>
       </aside>
 
