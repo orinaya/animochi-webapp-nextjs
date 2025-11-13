@@ -1,7 +1,7 @@
-import { betterAuth } from 'better-auth'
-import { mongodbAdapter } from 'better-auth/adapters/mongodb'
-import { client } from '@/db'
-import { createOrUpdateUserFromOAuth, findUserByEmail } from './auth-helpers'
+import {betterAuth} from "better-auth"
+import {mongodbAdapter} from "better-auth/adapters/mongodb"
+import {client} from "@/db"
+import {createOrUpdateUserFromOAuth, findUserByEmail} from "./auth-helpers"
 
 // Types pour les callbacks Better Auth
 interface SignInUser {
@@ -26,7 +26,7 @@ interface Session {
 export const auth = betterAuth({
   database: mongodbAdapter(client.db(process.env.MONGODB_DATABASE_NAME as string)),
   emailAndPassword: {
-    enabled: true
+    enabled: true,
   },
   socialProviders: {
     github: {
@@ -34,27 +34,27 @@ export const auth = betterAuth({
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
       // Forcer la sélection de compte GitHub
-      scope: ['user:email'],
+      scope: ["user:email"],
       authorizationParams: {
-        prompt: 'select_account' // Force le choix de compte
-      }
+        prompt: "select_account", // Force le choix de compte
+      },
     },
     google: {
       enabled: true,
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       // Forcer la sélection de compte Google
-      scope: ['openid', 'email', 'profile'],
+      scope: ["openid", "email", "profile"],
       authorizationParams: {
-        prompt: 'select_account' // Force le choix de compte
-      }
-    }
+        prompt: "select_account", // Force le choix de compte
+      },
+    },
   },
   callbacks: {
-    async signIn ({
+    async signIn({
       user,
       account,
-      profile
+      profile,
     }: {
       user: SignInUser
       account: Account | null
@@ -62,7 +62,7 @@ export const auth = betterAuth({
     }) {
       // Synchroniser les connexions OAuth (GitHub ET Google)
       if (
-        (account?.provider === 'github' || account?.provider === 'google') &&
+        (account?.provider === "github" || account?.provider === "google") &&
         user.email != null
       ) {
         try {
@@ -70,25 +70,28 @@ export const auth = betterAuth({
             {
               email: user.email,
               name: user.name,
-              image: user.image
+              image: user.image,
             },
             profile ?? undefined
           )
           console.log(`Synchronisation réussie pour: ${user.email} via ${account.provider}`)
         } catch (error) {
-          console.error('Erreur lors de la synchronisation OAuth:', error)
+          console.error("Erreur lors de la synchronisation OAuth:", error)
           // Continue la connexion même en cas d'erreur de synchronisation
         }
       }
       return true
     },
-    async session ({ session }: { session: Session, token: unknown }) {
+    async session({session}: {session: Session; token: unknown}) {
       // Enrichir la session avec l'ID utilisateur Animochi
       if (session.user?.email != null) {
         try {
           const animochiUser = await findUserByEmail(session.user.email)
           if (animochiUser != null) {
             session.user.id = animochiUser._id.toString()
+            // Ajouter le pseudo et username
+            ;(session.user as any).pseudo = (animochiUser as any).pseudo
+            ;(session.user as any).username = (animochiUser as any).username
             // Optionnel : ajouter d'autres informations utiles
             session.user.displayName = animochiUser.displayName
             session.user.level = animochiUser.level
@@ -98,6 +101,6 @@ export const auth = betterAuth({
         }
       }
       return session
-    }
-  }
+    },
+  },
 })

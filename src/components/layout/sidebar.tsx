@@ -16,6 +16,7 @@ import { useState, useEffect, type ComponentType } from 'react'
 import Button from '@/components/ui/button'
 import { ProfileAvatarModal } from '@/components/dashboard/profile/profile-avatar-modal'
 import { useUserAvatar } from '@/hooks/use-user-avatar'
+import { useUserPseudo } from '@/hooks/use-user-pseudo'
 import { getAnimalImageUrl, getAnimalAvatarByFilename } from '@/lib/avatar/animal-avatar-utils'
 import { IoPawOutline } from 'react-icons/io5'
 import { TbPigMoney } from 'react-icons/tb'
@@ -89,6 +90,9 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
   const pathname = usePathname()
   const [isExpanded, setIsExpanded] = useState(true)
   const [isHydrated, setIsHydrated] = useState(false)
+
+  // Hook pour récupérer le pseudo depuis la base de données
+  const { pseudo } = useUserPseudo()
 
   // Hook pour la gestion de l'avatar
   const {
@@ -171,7 +175,7 @@ export function Sidebar ({ session, onLogout }: SidebarProps): React.ReactNode {
           {isExpanded && (
             <div className='px-6 text-center mb-4'>
               <h3 className='text-base font-semibold text-strawberry-950 mb-0.5'>
-                {(session.user as any).pseudo ?? (session.user as any).username ?? session.user.name ?? 'Utilisateur'}
+                {pseudo ?? session.user.name ?? 'Utilisateur'}
               </h3>
               <p className='text-xs text-strawberry-600'>
                 {session.user.email}

@@ -26,7 +26,7 @@ interface DropdownProfileParticleProps {
  * @param {DropdownProfileParticleProps} props - Les propriétés du dropdown
  * @returns {React.ReactNode} Le dropdown du profil
  */
-function DropdownProfileParticle ({
+function DropdownProfileParticle({
   fullname,
   email,
   initials,
@@ -40,7 +40,7 @@ function DropdownProfileParticle ({
   const router = useRouter()
 
   useEffect(() => {
-    function handleClickOutside (event: MouseEvent): void {
+    function handleClickOutside(event: MouseEvent): void {
       if (menuRef.current !== null && !(menuRef.current).contains(event.target as Node)) {
         setOpen(false)
       }
@@ -72,12 +72,12 @@ function DropdownProfileParticle ({
               alt='Photo de profil'
               className='w-8 h-8 rounded-full object-cover'
             />
-            )
+          )
           : (
             <div className='w-8 h-8 rounded-full bg-blueberry-200 flex items-center justify-center'>
               <span className='text-blueberry-700 font-bold text-sm'>{initials}</span>
             </div>
-            )}
+          )}
 
         {/* Informations utilisateur (si showUserInfo est true) */}
         {showUserInfo && (

@@ -7,6 +7,7 @@ import { FaRegBell } from 'react-icons/fa6'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { WalletHeaderDisplay } from '../wallet/wallet-header-display'
+import { useUserPseudo } from '@/hooks/use-user-pseudo'
 
 type Session = typeof authClient.$Infer.Session
 
@@ -34,6 +35,9 @@ interface TopNavBarProps {
 function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): React.ReactNode {
   const router = useRouter()
   const pathname = usePathname()
+
+  // Hook pour récupérer le pseudo depuis la base de données
+  const { pseudo } = useUserPseudo()
 
   // Vérifie si on est sur la page d'accueil/dashboard
   const isHomePage = pathname === '/dashboard' || pathname === '/'
@@ -148,7 +152,7 @@ function TopNavBar ({ session, onLogout, breadcrumbItems }: TopNavBarProps): Rea
           fullname={getFullName()}
           email={session.user.email ?? ''}
           initials={getInitials()}
-          pseudo={(session.user as any).pseudo ?? (session.user as any).username}
+          pseudo={pseudo}
           onLogout={onLogout}
           showUserInfo
           userImage={session.user.image}
