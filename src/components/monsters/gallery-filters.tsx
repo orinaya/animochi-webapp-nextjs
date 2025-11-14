@@ -26,7 +26,7 @@ interface GalleryFiltersProps {
  * <GalleryFilters onFiltersChange={(filters) => setFilters(filters)} />
  * ```
  */
-export function GalleryFilters({
+export function GalleryFilters ({
   onFiltersChange,
   initialFilters = {}
 }: GalleryFiltersProps): React.ReactElement {

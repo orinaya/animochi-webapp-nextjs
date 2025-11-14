@@ -18,4 +18,11 @@ export class MonsterActionMongooseRepository implements MonsterActionRepository 
     })
     return found != null
   }
+
+  getLastActionAt = async (monsterId: string, action?: string): Promise<Date | null> => {
+    const query: any = { monsterId }
+    if (action) query.action = action
+    const last = await MonsterActionModel.findOne(query).sort({ createdAt: -1 })
+    return last?.createdAt ?? null
+  }
 }

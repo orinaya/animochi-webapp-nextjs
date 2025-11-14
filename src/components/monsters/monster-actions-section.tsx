@@ -198,7 +198,6 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
     }
   }
 
-
   return (
     <>
       {/* Actions en grille responsive 3 colonnes, boutons larges */}

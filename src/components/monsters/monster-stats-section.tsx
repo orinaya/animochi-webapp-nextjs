@@ -41,7 +41,7 @@ interface MonsterStatsSectionProps {
   actionsComponent?: React.ReactNode
 }
 
-export default function MonsterStatsSection({ monster, actionsComponent }: MonsterStatsSectionProps): React.ReactNode {
+export default function MonsterStatsSection ({ monster, actionsComponent }: MonsterStatsSectionProps): React.ReactNode {
   const state = (monster.state ?? 'happy') as MonsterState
   const mood = getMonsterMoodInfo(state)
   return (
@@ -66,7 +66,7 @@ export default function MonsterStatsSection({ monster, actionsComponent }: Monst
           <div className='flex flex-col items-end gap-2'>
             {mood ? (
               <div
-                className={`flex items-center gap-2 px-4 py-1 rounded-full border-2 font-bold text-base shadow-lg transition-all animate-bounce-slow relative`}
+                className='flex items-center gap-2 px-4 py-1 rounded-full border-2 font-bold text-base shadow-lg transition-all animate-bounce-slow relative'
                 style={{
                   minWidth: 120,
                   justifyContent: 'center',

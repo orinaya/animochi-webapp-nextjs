@@ -4,11 +4,11 @@
  * Implémentation MongoDB pour les opérations sur les monstres
  */
 
-import {connectMongooseToDatabase} from "@/db"
-import MonsterModel from "@/db/models/monster.model"
+import { connectMongooseToDatabase } from '@/db'
+import MonsterModel from '@/db/models/monster.model'
 // import { Monster } from '@/domain/entities/monster'
-import type {MonsterRepository} from "@/domain/usecases/handle-payment-success.usecase"
-import type {Monster} from "@/types"
+import type { MonsterRepository } from '@/domain/usecases/handle-payment-success.usecase'
+import type { Monster } from '@/types'
 
 /**
  * Repository pour gérer les monstres
@@ -17,7 +17,7 @@ export class MongoMonsterRepository implements MonsterRepository {
   /**
    * Ajoute de l'XP à un monstre et gère le level up
    */
-  async addXp(monsterId: string, amount: number): Promise<void> {
+  async addXp (monsterId: string, amount: number): Promise<void> {
     await connectMongooseToDatabase()
 
     const monster = await MonsterModel.findById(monsterId)
@@ -31,7 +31,7 @@ export class MongoMonsterRepository implements MonsterRepository {
     const newXp = currentXp + Number(amount)
 
     monster.experience = newXp
-    monster.markModified("experience")
+    monster.markModified('experience')
 
     // Vérifier si level up
     const xpNeeded = Number(monster.experienceToNextLevel ?? 150)
@@ -40,18 +40,18 @@ export class MongoMonsterRepository implements MonsterRepository {
       // Level up!
       const currentLevel = Number(monster.level ?? 1)
       monster.level = currentLevel + 1
-      monster.markModified("level")
+      monster.markModified('level')
 
       // Recalculer l'XP pour le prochain niveau
       // Formule: BASE_XP * level * GROWTH_FACTOR
       const BASE_XP = 100
       const GROWTH_FACTOR = 1.5
       monster.experienceToNextLevel = Math.floor(BASE_XP * monster.level * GROWTH_FACTOR)
-      monster.markModified("experienceToNextLevel")
+      monster.markModified('experienceToNextLevel')
 
       // Réinitialiser l'XP (ou garder le surplus)
       monster.experience = Math.max(0, newXp - xpNeeded)
-      monster.markModified("experience")
+      monster.markModified('experience')
     }
 
     await monster.save()
@@ -60,19 +60,19 @@ export class MongoMonsterRepository implements MonsterRepository {
   /**
    * Récupère un monstre par son ID
    */
-  async findById(monsterId: string): Promise<Monster | null> {
+  async findById (monsterId: string): Promise<Monster | null> {
     await connectMongooseToDatabase()
 
-    return (await MonsterModel.findById(monsterId)) as Monster | null
+    return (await MonsterModel.findById(monsterId))
   }
 
   /**
    * Vérifie qu'un monstre appartient à un utilisateur
    */
-  async isOwnedBy(monsterId: string, userId: string): Promise<boolean> {
+  async isOwnedBy (monsterId: string, userId: string): Promise<boolean> {
     await connectMongooseToDatabase()
 
-    const monster = await MonsterModel.findOne({_id: monsterId, ownerId: userId})
+    const monster = await MonsterModel.findOne({ _id: monsterId, ownerId: userId })
     return monster !== null && monster !== undefined
   }
 }

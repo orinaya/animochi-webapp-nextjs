@@ -55,13 +55,13 @@ const STATE_BADGE_COLORS: Record<MonsterState, string> = {
   sleepy: 'bg-purple-100 text-purple-700 border-purple-300',
   bored: 'bg-latte-100 text-latte-700 border-latte-300',
   sick: 'bg-strawberry-100 text-strawberry-700 border-strawberry-300'
-};
+}
 
 /**
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-export function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
+export function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
   const mood = getMonsterMoodInfo(state)
   const color = STATE_BADGE_COLORS[state] ?? 'bg-gray-100 text-gray-700 border-gray-300'
   if (!mood) {
@@ -88,7 +88,7 @@ export function StateBadge({ state }: { state: MonsterState }): React.ReactNode 
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
 
-function LevelProgress({ level, experience, experienceToNextLevel }: {
+function LevelProgress ({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
@@ -139,7 +139,7 @@ function LevelProgress({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   if (monster == null) {
     return (
       <div className={`bg-latte-100 rounded-xl flex items-center justify-center min-h-[180px] ${className}`}>
@@ -298,13 +298,13 @@ export default function MonsterCard({ monster, onClick, onDelete, onEdit, classN
                   <FiGlobe size={14} />
                   <span>Public</span>
                 </div>
-              )
+                )
               : (
                 <div className='flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full'>
                   <FiLock size={14} />
                   <span>Privé</span>
                 </div>
-              )}
+                )}
           </div>
           <div
             onClick={(e) => {

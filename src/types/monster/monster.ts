@@ -23,6 +23,10 @@ export type MonsterState = 'happy' | 'sad' | 'angry' | 'hungry' | 'sleepy' | 'bo
  * - Types plus permissifs (string | null) pour compatibilité
  */
 export interface Monster {
+  /** Date de dernière mise à jour de l'état d'humeur (format string ISO) */
+  stateUpdatedAt?: string
+  /** Date de la prochaine évolution d'état d'humeur (format string ISO) */
+  nextStateAt?: string
   /** ID standard (optionnel) */
   id?: string
   /** ID MongoDB (optionnel) */

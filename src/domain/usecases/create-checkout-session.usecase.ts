@@ -5,10 +5,10 @@
  * Principe DIP: Dépend d'abstractions (repositories)
  */
 
-import type {CheckoutSessionResult} from "../entities/purchase"
-import type {PaymentRepository} from "../repositories/payment-repository"
-import type {PurchaseRepository} from "../repositories/purchase-repository"
-import type {PurchaseType} from "../value-objects/purchase-type"
+import type { CheckoutSessionResult } from '../entities/purchase'
+import type { PaymentRepository } from '../repositories/payment-repository'
+import type { PurchaseRepository } from '../repositories/purchase-repository'
+import type { PurchaseType } from '../value-objects/purchase-type'
 
 /**
  * Commande pour créer une session de checkout
@@ -48,13 +48,13 @@ export interface CreateCheckoutSessionCommand {
 /**
  * Type de résultat pour les opérations
  */
-export type Result<T, E = Error> = {ok: true; value: T} | {ok: false; error: E}
+export type Result<T, E = Error> = { ok: true, value: T } | { ok: false, error: E }
 
 /**
  * Use case pour créer une session de checkout Stripe
  */
 export class CreateCheckoutSessionUseCase {
-  constructor(
+  constructor (
     private readonly paymentRepository: PaymentRepository,
     private readonly purchaseRepository: PurchaseRepository
   ) {}
@@ -62,7 +62,7 @@ export class CreateCheckoutSessionUseCase {
   /**
    * Exécute la création de session de checkout
    */
-  async execute(
+  async execute (
     command: CreateCheckoutSessionCommand
   ): Promise<Result<CheckoutSessionResult, string>> {
     try {
@@ -73,7 +73,7 @@ export class CreateCheckoutSessionUseCase {
         itemId: command.itemId,
         quantity: 1,
         targetMonsterId: command.targetMonsterId,
-        metadata: command.metadata,
+        metadata: command.metadata
       })
 
       // 2. Préparer les URLs de redirection
@@ -93,14 +93,14 @@ export class CreateCheckoutSessionUseCase {
           purchaseId: purchase.id,
           itemId: command.itemId,
           purchaseType: command.purchaseType,
-          ...(command.targetMonsterId !== undefined && {targetMonsterId: command.targetMonsterId}),
+          ...(command.targetMonsterId !== undefined && { targetMonsterId: command.targetMonsterId }),
           ...(command.metadata !== undefined &&
-            Object.fromEntries(Object.entries(command.metadata).map(([k, v]) => [k, String(v)]))),
-        },
+            Object.fromEntries(Object.entries(command.metadata).map(([k, v]) => [k, String(v)])))
+        }
       })
 
       // 4. Mettre à jour le purchase avec le sessionId et le montant
-      if ("updateStripeSession" in this.purchaseRepository) {
+      if ('updateStripeSession' in this.purchaseRepository) {
         await (
           this.purchaseRepository as PurchaseRepository & {
             updateStripeSession?: (id: string, sessionId: string, amount: number) => Promise<void>
@@ -113,14 +113,14 @@ export class CreateCheckoutSessionUseCase {
         value: {
           sessionId: session.sessionId,
           url: session.url,
-          purchaseId: purchase.id,
-        },
+          purchaseId: purchase.id
+        }
       }
     } catch (error) {
-      console.error("Error creating checkout session:", error)
+      console.error('Error creating checkout session:', error)
       return {
         ok: false,
-        error: error instanceof Error ? error.message : "Failed to create checkout session",
+        error: error instanceof Error ? error.message : 'Failed to create checkout session'
       }
     }
   }

@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import {useEffect, useState} from "react"
-import {authClient} from "@/lib/auth/auth-client"
-import {UseSessionReturn, UseSessionError} from "@/types/user/user"
-import {User} from "better-auth"
+import { useEffect, useState } from 'react'
+import { authClient } from '@/lib/auth/auth-client'
+import { UseSessionReturn, UseSessionError } from '@/types/user/user'
+import { User } from 'better-auth'
 
-export function useSession(): UseSessionReturn {
+export function useSession (): UseSessionReturn {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<UseSessionError>(null)
@@ -31,6 +31,6 @@ export function useSession(): UseSessionReturn {
     user,
     isLoading,
     isAuthenticated: user != null,
-    error,
+    error
   }
 }

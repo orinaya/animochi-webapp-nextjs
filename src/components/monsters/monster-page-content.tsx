@@ -26,7 +26,7 @@ import MonsterExperienceSection from './monster-experience-section'
 import MonsterActionsSection from './monster-actions-section'
 import MonsterStatsSection from './monster-stats-section'
 
-import type { Session } from '@/lib/auth/auth-client'
+import type { Session } from '@/lib/auth/auth'
 interface MonstrePageContentProps {
   /** Données du monstre */
   monster: Monster
@@ -51,7 +51,7 @@ interface MonstrePageContentProps {
  * />
  * ```
  */
-export default function MonstrePageContent({
+export default function MonstrePageContent ({
   monster: initialMonster,
   monsterId,
   session
@@ -85,8 +85,8 @@ export default function MonstrePageContent({
     const interval = setInterval(() => {
       fetch(`/api/monsters/${monsterId}`)
         .then(async (res) => res.ok ? await res.json() : null)
-        .then((data: unknown) => {
-          if (data?.monster != null) {
+        .then((data: any) => {
+          if (data && typeof data === 'object' && 'monster' in data && data.monster != null) {
             setMonster((prev) => ({ ...prev, ...data.monster }))
           }
         })
@@ -118,7 +118,7 @@ export default function MonstrePageContent({
   }
 
   return (
-    <DashboardLayout session={session} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
+    <DashboardLayout session={session as any} onLogout={handleLogout} breadcrumbItems={breadcrumbItems}>
       <div className='max-w-7xl mx-auto'>
         {/* Header avec nom et navigation */}
         <MonsterDetailHeader

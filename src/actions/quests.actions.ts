@@ -3,19 +3,19 @@
  * Application Layer : Orchestration des use cases et gestion de l'état
  */
 
-"use server"
+'use server'
 
-import {auth} from "@/lib/auth/auth"
-import {headers} from "next/headers"
-import {connectMongooseToDatabase} from "@/db"
-import {questRepository} from "@/infrastructure/repositories/quest.repository"
-import {GetDailyQuestsUseCase} from "@/domain/usecases/get-daily-quests.usecase"
-import {UpdateQuestProgressUseCase} from "@/domain/usecases/update-quest-progress.usecase"
-import {ResetDailyQuestsUseCase} from "@/domain/usecases/reset-daily-quests.usecase"
-import type {QuestProgress} from "@/domain/entities/quest-progress.entity"
-import {QuestType} from "@/domain/entities/quest.entity"
-import {addFunds} from "./wallet.actions"
-import {QUEST_TEMPLATES} from "@/config/quests.config"
+import { auth } from '@/lib/auth/auth'
+import { headers } from 'next/headers'
+import { connectMongooseToDatabase } from '@/db'
+import { questRepository } from '@/infrastructure/repositories/quest.repository'
+import { GetDailyQuestsUseCase } from '@/domain/usecases/get-daily-quests.usecase'
+import { UpdateQuestProgressUseCase } from '@/domain/usecases/update-quest-progress.usecase'
+import { ResetDailyQuestsUseCase } from '@/domain/usecases/reset-daily-quests.usecase'
+import type { QuestProgress } from '@/domain/entities/quest-progress.entity'
+import { QuestType } from '@/domain/entities/quest.entity'
+import { addFunds } from './wallet.actions'
+import { QUEST_TEMPLATES } from '@/config/quests.config'
 
 /**
  * Résultat d'une action de quête
@@ -30,16 +30,16 @@ export interface QuestActionResult {
  * Récupère les quêtes journalières de l'utilisateur connecté
  * Enrichit les données avec les informations des templates (titre, description, icône)
  */
-export async function getDailyQuests(): Promise<Array<
-  QuestProgress & {
-    questTitle: string
-    questDescription: string
-    questIcon: string
-  }
+export async function getDailyQuests (): Promise<Array<
+QuestProgress & {
+  questTitle: string
+  questDescription: string
+  questIcon: string
+}
 > | null> {
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: await headers()
     })
 
     if (session?.user?.id == null) {
@@ -65,15 +65,15 @@ export async function getDailyQuests(): Promise<Array<
 
       return {
         ...quest,
-        questTitle: questData?.title ?? "Quête mystère",
-        questDescription: questData?.description ?? "Complète cette quête",
-        questIcon: questData?.icon ?? "🎯",
+        questTitle: questData?.title ?? 'Quête mystère',
+        questDescription: questData?.description ?? 'Complète cette quête',
+        questIcon: questData?.icon ?? '🎯'
       }
     })
 
     return enrichedQuests
   } catch (error) {
-    console.error("Error fetching daily quests:", error)
+    console.error('Error fetching daily quests:', error)
     return null
   }
 }
@@ -82,17 +82,17 @@ export async function getDailyQuests(): Promise<Array<
  * Incrémente la progression d'une quête
  * Récompense l'utilisateur si la quête est complétée
  */
-export async function updateQuestProgress(
+export async function updateQuestProgress (
   questId: string,
   incrementAmount: number = 1
 ): Promise<QuestActionResult> {
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: await headers()
     })
 
     if (session?.user?.id == null) {
-      return {success: false, message: "Non authentifié"}
+      return { success: false, message: 'Non authentifié' }
     }
 
     await connectMongooseToDatabase()
@@ -102,7 +102,7 @@ export async function updateQuestProgress(
 
     // Si la quête vient d'être complétée, créditer la récompense
     if (result.justCompleted && result.reward > 0) {
-      await addFunds(result.reward, "QUEST_REWARD")
+      await addFunds(result.reward, 'QUEST_REWARD')
     }
 
     return {
@@ -110,14 +110,14 @@ export async function updateQuestProgress(
       data: {
         progress: result.progress,
         justCompleted: result.justCompleted,
-        reward: result.reward,
-      },
+        reward: result.reward
+      }
     }
   } catch (error) {
-    console.error("Error updating quest progress:", error)
+    console.error('Error updating quest progress:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Erreur lors de la mise à jour",
+      message: error instanceof Error ? error.message : 'Erreur lors de la mise à jour'
     }
   }
 }
@@ -126,13 +126,13 @@ export async function updateQuestProgress(
  * Helper pour tracker automatiquement la progression d'une quête en fonction du type
  * Retourne true si au moins une quête a été complétée
  */
-export async function trackQuestProgress(
+export async function trackQuestProgress (
   questType: QuestType,
   amount: number = 1
 ): Promise<boolean> {
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: await headers()
     })
 
     if (session?.user?.id == null) {
@@ -146,7 +146,7 @@ export async function trackQuestProgress(
 
     // Trouver les quêtes correspondant au type ET qui ne sont pas encore complétées/réclamées
     const matchingQuests = quests.filter(
-      (q) => q.questType === questType && q.status !== "COMPLETED" && q.status !== "CLAIMED"
+      (q) => q.questType === questType && q.status !== 'COMPLETED' && q.status !== 'CLAIMED'
     )
 
     // Mettre à jour la progression de chaque quête correspondante
@@ -168,7 +168,7 @@ export async function trackQuestProgress(
 
     return anyQuestCompleted
   } catch (error) {
-    console.error("Error tracking quest progress:", error)
+    console.error('Error tracking quest progress:', error)
     return false
   }
 }
@@ -176,14 +176,14 @@ export async function trackQuestProgress(
 /**
  * Réinitialise les quêtes journalières de l'utilisateur
  */
-export async function resetUserDailyQuests(): Promise<QuestActionResult> {
+export async function resetUserDailyQuests (): Promise<QuestActionResult> {
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: await headers()
     })
 
     if (session?.user?.id == null) {
-      return {success: false, message: "Non authentifié"}
+      return { success: false, message: 'Non authentifié' }
     }
 
     await connectMongooseToDatabase()
@@ -191,12 +191,12 @@ export async function resetUserDailyQuests(): Promise<QuestActionResult> {
     // Supprimer toutes les quêtes de l'utilisateur pour en générer de nouvelles
     await questRepository.deleteAllUserQuests(session.user.id)
 
-    return {success: true}
+    return { success: true }
   } catch (error) {
-    console.error("Error resetting daily quests:", error)
+    console.error('Error resetting daily quests:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Erreur lors de la réinitialisation",
+      message: error instanceof Error ? error.message : 'Erreur lors de la réinitialisation'
     }
   }
 }
@@ -205,11 +205,11 @@ export async function resetUserDailyQuests(): Promise<QuestActionResult> {
  * Réinitialise toutes les quêtes journalières (utilisé par le cron)
  * Cette action est protégée et ne devrait être appelée que par le cron job
  */
-export async function resetAllDailyQuests(cronSecret: string): Promise<QuestActionResult> {
+export async function resetAllDailyQuests (cronSecret: string): Promise<QuestActionResult> {
   try {
     // Vérifier le secret du cron
     if (cronSecret !== process.env.CRON_SECRET) {
-      return {success: false, message: "Non autorisé"}
+      return { success: false, message: 'Non autorisé' }
     }
 
     await connectMongooseToDatabase()
@@ -217,12 +217,12 @@ export async function resetAllDailyQuests(cronSecret: string): Promise<QuestActi
     const useCase = new ResetDailyQuestsUseCase(questRepository)
     await useCase.executeForAll()
 
-    return {success: true}
+    return { success: true }
   } catch (error) {
-    console.error("Error resetting all daily quests:", error)
+    console.error('Error resetting all daily quests:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Erreur lors de la réinitialisation",
+      message: error instanceof Error ? error.message : 'Erreur lors de la réinitialisation'
     }
   }
 }
@@ -231,68 +231,68 @@ export async function resetAllDailyQuests(cronSecret: string): Promise<QuestActi
  * Récupère la récompense d'une quête complétée
  * Marque la quête comme réclamée et crédite les Animoneys
  */
-export async function claimQuestReward(questId: string): Promise<QuestActionResult> {
+export async function claimQuestReward (questId: string): Promise<QuestActionResult> {
   try {
-    console.log("🎯 [claimQuestReward] Starting for questId:", questId)
+    console.log('🎯 [claimQuestReward] Starting for questId:', questId)
 
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: await headers()
     })
 
     if (session?.user?.id == null) {
-      console.log("🎯 [claimQuestReward] No session found")
-      return {success: false, message: "Non authentifié"}
+      console.log('🎯 [claimQuestReward] No session found')
+      return { success: false, message: 'Non authentifié' }
     }
 
-    console.log("🎯 [claimQuestReward] User:", session.user.id)
+    console.log('🎯 [claimQuestReward] User:', session.user.id)
     await connectMongooseToDatabase()
 
     // Récupérer la quête
     const quest = await questRepository.getQuestProgress(session.user.id, questId)
-    console.log("🎯 [claimQuestReward] Quest found:", quest)
+    console.log('🎯 [claimQuestReward] Quest found:', quest)
 
     if (quest == null) {
-      console.log("🎯 [claimQuestReward] Quest not found")
-      return {success: false, message: "Quête introuvable"}
+      console.log('🎯 [claimQuestReward] Quest not found')
+      return { success: false, message: 'Quête introuvable' }
     }
 
-    if (quest.status !== "COMPLETED") {
-      console.log("🎯 [claimQuestReward] Quest not completed, status:", quest.status)
-      return {success: false, message: "Quête non complétée"}
+    if (quest.status !== 'COMPLETED') {
+      console.log('🎯 [claimQuestReward] Quest not completed, status:', quest.status)
+      return { success: false, message: 'Quête non complétée' }
     }
 
-    console.log("🎯 [claimQuestReward] Marking quest as claimed...")
+    console.log('🎯 [claimQuestReward] Marking quest as claimed...')
     // Marquer la quête comme réclamée
     const updatedQuest = await questRepository.markQuestAsClaimed(session.user.id, questId)
 
     if (updatedQuest == null) {
-      console.log("🎯 [claimQuestReward] Failed to mark as claimed")
-      return {success: false, message: "Impossible de marquer la quête comme réclamée"}
+      console.log('🎯 [claimQuestReward] Failed to mark as claimed')
+      return { success: false, message: 'Impossible de marquer la quête comme réclamée' }
     }
 
-    console.log("🎯 [claimQuestReward] Crediting reward:", quest.reward)
+    console.log('🎯 [claimQuestReward] Crediting reward:', quest.reward)
     // Créditer la récompense
-    const creditResult = await addFunds(quest.reward, "QUEST_REWARD")
-    console.log("🎯 [claimQuestReward] Credit result:", creditResult)
+    const creditResult = await addFunds(quest.reward, 'QUEST_REWARD')
+    console.log('🎯 [claimQuestReward] Credit result:', creditResult)
 
     if (!creditResult.success) {
-      console.log("🎯 [claimQuestReward] Failed to credit funds")
-      return {success: false, message: "Erreur lors du crédit de la récompense"}
+      console.log('🎯 [claimQuestReward] Failed to credit funds')
+      return { success: false, message: 'Erreur lors du crédit de la récompense' }
     }
 
-    console.log("🎯 [claimQuestReward] Success! New balance:", creditResult.balance)
+    console.log('🎯 [claimQuestReward] Success! New balance:', creditResult.balance)
     return {
       success: true,
       data: {
         reward: quest.reward,
-        newBalance: creditResult.balance,
-      },
+        newBalance: creditResult.balance
+      }
     }
   } catch (error) {
-    console.error("🎯 [claimQuestReward] Error:", error)
+    console.error('🎯 [claimQuestReward] Error:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Erreur lors de la récupération",
+      message: error instanceof Error ? error.message : 'Erreur lors de la récupération'
     }
   }
 }
