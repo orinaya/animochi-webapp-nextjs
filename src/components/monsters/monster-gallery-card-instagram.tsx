@@ -72,7 +72,7 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * - Image carrée du monstre
  * - Footer avec nom, niveau, état
  */
-export function MonsterGalleryCardInstagram({
+export function MonsterGalleryCardInstagram ({
   monster,
   className = ''
 }: MonsterGalleryCardInstagramProps): React.ReactElement {

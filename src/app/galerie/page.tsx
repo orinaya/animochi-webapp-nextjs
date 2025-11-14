@@ -48,7 +48,7 @@ type Session = typeof authClient.$Infer.Session
  *
  * Respecte le principe SRP : Gère uniquement l'affichage de la galerie
  */
-export default function GaleriePage(): React.ReactElement {
+export default function GaleriePage (): React.ReactElement {
   const { track } = useQuestTracking()
   const [result, setResult] = useState<GalleryResult>({
     monsters: [],
@@ -173,7 +173,7 @@ export default function GaleriePage(): React.ReactElement {
                   <p className='text-gray-600'>Chargement des monstres...</p>
                 </div>
               </div>
-            )
+              )
             : result.monsters.length === 0
               ? (
                 <div className='bg-white rounded-2xl border border-latte-200 p-12 text-center'>
@@ -185,7 +185,7 @@ export default function GaleriePage(): React.ReactElement {
                     Essayez de modifier vos filtres ou revenez plus tard !
                   </p>
                 </div>
-              )
+                )
               : (
                 <>
                   {/* Grille de monstres - 3 colonnes responsive */}
@@ -239,7 +239,7 @@ export default function GaleriePage(): React.ReactElement {
                     </div>
                   )}
                 </>
-              )}
+                )}
         </main>
       </div>
     </DashboardLayout>

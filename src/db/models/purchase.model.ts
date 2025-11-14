@@ -3,79 +3,79 @@
  * Modèle Mongoose pour les achats effectués via Stripe
  */
 
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
-const {Schema} = mongoose
+const { Schema } = mongoose
 
 const purchaseSchema = new Schema(
   {
     userId: {
       type: String,
-      required: true,
+      required: true
     },
     type: {
       type: String,
       required: true,
-      enum: ["xp-boost", "animoneys-package", "food", "accessory", "customization"],
+      enum: ['xp-boost', 'animoneys-package', 'food', 'accessory', 'customization']
     },
     itemId: {
       type: String,
-      required: true,
+      required: true
     },
     quantity: {
       type: Number,
       required: true,
       default: 1,
-      min: 1,
+      min: 1
     },
     totalAmount: {
       type: Number,
       required: true,
-      min: 0,
+      min: 0
     },
     currency: {
       type: String,
       required: true,
-      default: "eur",
-      lowercase: true,
+      default: 'eur',
+      lowercase: true
     },
     paymentStatus: {
       type: String,
       required: true,
-      enum: ["pending", "processing", "succeeded", "failed", "refunded", "canceled"],
-      default: "pending",
+      enum: ['pending', 'processing', 'succeeded', 'failed', 'refunded', 'canceled'],
+      default: 'pending'
     },
     stripeSessionId: {
       type: String,
-      sparse: true, // Permet null/undefined
+      sparse: true // Permet null/undefined
       // Pas d'index ici, l'index est défini explicitement plus bas
     },
     stripePaymentIntentId: {
-      type: String,
+      type: String
     },
     targetMonsterId: {
       type: Schema.Types.ObjectId,
-      ref: "Monster",
+      ref: 'Monster'
     },
     metadata: {
       type: Schema.Types.Mixed,
-      default: {},
+      default: {}
     },
     completedAt: {
-      type: Date,
-    },
+      type: Date
+    }
   },
   {
-    timestamps: true, // Ajoute createdAt et updatedAt automatiquement
+    timestamps: true // Ajoute createdAt et updatedAt automatiquement
   }
 )
 
 // Index composé pour rechercher les achats réussis d'un utilisateur
-purchaseSchema.index({userId: 1, paymentStatus: 1, createdAt: -1})
+purchaseSchema.index({ userId: 1, paymentStatus: 1, createdAt: -1 })
 
 // Index pour rechercher par session Stripe
-purchaseSchema.index({stripeSessionId: 1})
+purchaseSchema.index({ stripeSessionId: 1 })
 
-const Purchase = mongoose.models.Purchase ?? mongoose.model("Purchase", purchaseSchema)
+const Purchase = mongoose.models.Purchase ?? mongoose.model('Purchase', purchaseSchema)
 
 export default Purchase

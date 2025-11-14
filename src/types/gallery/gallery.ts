@@ -1,3 +1,5 @@
+import type { Monster, MonsterState } from '../monster/monster'
+
 /**
  * Monstre avec informations du propriétaire pour la galerie publique
  */
@@ -24,9 +26,9 @@ export interface GalleryFilters {
   /** Filtrer par niveau maximum */
   maxLevel?: number
   /** Filtrer par état/humeur */
-  state?: MonsterState | "all"
+  state?: MonsterState | 'all'
   /** Tri par date de création */
-  sortBy?: "newest" | "oldest" | "level-asc" | "level-desc"
+  sortBy?: 'newest' | 'oldest' | 'level-asc' | 'level-desc'
   /** Nombre de résultats par page */
   limit?: number
   /** Page actuelle (pour pagination) */

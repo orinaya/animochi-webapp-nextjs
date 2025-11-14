@@ -1,14 +1,14 @@
-"use server"
+'use server'
 
-import {connectMongooseToDatabase} from "@/db"
-import monsterModel from "@/db/models/monster.model"
-import userModel from "@/db/models/user.model"
-import {auth} from "@/lib/auth/auth"
-import type {GalleryFilters, GalleryResult, MonsterWithOwner} from "@/types/gallery"
-import {Types} from "mongoose"
-import {headers} from "next/headers"
-import {trackQuestProgress} from "@/actions/quests.actions"
-import {QuestType} from "@/domain/entities/quest.entity"
+import { connectMongooseToDatabase } from '@/db'
+import monsterModel from '@/db/models/monster.model'
+import userModel from '@/db/models/user.model'
+import { auth } from '@/lib/auth/auth'
+import type { GalleryFilters, GalleryResult, MonsterWithOwner } from '@/types/gallery'
+import { Types } from 'mongoose'
+import { headers } from 'next/headers'
+import { trackQuestProgress } from '@/actions/quests.actions'
+import { QuestType } from '@/domain/entities/quest.entity'
 
 /**
  * Récupère tous les monstres publics pour la galerie communautaire
@@ -36,14 +36,14 @@ import {QuestType} from "@/domain/entities/quest.entity"
  * })
  * ```
  */
-export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<GalleryResult> {
+export async function getPublicMonsters (filters: GalleryFilters = {}): Promise<GalleryResult> {
   try {
     await connectMongooseToDatabase()
 
-    const {minLevel, maxLevel, state, sortBy = "newest", limit = 12, page = 1} = filters
+    const { minLevel, maxLevel, state, sortBy = 'newest', limit = 12, page = 1 } = filters
 
     // Construction de la requête MongoDB
-    const query: any = {isPublic: true}
+    const query: any = { isPublic: true }
 
     // Filtres de niveau
     if (minLevel !== undefined || maxLevel !== undefined) {
@@ -53,27 +53,27 @@ export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<G
     }
 
     // Filtre d'état
-    if (state !== undefined && state !== "all") {
+    if (state !== undefined && state !== 'all') {
       query.state = state
     }
 
     // Définir le tri
     let sort: any = {}
     switch (sortBy) {
-      case "newest":
-        sort = {createdAt: -1}
+      case 'newest':
+        sort = { createdAt: -1 }
         break
-      case "oldest":
-        sort = {createdAt: 1}
+      case 'oldest':
+        sort = { createdAt: 1 }
         break
-      case "level-asc":
-        sort = {level: 1}
+      case 'level-asc':
+        sort = { level: 1 }
         break
-      case "level-desc":
-        sort = {level: -1}
+      case 'level-desc':
+        sort = { level: -1 }
         break
       default:
-        sort = {createdAt: -1}
+        sort = { createdAt: -1 }
     }
 
     // Calcul de la pagination
@@ -82,13 +82,13 @@ export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<G
     // Requête avec pagination
     const [monstersData, total] = await Promise.all([
       monsterModel.find(query).sort(sort).skip(skip).limit(limit).lean().exec(),
-      monsterModel.countDocuments(query),
+      monsterModel.countDocuments(query)
     ])
 
     // Récupérer les informations des propriétaires
     const ownerIds = monstersData.map((m: any) => m.ownerId)
     const owners = await userModel
-      .find({_id: {$in: ownerIds}})
+      .find({ _id: { $in: ownerIds } })
       .lean()
       .exec()
 
@@ -120,7 +120,7 @@ export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<G
                 hat: monster.equippedAccessories.hat?.toString() ?? null,
                 glasses: monster.equippedAccessories.glasses?.toString() ?? null,
                 shoes: monster.equippedAccessories.shoes?.toString() ?? null,
-                background: monster.equippedAccessories.background?.toString() ?? null,
+                background: monster.equippedAccessories.background?.toString() ?? null
               }
             : undefined,
         createdAt: monster.createdAt?.toISOString(),
@@ -129,10 +129,10 @@ export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<G
           owner != null
             ? {
                 _id: owner._id.toString(),
-                name: owner.pseudo ?? owner.username ?? owner.name ?? "Animochi",
-                avatarUrl: owner.avatarUrl ?? undefined,
+                name: owner.pseudo ?? owner.username ?? owner.name ?? 'Animochi',
+                avatarUrl: owner.avatarUrl ?? undefined
               }
-            : undefined,
+            : undefined
       }
     })
 
@@ -146,10 +146,10 @@ export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<G
       limit,
       totalPages,
       hasNext: page < totalPages,
-      hasPrevious: page > 1,
+      hasPrevious: page > 1
     }
   } catch (error) {
-    console.error("Error fetching public monsters:", error)
+    console.error('Error fetching public monsters:', error)
     return {
       monsters: [],
       total: 0,
@@ -157,7 +157,7 @@ export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<G
       limit: 12,
       totalPages: 0,
       hasNext: false,
-      hasPrevious: false,
+      hasPrevious: false
     }
   }
 }
@@ -182,44 +182,44 @@ export async function getPublicMonsters(filters: GalleryFilters = {}): Promise<G
  * await toggleMonsterVisibility('507f1f77bcf86cd799439011', true)
  * ```
  */
-export async function toggleMonsterVisibility(
+export async function toggleMonsterVisibility (
   monsterId: string,
   isPublic: boolean
-): Promise<{success: boolean; message: string}> {
+): Promise<{ success: boolean, message: string }> {
   try {
     await connectMongooseToDatabase()
 
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: await headers()
     })
 
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: "Vous devez être authentifié pour modifier la visibilité",
+        message: 'Vous devez être authentifié pour modifier la visibilité'
       }
     }
 
-    const {user} = session
+    const { user } = session
 
     // Validation du format ObjectId
     if (!Types.ObjectId.isValid(monsterId)) {
       return {
         success: false,
-        message: "ID de monstre invalide",
+        message: 'ID de monstre invalide'
       }
     }
 
     // Vérifier que le monstre appartient à l'utilisateur
     const monster = await monsterModel.findOne({
       _id: monsterId,
-      ownerId: user.id,
+      ownerId: user.id
     })
 
     if (monster == null) {
       return {
         success: false,
-        message: "Monstre non trouvé ou vous n'êtes pas le propriétaire",
+        message: "Monstre non trouvé ou vous n'êtes pas le propriétaire"
       }
     }
 
@@ -234,32 +234,13 @@ export async function toggleMonsterVisibility(
 
     return {
       success: true,
-      message: isPublic ? "Monstre rendu public !" : "Monstre rendu privé !",
+      message: isPublic ? 'Monstre rendu public !' : 'Monstre rendu privé !'
     }
   } catch (error) {
-    console.error("Error toggling monster visibility:", error)
+    console.error('Error toggling monster visibility:', error)
     return {
       success: false,
-      message: "Erreur lors de la modification de la visibilité",
+      message: 'Erreur lors de la modification de la visibilité'
     }
   }
-}
-
-/**
- * Anonymise une adresse email en masquant une partie
- *
- * Helper fonction pure pour respecter la vie privée
- *
- * @param {string} email - Email à anonymiser
- * @returns {string} Email anonymisé
- *
- * @example
- * ```tsx
- * anonymizeEmail('john.doe@example.com') // "j***@example.com"
- * ```
- */
-function anonymizeEmail(email: string): string {
-  const [local, domain] = email.split("@")
-  if (local.length <= 1) return `${local}***@${domain}`
-  return `${local[0]}***@${domain}`
 }

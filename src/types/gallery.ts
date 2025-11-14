@@ -4,7 +4,7 @@ export interface GalleryFilters {
   minLevel?: number
   maxLevel?: number
   state?: string
-  sortBy?: "newest" | "oldest" | "level-asc" | "level-desc"
+  sortBy?: 'newest' | 'oldest' | 'level-asc' | 'level-desc'
   page?: number
   limit?: number
 }

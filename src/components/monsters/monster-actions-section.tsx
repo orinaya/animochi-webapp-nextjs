@@ -169,7 +169,13 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
           try {
             const res = await fetch(`/api/monsters/${monsterId}`, { cache: 'no-store' })
             const data = await res.json()
-            if (data && typeof data === 'object' && 'monster' in data && data.monster) {
+            if (
+              data !== null &&
+              typeof data === 'object' &&
+              'monster' in data &&
+              data.monster !== undefined &&
+              data.monster !== null
+            ) {
               setMonster(data.monster)
             }
           } catch (e) {

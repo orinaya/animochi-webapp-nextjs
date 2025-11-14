@@ -81,7 +81,7 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * <MonsterGalleryCard monster={monsterWithOwner} />
  * ```
  */
-export function MonsterGalleryCard({
+export function MonsterGalleryCard ({
   monster,
   className = ''
 }: MonsterGalleryCardProps): React.ReactElement {

@@ -22,7 +22,7 @@ import { redirect } from 'next/navigation'
  * @example
  * Route accessible via /creature/[id]
  */
-async function CreaturePage({
+async function CreaturePage ({
   params
 }: {
   params: Promise<{ id: string[] }>

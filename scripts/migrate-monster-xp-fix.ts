@@ -3,55 +3,55 @@
  * Usage: npx tsx --env-file=.env.local scripts/migrate-monster-xp-fix.ts
  */
 
-import {connectMongooseToDatabase} from "@/db"
-import MonsterModel from "@/db/models/monster.model"
-import {getNextLevelXp} from "@/services/experience.service"
+import { connectMongooseToDatabase } from '@/db'
+import MonsterModel from '@/db/models/monster.model'
+import { getNextLevelXp } from '@/services/experience.service'
 
-async function migrateMonsterXpFix(): Promise<void> {
+async function migrateMonsterXpFix (): Promise<void> {
   try {
-    console.log("🔄 Connexion à MongoDB...")
+    console.log('🔄 Connexion à MongoDB...')
     await connectMongooseToDatabase()
 
     // Afficher toutes les collections MongoDB
-    const mongoose = await import("mongoose")
+    const mongoose = await import('mongoose')
     const db = mongoose.default.connection.db
     if (db == null) {
-      throw new Error("Database connection not established")
+      throw new Error('Database connection not established')
     }
     const collections = await db.listCollections().toArray()
-    console.log("\n📦 Collections MongoDB disponibles:")
+    console.log('\n📦 Collections MongoDB disponibles:')
     for (const coll of collections) {
       console.log(`   - ${coll.name}`)
     }
 
     // Afficher tous les monstres
-    console.log("\n📋 Liste de TOUS les monstres:")
+    console.log('\n📋 Liste de TOUS les monstres:')
     const allMonstersFirst = await MonsterModel.find({}).select(
-      "name level experience experienceToNextLevel _id"
+      'name level experience experienceToNextLevel _id'
     )
     console.log(`   Total: ${allMonstersFirst.length} monstre(s)`)
     for (const monster of allMonstersFirst) {
       console.log(
-        `   - ${monster.name} | _id: ${monster._id.toString()} | niveau: ${monster.level} | XP: ${
-          monster.experience
-        } / ${monster.experienceToNextLevel}`
+        `   - ${monster.name ?? ''} | _id: ${monster._id?.toString?.() ?? ''} | niveau: ${
+          monster.level ?? 1
+        } | XP: ${monster.experience ?? 0} / ${monster.experienceToNextLevel ?? 0}`
       )
     }
 
     // Recherche des monstres à corriger
-    console.log("\n🔍 Recherche des monstres à corriger...")
+    console.log('\n🔍 Recherche des monstres à corriger...')
     const monstersToFix = await MonsterModel.find({
-      $expr: {$gt: ["$experience", "$experienceToNextLevel"]},
+      $expr: { $gt: ['$experience', '$experienceToNextLevel'] }
     })
     console.log(`📊 ${monstersToFix.length} monstre(s) à corriger`)
 
     let fixedCount = 0
     for (const monster of monstersToFix) {
-      let {experience, level, experienceToNextLevel} = monster
+      let { experience, level, experienceToNextLevel } = monster
       experience = experience ?? 0
-      level = typeof level === "number" && !isNaN(level) ? level : 1
+      level = typeof level === 'number' && !isNaN(level) ? level : 1
       experienceToNextLevel =
-        typeof experienceToNextLevel === "number" && !isNaN(experienceToNextLevel)
+        typeof experienceToNextLevel === 'number' && !isNaN(experienceToNextLevel)
           ? experienceToNextLevel
           : getNextLevelXp(level)
       let changed = false
@@ -77,10 +77,10 @@ async function migrateMonsterXpFix(): Promise<void> {
             $set: {
               level,
               experience,
-              experienceToNextLevel,
-            },
+              experienceToNextLevel
+            }
           },
-          {runValidators: true}
+          { runValidators: true }
         )
         fixedCount++
         console.log(
@@ -92,9 +92,9 @@ async function migrateMonsterXpFix(): Promise<void> {
     }
 
     // Vérification finale
-    console.log("\n🔍 Vérification finale...")
+    console.log('\n🔍 Vérification finale...')
     const allMonsters = await MonsterModel.find({}).select(
-      "name level experience experienceToNextLevel"
+      'name level experience experienceToNextLevel'
     )
     for (const monster of allMonsters) {
       console.log(
@@ -106,7 +106,7 @@ async function migrateMonsterXpFix(): Promise<void> {
 
     console.log(`\n🎉 Migration terminée ! ${fixedCount} monstre(s) corrigé(s).`)
   } catch (error) {
-    console.error("❌ Erreur:", error)
+    console.error('❌ Erreur:', error)
   } finally {
     process.exit(0)
   }

@@ -17,7 +17,6 @@ import { toast } from 'react-toastify'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import { FiGlobe, FiLock } from 'react-icons/fi'
-import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience-calculator.service'
 
 /**
  * Props du composant MonsterCard
