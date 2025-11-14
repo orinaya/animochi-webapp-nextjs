@@ -17,6 +17,7 @@ import type { MonsterAction } from '@/types/monster/monster-actions'
  */
 
 import React, { useState } from 'react'
+import { getMonsterMoodInfo } from '@/shared/monster-mood'
 import { walletEvents } from '@/lib/events/wallet-events'
 import { FaHeart, FaSmile, FaBell, FaWalking, FaDumbbell } from 'react-icons/fa'
 
@@ -164,28 +165,17 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
         if (result.leveledUp === true && typeof result.newLevel === 'number' && result.newLevel > 0) {
           toast.info(`🎉 Ton monstre passe niveau ${result.newLevel} !`, { autoClose: 4000 })
         }
-        // Mise à jour du monstre (XP/niveau réactif) : re-fetch complet
+        // Mise à jour instantanée de l'humeur (state, stateUpdatedAt, nextStateAt) + XP/level
         if (typeof setMonster === 'function') {
-          try {
-            const res = await fetch(`/api/monsters/${monsterId}`, { cache: 'no-store' })
-            const data = await res.json()
-            if (
-              data !== null &&
-              typeof data === 'object' &&
-              'monster' in data &&
-              data.monster !== undefined &&
-              data.monster !== null
-            ) {
-              setMonster(data.monster)
-            }
-          } catch (e) {
-            // fallback minimal si le fetch échoue
-            setMonster({
-              ...monster,
-              experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
-              level: result.newLevel ?? monster.level
-            })
-          }
+          const now = new Date()
+          setMonster({
+            ...monster,
+            experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
+            level: result.newLevel ?? monster.level,
+            state: 'happy',
+            stateUpdatedAt: now.toISOString(),
+            nextStateAt: new Date(now.getTime() + 5 * 60 * 1000).toISOString()
+          })
         }
       } else if (result.ok && !result.matched && result.penalty > 0) {
         walletEvents.emit()
@@ -207,6 +197,7 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
       setLoadingAction(null)
     }
   }
+
 
   return (
     <>
@@ -253,7 +244,6 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
                     : `+0 XP, -${animoney}🪙`}
                 </span>
               </button>
-              {/* Plus d’aide contextuelle textuelle, uniquement le badge visuel */}
             </div>
           )
         })}

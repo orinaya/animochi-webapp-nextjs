@@ -80,7 +80,7 @@ export default function MonstrePageContent({
     )
   }
 
-  // Polling automatique toutes les 5 min pour rafraîchir l'état du monstre
+  // Polling automatique toutes les 10s pour rafraîchir l'état du monstre (humeur instantanée)
   useEffect(() => {
     const interval = setInterval(() => {
       fetch(`/api/monsters/${monsterId}`)
@@ -91,7 +91,7 @@ export default function MonstrePageContent({
           }
         })
         .catch(() => { /* ignore */ })
-    }, 5 * 60 * 1000) // 5 minutes
+    }, 10000) // 10 secondes
     return () => clearInterval(interval)
   }, [monsterId])
 

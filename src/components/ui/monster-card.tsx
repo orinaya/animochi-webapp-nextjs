@@ -7,6 +7,7 @@
 
 import { useMemo, useState } from 'react'
 import type { Monster, MonsterState } from '@/types/monster/monster'
+import { getMonsterMoodInfo } from '@/shared/monster-mood'
 // import { calculateLevelProgress } from '@/services/experience'
 import ProgressBar from './progress-bar'
 import Button from './button'
@@ -45,52 +46,25 @@ interface MonsterCardProps {
  * - hungry = jaune
  * - sleepy = violet
  */
-export const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, className: string }> = {
-  happy: {
-    label: 'Heureux',
-    emoji: '😊',
-    className: 'bg-green-100 text-green-700 border-green-300'
-  },
-  sad: {
-    label: 'Triste',
-    emoji: '😢',
-    className: 'bg-blue-100 text-blue-700 border-blue-300'
-  },
-  angry: {
-    label: 'En colère',
-    emoji: '😠',
-    className: 'bg-red-100 text-red-700 border-red-300'
-  },
-  hungry: {
-    label: 'Affamé',
-    emoji: '🍖',
-    className: 'bg-yellow-100 text-yellow-700 border-yellow-300'
-  },
-  sleepy: {
-    label: 'Endormi',
-    emoji: '😴',
-    className: 'bg-purple-100 text-purple-700 border-purple-300'
-  },
-  bored: {
-    label: 'S’ennuie',
-    emoji: '🥱',
-    className: 'bg-latte-100 text-latte-700 border-latte-300'
-  },
-  sick: {
-    label: 'Malade',
-    emoji: '🤒',
-    className: 'bg-strawberry-100 text-strawberry-700 border-strawberry-300'
-  }
-}
+// Les couleurs de badge sont fixées ici pour chaque état (peuvent être déplacées dans le mapping si besoin)
+const STATE_BADGE_COLORS: Record<MonsterState, string> = {
+  happy: 'bg-green-100 text-green-700 border-green-300',
+  sad: 'bg-blue-100 text-blue-700 border-blue-300',
+  angry: 'bg-red-100 text-red-700 border-red-300',
+  hungry: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+  sleepy: 'bg-purple-100 text-purple-700 border-purple-300',
+  bored: 'bg-latte-100 text-latte-700 border-latte-300',
+  sick: 'bg-strawberry-100 text-strawberry-700 border-strawberry-300'
+};
 
 /**
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-export function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
-  const config = STATE_CONFIG[state]
-  if (config === undefined) {
-    // Badge générique si état inconnu
+export function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
+  const mood = getMonsterMoodInfo(state)
+  const color = STATE_BADGE_COLORS[state] ?? 'bg-gray-100 text-gray-700 border-gray-300'
+  if (!mood) {
     return (
       <div className='inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border bg-gray-100 text-gray-700 border-gray-300'>
         <span>❓</span>
@@ -99,9 +73,9 @@ export function StateBadge ({ state }: { state: MonsterState }): React.ReactNode
     )
   }
   return (
-    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${config.className}`}>
-      <span>{config.emoji}</span>
-      <span>{config.label}</span>
+    <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${color}`}>
+      <span>{mood.emoji}</span>
+      <span>{mood.label}</span>
     </div>
   )
 }
@@ -114,7 +88,7 @@ export function StateBadge ({ state }: { state: MonsterState }): React.ReactNode
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
 
-function LevelProgress ({ level, experience, experienceToNextLevel }: {
+function LevelProgress({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
@@ -165,7 +139,7 @@ function LevelProgress ({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   if (monster == null) {
     return (
       <div className={`bg-latte-100 rounded-xl flex items-center justify-center min-h-[180px] ${className}`}>
@@ -324,13 +298,13 @@ export default function MonsterCard ({ monster, onClick, onDelete, onEdit, class
                   <FiGlobe size={14} />
                   <span>Public</span>
                 </div>
-                )
+              )
               : (
                 <div className='flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full'>
                   <FiLock size={14} />
                   <span>Privé</span>
                 </div>
-                )}
+              )}
           </div>
           <div
             onClick={(e) => {
