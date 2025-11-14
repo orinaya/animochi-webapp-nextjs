@@ -43,7 +43,7 @@ export function DashboardLayout ({ session, onLogout, children, breadcrumbItems 
         </div>
 
         {/* Contenu principal avec padding adapté mobile/desktop */}
-        <main className='pt-4 px-4 pb-20 md:pt-6 md:p-8 md:pb-8'>
+        <main className='pt-4 px-4 pb-20 md:pt-6 md:p-8 md:pb-8 h-screen'>
           {children}
         </main>
       </div>

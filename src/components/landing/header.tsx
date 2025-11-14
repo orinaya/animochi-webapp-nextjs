@@ -22,7 +22,7 @@ export default function Header ({ children }: HeaderProps): React.ReactNode {
         {/* CTA Button */}
         <div className='hidden md:flex items-center gap-4'>
           <Button size='md' variant='ghost' color='latte' iconBefore={FiBook}>
-            <Link href='/documentation'>Documentation Outfit</Link>
+            <Link href='/documentation'>Documentation</Link>
           </Button>
           <Button size='md' variant='ghost' color='blueberry' iconBefore={FiUser}>
             <Link href='/sign-in'>Se connecter</Link>

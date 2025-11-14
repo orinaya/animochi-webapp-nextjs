@@ -1,6 +1,7 @@
 import Header from '@/components/landing/header'
 import Footer from '@/components/landing/footer'
 import { Metadata } from 'next'
+import { ActionsSection, BenefitsSection, HeroSection, MonstersSection, NewsletterSection } from '@/components/sections'
 
 export const metadata: Readonly<Metadata> = {
   title: 'Animochi - Adoptez et prenez soin de créatures virtuelles uniques !',
@@ -47,6 +48,11 @@ export default function Home (): React.ReactNode {
   return (
     <div className='min-h-screen'>
       <Header />
+      <HeroSection />
+      <BenefitsSection />
+      <MonstersSection />
+      <ActionsSection />
+      <NewsletterSection />
       <Footer />
     </div>
   )
