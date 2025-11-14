@@ -1,10 +1,11 @@
+'use client'
 /**
  * Composant MonsterCard - Carte d'affichage d'un monstre
  *
  * @module components/ui/monster-card
  */
 
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { Monster, MonsterState } from '@/types/monster'
 import { calculateLevelProgress } from '@/services/experience'
 import ProgressBar from './progress-bar'
@@ -167,6 +168,13 @@ function LevelProgress ({ level, experience, experienceToNextLevel }: {
  * ```
  */
 export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+  if (monster == null) {
+    return (
+      <div className={`bg-latte-100 rounded-xl flex items-center justify-center min-h-[180px] ${className}`}>
+        <span className='text-latte-400 text-lg'>Monstre inconnu</span>
+      </div>
+    )
+  }
   const level = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
