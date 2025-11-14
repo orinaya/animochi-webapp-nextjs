@@ -1,15 +1,16 @@
 
+'use client'
 
 import React from 'react'
 import AuthFormContent from '@/components/forms/auth-form-content'
 
-function getReasonFromSearch(): string | null {
+function getReasonFromSearch (): string | null {
   if (typeof window === 'undefined') return null
   const params = new URLSearchParams(window.location.search)
   return params.get('reason')
 }
 
-function SignInPage(): React.ReactNode {
+function SignInPage (): React.ReactNode {
   const [reason, setReason] = React.useState<string | null>(null)
 
   React.useEffect(() => {

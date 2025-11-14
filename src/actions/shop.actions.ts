@@ -109,7 +109,7 @@ export async function createAnimoneysCheckoutSession (
       metadata: {
         animoneysAmount: amount,
         packagePrice: packageConfig.price
-      },
+      }
     })
 
     if (!result.ok) {
@@ -124,7 +124,7 @@ export async function createAnimoneysCheckoutSession (
   } catch (error) {
     console.error('Error in createAnimoneysCheckoutSession:', error)
     return {
-      error: error instanceof Error ? error.message : 'An unexpected error occurred',
+      error: error instanceof Error ? error.message : 'An unexpected error occurred'
     }
   }
 }
@@ -192,7 +192,7 @@ export async function createXpBoostCheckoutSession (
     metadata: {
       xpAmount: boost.xpAmount,
       boostName: boost.name
-    },
+    }
   })
 
   if (!result.ok) {

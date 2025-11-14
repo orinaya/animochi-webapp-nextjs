@@ -1,3 +1,8 @@
+
+// ...imports existants...
+
+// Debug : log à chaque changement de la prop monster
+// (doit être placé après les imports et dans le composant)
 /**
  * AccessoryInventoryModal - Modal unifiée inventaire + boutique
  *
@@ -77,6 +82,12 @@ export default function AccessoryInventoryModal ({
   const [activeTab, setActiveTab] = useState<'inventory' | 'shop'>(initialTab)
   const [selectedCategory, setSelectedCategory] = useState<AccessoryCategory | 'all'>('all')
   const [processing, setProcessing] = useState<string | null>(null)
+
+  // Debug : log à chaque changement de la prop monster
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('[AccessoryInventoryModal] monster prop changed', monster)
+  }, [monster])
 
   // États pour la boutique
   const [shopCategory, setShopCategory] = useState<AccessoryCategory | 'all'>('all')
@@ -307,18 +318,18 @@ export default function AccessoryInventoryModal ({
                           ? (
                               item.details.imagePath != null
                                 ? (
-                                <div
-                                  className='w-full h-16 rounded bg-cover bg-center'
-                                  style={{ backgroundImage: `url(${item.details.imagePath})` }}
-                                />
+                                  <div
+                                    className='w-full h-16 rounded bg-cover bg-center'
+                                    style={{ backgroundImage: `url(${item.details.imagePath})` }}
+                                  />
                                   )
                                 : item.details.svg != null
                                   ? (
-                                  <svg
-                                    viewBox='0 0 100 100'
-                                    className='w-full h-16 rounded'
-                                    dangerouslySetInnerHTML={{ __html: item.details.svg }}
-                                  />
+                                    <svg
+                                      viewBox='0 0 100 100'
+                                      className='w-full h-16 rounded'
+                                      dangerouslySetInnerHTML={{ __html: item.details.svg }}
+                                    />
                                     )
                                   : null
                             )
@@ -508,18 +519,18 @@ export default function AccessoryInventoryModal ({
                         ? (
                             accessory.imagePath != null
                               ? (
-                              <div
-                                className='w-full h-24 rounded bg-cover bg-center'
-                                style={{ backgroundImage: `url(${accessory.imagePath})` }}
-                              />
+                                <div
+                                  className='w-full h-24 rounded bg-cover bg-center'
+                                  style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                                />
                                 )
                               : accessory.svg != null
                                 ? (
-                                <svg
-                                  viewBox='0 0 100 100'
-                                  className='w-full h-24 rounded'
-                                  dangerouslySetInnerHTML={{ __html: accessory.svg }}
-                                />
+                                  <svg
+                                    viewBox='0 0 100 100'
+                                    className='w-full h-24 rounded'
+                                    dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                                  />
                                   )
                                 : null
                           )

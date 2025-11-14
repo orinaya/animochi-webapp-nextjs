@@ -43,7 +43,7 @@ interface MonsterDetailAvatarProps {
  * @param {MonsterDetailAvatarProps} props - Les propriétés du composant
  * @returns {React.ReactNode} L'avatar du monstre
  */
-export default function MonsterDetailAvatar({
+export default function MonsterDetailAvatar ({
   monster,
   currentAnimation = null,
   onAnimationComplete,
@@ -201,13 +201,13 @@ export default function MonsterDetailAvatar({
                 )
               })}
             </div>
-          )
+            )
           : (
             <div className='text-center text-latte-600 h-full flex items-center justify-center'>
               <span className='text-6xl mb-4 block'>🐾</span>
               <p>Aucune apparence définie</p>
             </div>
-          )}
+            )}
       </div>
     </div>
   )

@@ -39,7 +39,7 @@ const monsterSchema = new Schema(
     state: {
       type: String,
       required: true,
-      enum: ['happy', 'sad', 'angry', 'hungry', 'sleepy'],
+      enum: ['happy', 'sad', 'angry', 'hungry', 'sleepy', 'bored', 'sick'],
       default: 'happy'
     },
     experience: {
@@ -51,6 +51,16 @@ const monsterSchema = new Schema(
       type: Number,
       required: false,
       default: 150 // XP nécessaire pour le niveau 2 (BASE_XP * 1 * GROWTH_FACTOR = 100 * 1 * 1.5)
+    },
+    stateUpdatedAt: {
+      type: Date,
+      required: false,
+      default: Date.now
+    },
+    nextStateAt: {
+      type: Date,
+      required: false,
+      default: Date.now
     },
     ownerId: {
       type: Schema.Types.ObjectId,

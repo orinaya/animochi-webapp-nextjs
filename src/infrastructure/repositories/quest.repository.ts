@@ -217,7 +217,7 @@ export class MongooseQuestRepository implements QuestRepository {
 
     let query = QuestProgressModel.find({
       userId: userObjectId,
-      status: 'COMPLETED',
+      status: 'COMPLETED'
     })
       .sort({ completedAt: -1 })
       .lean()
@@ -253,7 +253,7 @@ export class MongooseQuestRepository implements QuestRepository {
       {
         userId: userObjectId,
         questId,
-        status: 'COMPLETED', // On ne peut réclamer que les quêtes complétées
+        status: 'COMPLETED' // On ne peut réclamer que les quêtes complétées
       },
       {
         status: 'CLAIMED',

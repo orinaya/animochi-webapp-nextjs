@@ -13,7 +13,7 @@ export const metadata = {
   description: 'Complète tes quêtes quotidiennes pour gagner des Animoneys'
 }
 
-export default async function QuestsPage(): Promise<React.ReactNode> {
+export default async function QuestsPage (): Promise<React.ReactNode> {
   // Vérifier l'authentification
   const session = await auth.api.getSession({
     headers: await headers()

@@ -67,7 +67,7 @@ async function migrateUser (): Promise<void> {
         {
           $set: {
             pseudo
-          },
+          }
         },
         { runValidators: true }
       )

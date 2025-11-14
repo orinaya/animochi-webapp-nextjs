@@ -6,7 +6,7 @@
 
 import { useState, useMemo } from 'react'
 import type { Monster, MonsterState } from '@/types/monster'
-import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience'
+import { calculateLevelProgress } from '@/services/experience'
 import ProgressBar from './progress-bar'
 import Button from './button'
 import { Modal } from './modal'
@@ -69,6 +69,16 @@ export const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, 
     label: 'Endormi',
     emoji: '😴',
     className: 'bg-purple-100 text-purple-700 border-purple-300'
+  },
+  bored: {
+    label: 'S’ennuie',
+    emoji: '🥱',
+    className: 'bg-latte-100 text-latte-700 border-latte-300'
+  },
+  sick: {
+    label: 'Malade',
+    emoji: '🤒',
+    className: 'bg-strawberry-100 text-strawberry-700 border-strawberry-300'
   }
 }
 
@@ -76,9 +86,17 @@ export const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, 
  * Badge d'état du monstre
  * Respecte SRP : Affiche uniquement l'état
  */
-export function StateBadge({ state }: { state: MonsterState }): React.ReactNode {
+export function StateBadge ({ state }: { state: MonsterState }): React.ReactNode {
   const config = STATE_CONFIG[state]
-
+  if (config === undefined) {
+    // Badge générique si état inconnu
+    return (
+      <div className='inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border bg-gray-100 text-gray-700 border-gray-300'>
+        <span>❓</span>
+        <span>État inconnu</span>
+      </div>
+    )
+  }
   return (
     <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${config.className}`}>
       <span>{config.emoji}</span>
@@ -94,7 +112,7 @@ export function StateBadge({ state }: { state: MonsterState }): React.ReactNode 
  * Utilise le service d'expérience pour calculer la progression réelle
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
-function LevelProgress({ level, experience, experienceToNextLevel }: {
+function LevelProgress ({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
@@ -102,9 +120,8 @@ function LevelProgress({ level, experience, experienceToNextLevel }: {
   // Calculer le pourcentage de progression avec le service métier
   const percentage = calculateLevelProgress(experience, level)
 
-  // Calculer l'XP dans le niveau actuel (pas l'XP totale)
-  const xpForCurrentLevel = calculateTotalXpForLevel(level)
-  const xpInCurrentLevel = experience - xpForCurrentLevel
+  // L'XP du monstre est déjà l'XP courante dans le niveau
+  const xpInCurrentLevel = experience
 
   return (
     <div className='space-y-2'>
@@ -149,7 +166,7 @@ function LevelProgress({ level, experience, experienceToNextLevel }: {
  * />
  * ```
  */
-export default function MonsterCard({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
+export default function MonsterCard ({ monster, onClick, onDelete, onEdit, className = '' }: MonsterCardProps): React.ReactNode {
   const level = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
@@ -301,13 +318,13 @@ export default function MonsterCard({ monster, onClick, onDelete, onEdit, classN
                   <FiGlobe size={14} />
                   <span>Public</span>
                 </div>
-              )
+                )
               : (
                 <div className='flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full'>
                   <FiLock size={14} />
                   <span>Privé</span>
                 </div>
-              )}
+                )}
           </div>
           <div
             onClick={(e) => {
