@@ -1,39 +1,40 @@
 // src/app/api/monsters/[id]/action/route.ts
 // Route API POST pour effectuer une action sur un monstre (feed, play, heal)
 
-import { NextResponse } from 'next/server'
-import { connectMongooseToDatabase } from '@/db'
-import MonsterModel from '@/db/models/monster.model'
-import MonsterActionModel from '@/db/models/monster-action.model'
-import { WalletMongooseRepository } from '@/infrastructure/repositories/wallet-mongoose-repository'
-import { REWARD_AMOUNTS, PENALTY_AMOUNTS, MonsterAction, MonsterState } from '@/config/rewards'
-import { getActionXpReward, getNextLevelXp } from '@/services/experience'
+import {NextResponse} from "next/server"
+import {connectMongooseToDatabase} from "@/db"
+import MonsterModel from "@/db/models/monster.model"
+import MonsterActionModel from "@/db/models/monster-action.model"
+import {WalletMongooseRepository} from "@/infrastructure/repositories/wallet-mongoose-repository"
+import {REWARD_AMOUNTS, PENALTY_AMOUNTS, MonsterAction, MonsterState} from "@/config/rewards.config"
+import {getActionXpReward} from "@/services/experience-calculator.service"
+import {getNextLevelXp} from "@/services/experience.service"
 
 // Mapping état -> action attendue (doit matcher le front)
 const STATE_TO_ACTION: Record<MonsterState, MonsterAction> = {
-  hungry: 'feed',
-  bored: 'play',
-  sick: 'heal',
-  happy: 'hug',
-  sad: 'comfort',
-  angry: 'hug',
-  sleepy: 'wake'
+  hungry: "feed",
+  bored: "play",
+  sick: "heal",
+  happy: "hug",
+  sad: "comfort",
+  angry: "hug",
+  sleepy: "wake",
 }
 
-export async function POST (
+export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string | string[] | undefined }> }
+  {params}: {params: Promise<{id: string | string[] | undefined}>}
 ): Promise<ReturnType<typeof NextResponse.json>> {
-  const { id } = await params
+  const {id} = await params
   await connectMongooseToDatabase()
-  const { action, userId } = (await request.json()) as { action: MonsterAction, userId: string }
+  const {action, userId} = (await request.json()) as {action: MonsterAction; userId: string}
   const monster = await MonsterModel.findById(id)
   if (monster == null) {
-    return NextResponse.json({ ok: false, error: 'Monster not found' }, { status: 404 })
+    return NextResponse.json({ok: false, error: "Monster not found"}, {status: 404})
   }
 
   // Enregistrer l'action utilisateur
-  await MonsterActionModel.create({ monsterId: monster._id, userId, action })
+  await MonsterActionModel.create({monsterId: monster._id, userId, action})
 
   // Vérifier si l'action correspond à l'état du monstre
   const expectedAction = STATE_TO_ACTION[monster.state as MonsterState]
@@ -51,7 +52,13 @@ export async function POST (
     reward = REWARD_AMOUNTS[action]
 
     // Gérer l’XP et la montée de niveau
-    xpGained = getActionXpReward(action)
+    // Correction : seules certaines actions donnent de l'XP (voir experience-calculator.service)
+    // 'play' et 'heal' ne sont pas dans la table d'XP, on mappe vers 'hug' (par défaut) ou 0 XP
+    type XpAction = "feed" | "comfort" | "hug" | "wake" | "walk" | "train"
+    const xpAction: XpAction = ["feed", "comfort", "hug", "wake", "walk", "train"].includes(action)
+      ? (action as XpAction)
+      : "hug"
+    xpGained = getActionXpReward(xpAction)
     let xp = (monster.experience ?? 0) + xpGained
     let level = monster.level ?? 1
     let xpToNext = monster.experienceToNextLevel ?? getNextLevelXp(level)
@@ -83,6 +90,6 @@ export async function POST (
     expectedAction,
     xpGained,
     newLevel,
-    leveledUp
+    leveledUp,
   })
 }

@@ -10,7 +10,7 @@ import { getDailyQuests } from '@/actions/quests.actions'
 import { QuestStatus } from '@/domain/entities/quest-progress.entity'
 import { QuestsModal } from './quests-modal'
 import Button from '@/components/ui/button'
-import { questEvents } from '@/lib/quest-events'
+import { questEvents } from '@/lib/events/quest-events'
 
 export function QuestsButton (): React.ReactElement {
   const [isModalOpen, setIsModalOpen] = useState(false)

@@ -6,8 +6,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import type { Wallet } from '@/types/wallet'
-import { walletEvents } from '@/lib/wallet-events'
+import type { Wallet } from '@/types/wallet/wallet'
+import { walletEvents } from '@/lib/events/wallet-events'
 
 interface UseWalletReturn {
   wallet: Wallet | null

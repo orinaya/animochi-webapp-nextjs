@@ -10,8 +10,8 @@
 import { useState } from 'react'
 import Button from '@/components/ui/button'
 
-import { AVAILABLE_AMOUNTS, pricingTable } from '@/config/pricing'
-import { usePurchase } from '@/hooks/usePurchase'
+import { AVAILABLE_AMOUNTS, pricingTable } from '@/config/pricing.config'
+import { usePurchase } from '@/hooks/use-purchase'
 
 interface WalletActionsProps {
   onSubtract: (amount: number) => Promise<void>

@@ -13,10 +13,11 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/layout'
-import { RARITY_COLORS } from '@/types/monster-accessories'
+// import { RARITY_COLORS } from '@/types/monster/monster-accessories'
 import { authClient } from '@/lib/auth/auth-client'
 import type { authClient as AuthClientType } from '@/lib/auth/auth-client'
-import type { AccessoryCategory, OwnedAccessory, AccessoryData } from '@/types/monster-accessories'
+import type { AccessoryCategory, OwnedAccessory, AccessoryData } from '@/types/monster/monster-accessories'
+import { RARITY_COLORS } from '@/config/monster-accessories.config'
 
 type Session = typeof AuthClientType.$Infer.Session
 

@@ -76,7 +76,7 @@ export async function createAnimoneysCheckoutSession (
     const { user } = session
 
     // Récupérer la configuration du package depuis pricing.ts
-    const { pricingTable } = await import('@/config/pricing')
+    const { pricingTable } = await import('@/config/pricing.config')
     const packageConfig = pricingTable[amount]
 
     if (packageConfig === undefined) {

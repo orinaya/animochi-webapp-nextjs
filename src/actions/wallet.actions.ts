@@ -10,7 +10,7 @@ import { headers } from 'next/headers'
 import { connectMongooseToDatabase } from '@/db'
 import WalletModel from '@/db/models/wallet.model'
 import TransactionModel from '@/db/models/transaction.model'
-import type { Wallet, WalletOperationResult } from '@/types/wallet'
+import type { Wallet, WalletOperationResult } from '@/types/wallet/wallet'
 
 /**
  * Récupère le wallet de l'utilisateur connecté

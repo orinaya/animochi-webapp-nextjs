@@ -5,7 +5,7 @@
  * @module data/accessories-catalog
  */
 
-import type { AccessoryData } from '@/types/monster-accessories'
+import type { AccessoryData } from '@/types/monster/monster-accessories'
 import { BACKGROUNDS_CATALOG } from './backgrounds-catalog'
 
 /**

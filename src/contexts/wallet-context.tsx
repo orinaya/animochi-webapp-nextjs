@@ -7,7 +7,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-import type { Wallet } from '@/types/wallet'
+import type { Wallet } from '@/types/wallet/wallet'
 
 interface WalletContextType {
   wallet: Wallet | null

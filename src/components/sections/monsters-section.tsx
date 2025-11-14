@@ -8,7 +8,7 @@ interface MonstersSectionProps {
   children?: React.ReactNode
 }
 
-export default function MonstersSection({ children }: MonstersSectionProps): React.ReactNode {
+export default function MonstersSection ({ children }: MonstersSectionProps): React.ReactNode {
   return (
     <Section
       id='monsters'

@@ -1,7 +1,7 @@
 // src/domain/entities/monster.ts
 // Entité Monster avec gestion des états et transitions
 
-import type { MonsterState } from '@/config/rewards'
+import type { MonsterState } from '@/config/rewards.config'
 
 export type { MonsterState }
 
@@ -21,11 +21,25 @@ export class Monster {
     this.props = props
   }
 
-  get id (): string { return this.props.id }
-  get ownerId (): string { return this.props.ownerId }
-  get state (): MonsterState { return this.props.state }
-  get stateUpdatedAt (): Date { return this.props.stateUpdatedAt }
-  get nextStateAt (): Date { return this.props.nextStateAt }
+  get id (): string {
+    return this.props.id
+  }
+
+  get ownerId (): string {
+    return this.props.ownerId
+  }
+
+  get state (): MonsterState {
+    return this.props.state
+  }
+
+  get stateUpdatedAt (): Date {
+    return this.props.stateUpdatedAt
+  }
+
+  get nextStateAt (): Date {
+    return this.props.nextStateAt
+  }
 
   // Transitionne vers un nouvel état aléatoire
   changeState (newState: MonsterState, now: Date, nextStateAt: Date): void {

@@ -16,13 +16,13 @@ import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { DashboardLayout } from '@/components/layout'
-import { RARITY_COLORS } from '@/types/monster-accessories'
+import { RARITY_COLORS } from '@/config/monster-accessories.config'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import { useWallet } from '@/hooks/use-wallet'
-import { walletEvents } from '@/lib/wallet-events'
+import { walletEvents } from '@/lib/events/wallet-events'
 import { authClient } from '@/lib/auth/auth-client'
-import type { AccessoryData, AccessoryCategory, OwnedAccessory, AccessoryRarity } from '@/types/monster-accessories'
+import type { AccessoryData, AccessoryCategory, OwnedAccessory, AccessoryRarity } from '@/types/monster/monster-accessories'
 
 type Session = typeof authClient.$Infer.Session
 

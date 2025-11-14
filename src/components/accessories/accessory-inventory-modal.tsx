@@ -19,13 +19,13 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { Modal } from '@/components/ui/modal'
-import { RARITY_COLORS } from '@/types/monster-accessories'
+import { RARITY_COLORS } from '@/config/monster-accessories.config'
 import dynamic from 'next/dynamic'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
-import type { AccessoryData, AccessoryCategory, OwnedAccessory, AccessoryRarity } from '@/types/monster-accessories'
+import type { AccessoryData, AccessoryCategory, OwnedAccessory, AccessoryRarity } from '@/types/monster/monster-accessories'
 
-import type { Monster } from '@/types/monster'
+import type { Monster } from '@/types/monster/monster'
 const MonsterDetailAvatar = dynamic(async () => await import('@/components/monsters/monster-detail-avatar'), { ssr: false })
 
 interface AccessoryInventoryModalProps {

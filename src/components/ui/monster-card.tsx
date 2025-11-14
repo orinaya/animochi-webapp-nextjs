@@ -6,8 +6,8 @@
  */
 
 import { useMemo, useState } from 'react'
-import type { Monster, MonsterState } from '@/types/monster'
-import { calculateLevelProgress } from '@/services/experience'
+import type { Monster, MonsterState } from '@/types/monster/monster'
+// import { calculateLevelProgress } from '@/services/experience'
 import ProgressBar from './progress-bar'
 import Button from './button'
 import { Modal } from './modal'
@@ -17,6 +17,7 @@ import { toast } from 'react-toastify'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import { FiGlobe, FiLock } from 'react-icons/fi'
+import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience-calculator.service'
 
 /**
  * Props du composant MonsterCard
@@ -113,23 +114,21 @@ export function StateBadge ({ state }: { state: MonsterState }): React.ReactNode
  * Utilise le service d'expérience pour calculer la progression réelle
  * en tenant compte de la formule exponentielle (BASE_XP * level * GROWTH_FACTOR)
  */
+
 function LevelProgress ({ level, experience, experienceToNextLevel }: {
   level: number
   experience: number
   experienceToNextLevel: number
 }): React.ReactNode {
-  // Calculer le pourcentage de progression avec le service métier
-  const percentage = calculateLevelProgress(experience, level)
-
-  // L'XP du monstre est déjà l'XP courante dans le niveau
-  const xpInCurrentLevel = experience
+  // Calcul du pourcentage de progression dans le niveau courant
+  const percentage = Math.min(100, Math.max(0, Math.floor((experience / experienceToNextLevel) * 100)))
 
   return (
     <div className='space-y-2'>
       <div className='flex items-center justify-between text-sm'>
         <span className='font-semibold text-blueberry-950'>Niveau {level}</span>
         <span className='text-xs text-latte-600'>
-          {xpInCurrentLevel} / {experienceToNextLevel} XP
+          {experience} / {experienceToNextLevel} XP
         </span>
       </div>
       <ProgressBar

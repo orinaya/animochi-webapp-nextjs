@@ -11,7 +11,7 @@ import { QuestStatus } from '@/domain/entities/quest-progress.entity'
 import { getDailyQuests, resetUserDailyQuests } from '@/actions/quests.actions'
 import { FiX, FiCheckCircle, FiClock, FiRefreshCw } from 'react-icons/fi'
 import { QuestProgressBar } from './quest-progress-bar'
-import { walletEvents } from '@/lib/wallet-events'
+import { walletEvents } from '@/lib/events/wallet-events'
 import { WalletHeaderDisplay } from '@/components/wallet/wallet-header-display'
 
 interface QuestsModalProps {

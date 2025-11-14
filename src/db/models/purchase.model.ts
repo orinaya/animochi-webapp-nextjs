@@ -48,6 +48,7 @@ const purchaseSchema = new Schema(
     stripeSessionId: {
       type: String,
       sparse: true, // Permet null/undefined
+      // Pas d'index ici, l'index est défini explicitement plus bas
     },
     stripePaymentIntentId: {
       type: String,

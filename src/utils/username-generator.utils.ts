@@ -4,47 +4,14 @@
  * @module utils/username-generator
  */
 
-/**
- * Liste d'adjectifs pour les pseudos
- */
-const ADJECTIVES = [
-  'Petit',
-  'Grand',
-  'Mignon',
-  'Brave',
-  'Sage',
-  'Joyeux',
-  'Mystérieux',
-  'Gentil',
-  'Curieux',
-  'Agile',
-  'Rusé',
-  'Fidèle',
-  'Audacieux',
-  'Magique',
-  'Rapide'
-]
-
-/**
- * Liste de noms de créatures pour les pseudos
- */
-const CREATURES = [
-  'Dragon',
-  'Renard',
-  'Loup',
-  'Chat',
-  'Ours',
-  'Tigre',
-  'Lion',
-  'Panda',
-  'Koala',
-  'Lapin',
-  'Hibou',
-  'Aigle',
-  'Dauphin',
-  'Licorne',
-  'Phénix'
-]
+import { ADJECTIVES, CREATURES } from '@/config/username.config'
+//   'Lapin',
+//   'Hibou',
+//   'Aigle',
+//   'Dauphin',
+//   'Licorne',
+//   'Phénix'
+// ]
 
 /**
  * Génère un nombre aléatoire entre min et max (inclus)

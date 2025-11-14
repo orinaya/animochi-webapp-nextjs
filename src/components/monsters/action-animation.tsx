@@ -13,8 +13,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { MonsterAction } from '@/types/monster-actions'
-import { actionAnimationEmojis } from '@/config/monster-actions-map'
+import type { MonsterAction } from '@/types/monster/monster-actions'
+import { actionAnimationEmojis } from '@/config/monster-actions-map.config'
 
 interface ActionAnimationProps {
   /** Action en cours */

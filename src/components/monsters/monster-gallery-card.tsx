@@ -81,13 +81,13 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * <MonsterGalleryCard monster={monsterWithOwner} />
  * ```
  */
-export function MonsterGalleryCard ({
+export function MonsterGalleryCard({
   monster,
   className = ''
 }: MonsterGalleryCardProps): React.ReactElement {
   // Récupérer le background équipé
   const equippedBackground = useMemo(() => {
-    const equipped = monster.equippedAccessories ?? {}
+    const equipped = (monster.equippedAccessories ?? { hat: null, glasses: null, shoes: null, background: null })
     if (equipped.background != null) {
       const bgData = [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG].find(
         acc => acc.name === equipped.background
@@ -99,7 +99,7 @@ export function MonsterGalleryCard ({
 
   // Récupérer les accessoires équipés (SVG)
   const equippedAccessoriesData = useMemo(() => {
-    const equipped = monster.equippedAccessories ?? {}
+    const equipped = (monster.equippedAccessories ?? { hat: null, glasses: null, shoes: null, background: null })
     const accessories: Array<{ svg: string, category: string }> = []
 
     if (equipped.hat != null) {
@@ -261,7 +261,7 @@ export function MonsterGalleryCard ({
         <div className='flex items-center gap-2 text-sm text-gray-600'>
           <span>👤</span>
           <span className='truncate'>
-            Par <span className='font-medium text-blueberry-700'>{monster.owner?.username ?? 'Anonyme'}</span>
+            Par <span className='font-medium text-blueberry-700'>{monster.owner?.name ?? 'Anonyme'}</span>
           </span>
         </div>
       </div>

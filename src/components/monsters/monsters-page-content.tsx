@@ -15,7 +15,7 @@ import Button from '@/components/ui/button'
 import { MonsterCard } from '@/components/ui'
 import { CreateMonsterModal } from './create-monster-modal'
 import { createMonster, getMonsters, deleteMonster, updateMonsterName } from '@/actions/monsters.action'
-import type { Monster } from '@/types/monster'
+import type { Monster } from '@/types/monster/monster'
 
 type Session = typeof authClient.$Infer.Session
 

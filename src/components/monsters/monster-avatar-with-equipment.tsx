@@ -12,9 +12,9 @@
 
 'use client'
 
-import type { Monster } from '@/types/monster'
-import type { MonsterAction } from '@/types/monster-actions'
-import type { AccessoryCategory } from '@/types/monster-accessories'
+import type { Monster } from '@/types/monster/monster'
+import type { MonsterAction } from '@/types/monster/monster-actions'
+import type { AccessoryCategory } from '@/types/monster/monster-accessories'
 import MonsterDetailAvatar from './monster-detail-avatar'
 import { getAccessoryByName } from '@/data/accessories-catalog'
 

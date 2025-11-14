@@ -16,4 +16,4 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 })
 
 // Export de la table de prix depuis le fichier de config
-export { pricingTable } from '@/config/pricing'
+export { pricingTable } from '@/config/pricing.config'

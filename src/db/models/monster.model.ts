@@ -34,13 +34,13 @@ const monsterSchema = new Schema(
     draw: {
       type: String,
       required: true,
-      default: 'placeholder' // SVG par défaut si non fourni
+      default: 'placeholder', // SVG par défaut si non fourni
     },
     state: {
       type: String,
       required: true,
       enum: ['happy', 'sad', 'angry', 'hungry', 'sleepy', 'bored', 'sick'],
-      default: 'happy'
+      default: 'sad',
     },
     experience: {
       type: Number,
@@ -92,7 +92,7 @@ const monsterSchema = new Schema(
         type: String,
         required: false,
         default: null
-      }
+      },
     }
   },
   {

@@ -5,7 +5,7 @@
 
 import { connectMongooseToDatabase } from '../src/db'
 import UserModel from '../src/db/models/user.model'
-import { generateUniqueUsername } from '../src/utils/username-generator'
+import { generateUniqueUsername } from '../src/utils/username-generator.utils'
 
 async function migrateUser (): Promise<void> {
   try {

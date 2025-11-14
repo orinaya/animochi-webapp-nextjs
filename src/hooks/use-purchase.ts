@@ -9,7 +9,7 @@
 'use client'
 
 import { useState } from 'react'
-import { AVAILABLE_AMOUNTS } from '@/config/pricing'
+import { AVAILABLE_AMOUNTS } from '@/config/pricing.config'
 
 export interface UsePurchaseReturn {
   isPurchasing: boolean
@@ -64,11 +64,11 @@ export function usePurchase (): UsePurchaseReturn {
       })
 
       if (!response.ok) {
-        const errorData = await response.json() as { error?: string }
+        const errorData = (await response.json()) as { error?: string }
         throw new Error(errorData.error ?? 'Erreur lors de la création de la session de paiement')
       }
 
-      const { url } = await response.json() as { url: string }
+      const { url } = (await response.json()) as { url: string }
 
       if (url !== null && url !== undefined && url !== '') {
         // Redirection vers Stripe Checkout
@@ -77,7 +77,7 @@ export function usePurchase (): UsePurchaseReturn {
         throw new Error('URL de paiement invalide')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors de l\'achat d\'Animoney')
+      setError(err instanceof Error ? err.message : "Erreur lors de l'achat d'Animoney")
       setIsPurchasing(false)
     }
   }

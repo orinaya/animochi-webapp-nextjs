@@ -49,39 +49,44 @@ export class StripePaymentRepository implements PaymentRepository {
   async createCheckoutSession (
     options: CreateCheckoutSessionOptions
   ): Promise<CheckoutSessionResult> {
-    const session = await this.stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: options.currency,
-            unit_amount: options.amount,
-            product_data: {
-              name: options.productDescription,
-              description: options.productDescription
-            }
-          },
-          quantity: 1
+    try {
+      const session = await this.stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: options.currency,
+              unit_amount: options.amount,
+              product_data: {
+                name: options.productDescription,
+                description: options.productDescription
+              }
+            },
+            quantity: 1
+          }
+        ],
+        mode: 'payment',
+        success_url: options.successUrl,
+        cancel_url: options.cancelUrl,
+        customer_email: options.customerEmail,
+        metadata: options.metadata,
+        payment_intent_data: {
+          description: 'Merci pour votre achat sur Animochi !'
         }
-      ],
-      mode: 'payment',
-      success_url: options.successUrl,
-      cancel_url: options.cancelUrl,
-      customer_email: options.customerEmail,
-      metadata: options.metadata,
-      payment_intent_data: {
-        description: 'Merci pour votre achat sur Animochi !'
+      })
+
+      if (session.url === null || session.url === undefined) {
+        throw new Error('Stripe session URL is null')
       }
-    })
 
-    if (session.url === null || session.url === undefined) {
-      throw new Error('Stripe session URL is null')
-    }
-
-    return {
-      sessionId: session.id,
-      url: session.url,
-      purchaseId: options.metadata.purchaseId
+      return {
+        sessionId: session.id,
+        url: session.url,
+        purchaseId: options.metadata.purchaseId
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de la session Stripe:', error)
+      throw new Error('Erreur lors de la création de la session de paiement Stripe')
     }
   }
 

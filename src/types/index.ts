@@ -1,4 +1,5 @@
-import type {Monster} from "./monster"
+export * from "./gallery"
+import type {Monster} from "./monster/monster"
 export type ThemeColor =
   | "blueberry"
   | "strawberry"
@@ -13,9 +14,8 @@ export type ButtonSize = "sm" | "md" | "lg" | "xl"
 export type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | "google" | "github"
 
 // Export tous les types de monstre (Monster, MonsterState, etc.)
-export * from "./monster"
-export * from "./monster-actions"
-export * from "./gallery"
+export * from "./monster/monster"
+export * from "./monster/monster-actions"
 
 export type MonsterRarity = "Commun" | "Rare" | "Épique" | "Légendaire"
 

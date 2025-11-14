@@ -1,5 +1,5 @@
-import { pricingTable } from './pricing'
-import type { WalletPackage, InfoCardData } from '@/types/wallet'
+import { pricingTable } from './pricing.config'
+import type { WalletPackage, InfoCardData } from '@/types/wallet/wallet'
 
 /**
  * Packages d'achat d'Animochi (Ⱥ) disponibles

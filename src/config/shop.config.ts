@@ -5,7 +5,7 @@
  * Les boosts XP sont définis ici pour être utilisés par les use cases et l'UI
  */
 
-import type { XPBoost } from '@/types/shop'
+import type { XPBoost } from '@/types/shop/shop'
 
 /**
  * Liste des boosts d'XP disponibles à l'achat

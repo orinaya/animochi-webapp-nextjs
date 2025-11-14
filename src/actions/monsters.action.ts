@@ -3,13 +3,13 @@
 import { connectMongooseToDatabase } from '@/db'
 import monsterModel from '@/db/models/monster.model'
 import { auth } from '@/lib/auth/auth'
-import { applyExperienceGain } from '@/services/experience'
 import type { Monster } from '@/types'
-import type { MonsterAction, MonsterActionResult } from '@/types/monster-actions'
+import type { MonsterAction, MonsterActionResult } from '@/types/monster/monster-actions'
 import { Types } from 'mongoose'
 import { headers } from 'next/headers'
 import { trackQuestProgress } from '@/actions/quests.actions'
 import { QuestType } from '@/domain/entities/quest.entity'
+import { applyExperienceGain } from '@/services/experience-calculator.service'
 
 /**
  * Crée un nouveau monstre pour l'utilisateur authentifié

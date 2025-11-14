@@ -1,8 +1,8 @@
 
 'use client'
-import { getActionXpReward } from '@/services/experience'
-import { REWARD_AMOUNTS, PENALTY_AMOUNTS } from '@/config/rewards'
-import type { MonsterAction } from '@/types/monster-actions'
+import { getActionXpReward } from '@/services/experience-calculator.service'
+import { REWARD_AMOUNTS, PENALTY_AMOUNTS } from '@/config/rewards.config'
+import type { MonsterAction } from '@/types/monster/monster-actions'
 
 /**
  * MonsterActionsSection - Section des actions du monstre
@@ -17,19 +17,19 @@ import type { MonsterAction } from '@/types/monster-actions'
  */
 
 import React, { useState } from 'react'
-import { walletEvents } from '@/lib/wallet-events'
+import { walletEvents } from '@/lib/events/wallet-events'
 import { FaHeart, FaSmile, FaBell, FaWalking, FaDumbbell } from 'react-icons/fa'
-import { MdFastfood } from '@/components/icons/mdfastfood'
 
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import { MdFastfood } from 'react-icons/md'
 // import { applyMonsterAction } from '@/actions/monsters.action'
 
 // Props explicites pour MonsterActionsSection
 interface MonsterActionsSectionProps {
-  monster: import('@/types/monster').Monster
+  monster: import('@/types/monster/monster').Monster
   monsterId: string
-  setMonster?: (monster: import('@/types/monster').Monster) => void
+  setMonster?: (monster: import('@/types/monster/monster').Monster) => void
   onActionStart?: (action: MonsterAction) => void
   onActionDone?: () => void
 }
@@ -164,13 +164,22 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
         if (result.leveledUp === true && typeof result.newLevel === 'number' && result.newLevel > 0) {
           toast.info(`🎉 Ton monstre passe niveau ${result.newLevel} !`, { autoClose: 4000 })
         }
-        // Mise à jour du monstre (XP/niveau réactif)
+        // Mise à jour du monstre (XP/niveau réactif) : re-fetch complet
         if (typeof setMonster === 'function') {
-          setMonster({
-            ...monster,
-            experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
-            level: result.newLevel ?? monster.level
-          })
+          try {
+            const res = await fetch(`/api/monsters/${monsterId}`, { cache: 'no-store' })
+            const data = await res.json()
+            if (data && typeof data === 'object' && 'monster' in data && data.monster) {
+              setMonster(data.monster)
+            }
+          } catch (e) {
+            // fallback minimal si le fetch échoue
+            setMonster({
+              ...monster,
+              experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
+              level: result.newLevel ?? monster.level
+            })
+          }
         }
       } else if (result.ok && !result.matched && result.penalty > 0) {
         walletEvents.emit()

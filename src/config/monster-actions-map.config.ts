@@ -10,8 +10,8 @@
  * @module config/monster-actions-map
  */
 
-import type { MonsterAction } from '@/types/monster-actions'
-import type { MonsterState } from '@/types/monster'
+import type { MonsterAction } from '@/types/monster/monster-actions'
+import type { MonsterState } from '@/types/monster/monster'
 
 /**
  * Map des actions vers les états qu'elles résolvent

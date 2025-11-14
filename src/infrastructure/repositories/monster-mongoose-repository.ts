@@ -3,7 +3,7 @@
 
 import type { MonsterRepository } from '@/domain/repositories/monster-repository'
 import { Monster } from '@/domain/entities/monster'
-import type { MonsterState } from '@/config/rewards'
+import type { MonsterState } from '@/config/rewards.config'
 import MongooseMonster from '@/db/models/monster.model'
 
 export class MonsterMongooseRepository implements MonsterRepository {

@@ -1,5 +1,5 @@
 import { auth } from '@/lib/auth/auth'
-import { pricingTable } from '@/config/pricing'
+import { pricingTable } from '@/config/pricing.config'
 import { headers } from 'next/headers'
 import { CreateCheckoutSessionUseCase } from '@/domain/usecases/create-checkout-session.usecase'
 import { StripePaymentRepository } from '@/infrastructure/repositories/stripe-payment.repository'

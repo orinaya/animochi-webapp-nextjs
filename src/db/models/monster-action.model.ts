@@ -2,7 +2,7 @@
 // Modèle Mongoose pour enregistrer les actions utilisateur sur un monstre
 
 import mongoose from 'mongoose'
-import type { MonsterAction } from '@/config/rewards'
+import type { MonsterAction } from '@/config/rewards.config'
 
 const { Schema } = mongoose
 

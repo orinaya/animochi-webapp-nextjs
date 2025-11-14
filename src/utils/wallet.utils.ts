@@ -3,7 +3,7 @@
  * Principe SRP : Gère uniquement le formatage des montants
  */
 
-import { CURRENCY_SYMBOL } from '@/config/wallet.constants'
+import { CURRENCY_SYMBOL } from '@/config/wallet.config'
 
 /**
  * Formate un montant en Animochi avec le symbole Ⱥ

@@ -13,8 +13,8 @@
 'use client'
 
 import { useMemo } from 'react'
-import type { Monster } from '@/types/monster'
-import type { MonsterAction } from '@/types/monster-actions'
+import type { Monster } from '@/types/monster/monster'
+import type { MonsterAction } from '@/types/monster/monster-actions'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
 import ActionAnimation from './action-animation'

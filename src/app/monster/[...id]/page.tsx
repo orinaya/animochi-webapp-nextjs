@@ -22,7 +22,7 @@ import { redirect } from 'next/navigation'
  * @example
  * Route accessible via /creature/[id]
  */
-async function CreaturePage ({
+async function CreaturePage({
   params
 }: {
   params: Promise<{ id: string[] }>
@@ -38,7 +38,16 @@ async function CreaturePage ({
   }
 
   const { id: idArray } = await params
-  const id = Array.isArray(idArray) ? idArray[0] : idArray
+  const idRaw = Array.isArray((await params).id) ? (await params).id[0] : (await params).id
+  const id = String(idRaw)
+  // Validation stricte de l'ID (évite les .js.map et autres requêtes parasites)
+  const isValidObjectId = /^[a-fA-F0-9]{24}$/.test(id)
+  if (!isValidObjectId) {
+    // Option 1 : Rediriger vers une 404 Next.js
+    // notFound() // décommente si tu veux une vraie 404
+    // Option 2 : Retourner un message d'erreur custom
+    return <div className='text-center text-red-600 py-12'>ID de monstre invalide</div>
+  }
   const monsterDoc = await getMonsterById(id)
 
   // Affichage d'une erreur si le monstre n'existe pas

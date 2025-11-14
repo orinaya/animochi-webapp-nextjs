@@ -21,7 +21,7 @@ import { CreateMonsterModal } from '@/components/monsters/create-monster-modal'
 import { createMonster } from '@/actions/monsters.action'
 import { toast } from 'react-toastify'
 import type { ComponentType } from 'react'
-import type { Monster } from '@/types/monster'
+import type { Monster } from '@/types/monster/monster'
 
 interface TabItem {
   id: string

@@ -8,13 +8,12 @@ import type { Monster } from '@/types'
 import { useAuth } from '@/hooks/use-auth'
 import { useUserPseudo } from '@/hooks/use-user-pseudo'
 import { MonsterCard } from '@/components/ui'
-import MonsterAvatarWithEquipment from '@/components/monsters/monster-avatar-with-equipment'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
-import type { AccessoryData } from '@/types/monster-accessories'
+import type { AccessoryData } from '@/types/monster/monster-accessories'
 
 type Session = typeof authClient.$Infer.Session
 
@@ -38,7 +37,7 @@ function MonsterCarousel ({ monsters }: { monsters: Monster[] }): React.ReactNod
   const [currentIndex, setCurrentIndex] = useState(0)
   const router = useRouter()
 
-  if (monsters.length === 0) {
+  if (!Array.isArray(monsters) || monsters.length === 0) {
     return (
       <div className='bg-white rounded-2xl p-12 shadow-md text-center'>
         <p className='text-latte-600 text-lg'>Aucun monstre pour le moment</p>
@@ -48,6 +47,8 @@ function MonsterCarousel ({ monsters }: { monsters: Monster[] }): React.ReactNod
   }
 
   const currentMonster = monsters[currentIndex] ?? null
+  // Sécurise l'accès à l'index
+  const safeIndex = currentIndex >= 0 && currentIndex < monsters.length ? currentIndex : 0
 
   const goToPrevious = (): void => {
     setCurrentIndex((prev) => (prev === 0 ? monsters.length - 1 : prev - 1))
@@ -58,10 +59,20 @@ function MonsterCarousel ({ monsters }: { monsters: Monster[] }): React.ReactNod
   }
 
   const handleMonsterClick = (index: number): void => {
-    const monster = monsters[index]
-    const monsterId = monster.id ?? monster._id ?? ''
-    if (monsterId !== '') {
-      router.push(`/monster/${monsterId}`)
+    try {
+      const monster = monsters[index]
+      if (!monster) {
+        console.error('handleMonsterClick: Monstre introuvable à l’index', index)
+        return
+      }
+      const monsterId = monster.id ?? monster._id ?? ''
+      if (monsterId !== '') {
+        router.push(`/monster/${monsterId}`)
+      } else {
+        console.error('handleMonsterClick: ID du monstre manquant', monster)
+      }
+    } catch (err) {
+      console.error('Erreur lors du clic sur un monstre:', err)
     }
   }
 
@@ -344,9 +355,16 @@ function QuickAction ({ icon, label, description, onClick, color }: QuickActionP
     latte: 'bg-latte-100 hover:bg-latte-200 border-latte-300'
   }
 
+  const handleClick = () => {
+    try {
+      onClick()
+    } catch (err) {
+      console.error('Erreur lors de l\'action rapide:', err)
+    }
+  }
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className={`flex flex-col items-center gap-3 p-6 rounded-xl border-2 transition-all duration-200 shadow-md hover:shadow-lg ${colorClasses[color]}`}
     >
       <span className='text-4xl'>{icon}</span>

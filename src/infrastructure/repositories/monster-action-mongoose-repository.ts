@@ -3,7 +3,7 @@
 
 import type { MonsterActionRepository } from '@/domain/repositories/monster-action-repository'
 import MonsterActionModel from '@/db/models/monster-action.model'
-import type { MonsterAction } from '@/config/rewards'
+import type { MonsterAction } from '@/config/rewards.config'
 
 export class MonsterActionMongooseRepository implements MonsterActionRepository {
   hasActionBeenDone = async (

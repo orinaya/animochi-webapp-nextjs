@@ -19,7 +19,7 @@ import Image from 'next/image'
 import { FiUser, FiSettings, FiLogOut, FiChevronDown } from 'react-icons/fi'
 import type { authClient } from '@/lib/auth/auth-client'
 import { useUserAvatar } from '@/hooks/use-user-avatar'
-import { getAnimalImageUrl, getAnimalAvatarByFilename } from '@/lib/avatar/animal-avatar-utils'
+import { getAnimalImageUrl, getAnimalAvatarByFilename } from '@/utils/animal-avatar-utils'
 import AnimochiLogo from '../../../public/animochi-line.svg'
 
 type Session = typeof authClient.$Infer.Session
@@ -176,8 +176,8 @@ export function MobileTopBar ({ session, onLogout }: MobileTopBarProps): React.R
                         href={item.href}
                         onClick={() => { setIsMenuOpen(false) }}
                         className={`flex items-center gap-3 px-4 py-2.5 transition-colors ${isDanger
-                            ? 'text-strawberry-600 hover:bg-strawberry-50'
-                            : 'text-blueberry-900 hover:bg-latte-50'
+                          ? 'text-strawberry-600 hover:bg-strawberry-50'
+                          : 'text-blueberry-900 hover:bg-latte-50'
                           }`}
                       >
                         <IconComponent className='w-4 h-4' />
@@ -195,8 +195,8 @@ export function MobileTopBar ({ session, onLogout }: MobileTopBarProps): React.R
                         }
                       }}
                       className={`w-full flex items-center gap-3 px-4 py-2.5 transition-colors ${isDanger
-                          ? 'text-strawberry-600 hover:bg-strawberry-50'
-                          : 'text-blueberry-900 hover:bg-latte-50'
+                        ? 'text-strawberry-600 hover:bg-strawberry-50'
+                        : 'text-blueberry-900 hover:bg-latte-50'
                         }`}
                     >
                       <IconComponent className='w-4 h-4' />

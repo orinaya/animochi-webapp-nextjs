@@ -5,7 +5,7 @@ import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui'
 import InputField from '@/components/ui/input'
 import { generatePixelCat } from '@/services/cat-generator.service'
-import type { Monster } from '@/types/monster'
+import type { Monster } from '@/types/monster/monster'
 
 interface CreateMonsterModalProps {
   /** Indique si la modal est ouverte */

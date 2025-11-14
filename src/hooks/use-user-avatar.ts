@@ -6,8 +6,8 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
-import { DEFAULT_ANIMAL_AVATAR } from '@/lib/avatar/animal-avatar-utils'
-import { saveToStorage, loadFromStorage, STORAGE_KEYS } from '@/lib/avatar/storage-utils'
+import { DEFAULT_ANIMAL_AVATAR } from '@/utils/animal-avatar-utils'
+import { saveToStorage, loadFromStorage, STORAGE_KEYS } from '@/utils/storage-utils'
 
 interface UseUserAvatarReturn {
   /** Avatar actuellement sélectionné */

@@ -16,8 +16,8 @@ import { useState, useMemo } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
-import { RARITY_COLORS } from '@/types/monster-accessories'
-import type { AccessoryData, AccessoryCategory, AccessoryRarity } from '@/types/monster-accessories'
+import { RARITY_COLORS } from '@/config/monster-accessories.config'
+import type { AccessoryData, AccessoryCategory, AccessoryRarity } from '@/types/monster/monster-accessories'
 
 interface AccessoryShopModalProps {
   /** Indique si la modal est ouverte */
@@ -35,7 +35,7 @@ interface AccessoryShopModalProps {
 /**
  * Retourne le label en français pour une catégorie
  */
-function getCategoryLabel (category: AccessoryCategory): string {
+function getCategoryLabel(category: AccessoryCategory): string {
   const labels: Record<AccessoryCategory, string> = {
     hat: '🎩 Chapeaux',
     glasses: '👓 Lunettes',
@@ -48,7 +48,7 @@ function getCategoryLabel (category: AccessoryCategory): string {
 /**
  * Retourne le label en français pour une rareté
  */
-function getRarityLabel (rarity: AccessoryRarity): string {
+function getRarityLabel(rarity: AccessoryRarity): string {
   const labels: Record<AccessoryRarity, string> = {
     common: 'Commun',
     rare: 'Rare',
@@ -61,7 +61,7 @@ function getRarityLabel (rarity: AccessoryRarity): string {
 /**
  * Modal de la boutique d'accessoires
  */
-export default function AccessoryShopModal ({
+export default function AccessoryShopModal({
   isOpen,
   onClose,
   animoneysBalance,
@@ -215,25 +215,25 @@ export default function AccessoryShopModal ({
                 <div className='bg-latte-50 rounded-lg p-4 mb-3 flex items-center justify-center min-h-[100px] overflow-hidden'>
                   {accessory.category === 'background'
                     ? (
-                        accessory.imagePath != null
+                      accessory.imagePath != null
+                        ? (
+                          // Background image
+                          <div
+                            className='w-full h-24 rounded bg-cover bg-center'
+                            style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                          />
+                        )
+                        : accessory.svg != null
                           ? (
-                        // Background image
-                            <div
-                              className='w-full h-24 rounded bg-cover bg-center'
-                              style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                            // Background gradient SVG
+                            <svg
+                              viewBox='0 0 100 100'
+                              className='w-full h-24 rounded'
+                              dangerouslySetInnerHTML={{ __html: accessory.svg }}
                             />
-                            )
-                          : accessory.svg != null
-                            ? (
-                          // Background gradient SVG
-                              <svg
-                                viewBox='0 0 100 100'
-                                className='w-full h-24 rounded'
-                                dangerouslySetInnerHTML={{ __html: accessory.svg }}
-                              />
-                              )
-                            : null
-                      )
+                          )
+                          : null
+                    )
                     : (
                       // Accessoire SVG
                       <svg
@@ -241,7 +241,7 @@ export default function AccessoryShopModal ({
                         className='w-20 h-20'
                         dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
                       />
-                      )}
+                    )}
                 </div>
 
                 {/* Informations */}

@@ -72,13 +72,13 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
  * - Image carrée du monstre
  * - Footer avec nom, niveau, état
  */
-export function MonsterGalleryCardInstagram ({
+export function MonsterGalleryCardInstagram({
   monster,
   className = ''
 }: MonsterGalleryCardInstagramProps): React.ReactElement {
   // Récupérer le background équipé
   const equippedBackground = useMemo(() => {
-    const equipped = monster.equippedAccessories ?? {}
+    const equipped = (monster.equippedAccessories ?? { hat: null, glasses: null, shoes: null, background: null })
     if (equipped.background != null) {
       const bgData = [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG].find(
         acc => acc.name === equipped.background
@@ -90,7 +90,7 @@ export function MonsterGalleryCardInstagram ({
 
   // Récupérer les accessoires équipés (SVG)
   const equippedAccessoriesData = useMemo(() => {
-    const equipped = monster.equippedAccessories ?? {}
+    const equipped = (monster.equippedAccessories ?? { hat: null, glasses: null, shoes: null, background: null })
     const accessories: Array<{ svg: string, category: string }> = []
 
     if (equipped.hat != null) {
@@ -166,14 +166,11 @@ export function MonsterGalleryCardInstagram ({
       <div className='flex items-center justify-between p-4 border-b border-latte-100'>
         <div className='flex items-center gap-3'>
           <div className='w-10 h-10 rounded-full bg-linear-to-r from-blueberry-400 to-strawberry-400 flex items-center justify-center text-white font-bold'>
-            {monster.owner?.username?.[0]?.toUpperCase() ?? 'A'}
+            {monster.owner?.name?.[0]?.toUpperCase() ?? 'A'}
           </div>
           <div>
             <p className='font-semibold text-blueberry-950'>
-              {monster.owner?.username ?? 'Anonyme'}
-            </p>
-            <p className='text-xs text-gray-500'>
-              {monster.createdAt != null ? new Date(monster.createdAt).toLocaleDateString('fr-FR') : ''}
+              {monster.owner?.name ?? 'Anonyme'}
             </p>
           </div>
         </div>

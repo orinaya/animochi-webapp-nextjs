@@ -5,7 +5,7 @@
  * @module data/backgrounds-catalog
  */
 
-import type { AccessoryData } from '@/types/monster-accessories'
+import type { AccessoryData } from '@/types/monster/monster-accessories'
 
 /**
  * Catalogue complet des arrière-plans disponibles dans la boutique

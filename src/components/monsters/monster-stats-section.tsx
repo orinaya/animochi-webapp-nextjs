@@ -12,7 +12,7 @@
 
 'use client'
 
-import type { Monster, MonsterState } from '@/types/monster'
+import type { Monster, MonsterState } from '@/types/monster/monster'
 import { STATE_CONFIG } from '@/components/ui/monster-card'
 
 /**

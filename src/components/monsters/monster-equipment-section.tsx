@@ -14,8 +14,8 @@
 
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import type { Monster } from '@/types/monster'
-import type { AccessoryCategory } from '@/types/monster-accessories'
+import type { Monster } from '@/types/monster/monster'
+import type { AccessoryCategory } from '@/types/monster/monster-accessories'
 import { getAccessoryByName } from '@/data/accessories-catalog'
 
 interface MonsterEquipmentSectionProps {

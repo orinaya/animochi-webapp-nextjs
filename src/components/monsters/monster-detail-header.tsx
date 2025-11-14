@@ -17,10 +17,10 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import AccessoryInventoryModal from '@/components/accessories/accessory-inventory-modal'
 import { PublicToggle } from '@/components/monsters/public-toggle'
-import type { Monster } from '@/types/monster'
-import type { AccessoryData, OwnedAccessory, AccessoryCategory } from '@/types/monster-accessories'
+import type { Monster } from '@/types/monster/monster'
+import type { AccessoryData, OwnedAccessory, AccessoryCategory } from '@/types/monster/monster-accessories'
 import { useWallet } from '@/hooks/use-wallet'
-import { walletEvents } from '@/lib/wallet-events'
+import { walletEvents } from '@/lib/events/wallet-events'
 
 interface MonsterDetailHeaderProps {
   /** Données du monstre */

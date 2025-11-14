@@ -15,9 +15,9 @@
 
 import { useState, useEffect } from 'react'
 import { useWallet } from '@/hooks/use-wallet'
-import type { Monster } from '@/types/monster'
-import type { MonsterAction } from '@/types/monster-actions'
-import type { AccessoryCategory } from '@/types/monster-accessories'
+import type { Monster } from '@/types/monster/monster'
+import type { MonsterAction } from '@/types/monster/monster-actions'
+import type { AccessoryCategory } from '@/types/monster/monster-accessories'
 import { DashboardLayout } from '@/components/layout'
 import { useAuth } from '@/hooks/use-auth'
 import MonsterDetailHeader from './monster-detail-header'
@@ -61,7 +61,23 @@ export default function MonstrePageContent ({
   const { refetch: refetchWallet } = useWallet()
 
   // État local pour le monstre (XP/niveau réactif)
-  const [monster, setMonster] = useState<Monster>(initialMonster)
+  const [monster, setMonster] = useState<Monster | null>(initialMonster)
+
+  // Gestion du cas où le monstre est null ou incomplet (checks explicites)
+  const isMonsterInvalid =
+    monster == null ||
+    typeof monster.name !== 'string' || monster.name.trim() === '' ||
+    typeof monster.level !== 'number' || Number.isNaN(monster.level) ||
+    typeof monster.experience !== 'number' || Number.isNaN(monster.experience)
+
+  if (isMonsterInvalid) {
+    return (
+      <div className='flex flex-col items-center justify-center min-h-[60vh] text-strawberry-700'>
+        <div className='text-2xl font-bold mb-2'>Monstre introuvable ou données incomplètes</div>
+        <div className='text-base'>Vérifie l&#39;URL ou réessaie plus tard.</div>
+      </div>
+    )
+  }
 
   // Polling automatique toutes les 5 min pour rafraîchir l'état du monstre
   useEffect(() => {

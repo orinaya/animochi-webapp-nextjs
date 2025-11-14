@@ -4,9 +4,9 @@
 import type { MonsterRepository } from '@/domain/repositories/monster-repository'
 import type { WalletRepository } from '@/domain/repositories/wallet-repository'
 import type { MonsterActionRepository } from '@/domain/repositories/monster-action-repository'
-import { PENALTY_AMOUNTS } from '@/config/rewards'
+import { PENALTY_AMOUNTS } from '@/config/rewards.config'
 import type { Monster } from '@/domain/entities/monster'
-import type { MonsterState, MonsterAction } from '@/config/rewards'
+import type { MonsterState, MonsterAction } from '@/config/rewards.config'
 
 // Map état -> action attendue
 const STATE_TO_ACTION: Record<MonsterState, MonsterAction> = {

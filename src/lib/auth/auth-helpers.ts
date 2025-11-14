@@ -8,7 +8,7 @@ import { connectMongooseToDatabase } from '@/db'
 import UserModel from '@/db/models/user.model'
 import WalletModel from '@/db/models/wallet.model'
 import type { UserDocument } from '@/db/models/user.model'
-import { generateUniqueUsername } from '@/utils/username-generator'
+import { generateUniqueUsername } from '@/utils/username-generator.utils'
 
 interface AuthUserData {
   email: string
