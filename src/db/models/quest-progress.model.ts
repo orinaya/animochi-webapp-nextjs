@@ -74,7 +74,7 @@ const questProgressSchema = new Schema(
       type: Date,
       required: true,
       index: true
-    },
+    }
   },
   {
     bufferCommands: false,

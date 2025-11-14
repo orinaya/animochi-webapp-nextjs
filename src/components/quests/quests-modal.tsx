@@ -20,7 +20,7 @@ interface QuestsModalProps {
   onQuestClaimed?: () => void
 }
 
-export function QuestsModal({ isOpen, onClose, onQuestClaimed }: QuestsModalProps): React.ReactElement | null {
+export function QuestsModal ({ isOpen, onClose, onQuestClaimed }: QuestsModalProps): React.ReactElement | null {
   const [quests, setQuests] = useState<Array<QuestProgress & {
     questTitle: string
     questDescription: string
@@ -171,7 +171,7 @@ export function QuestsModal({ isOpen, onClose, onQuestClaimed }: QuestsModalProp
                   <p className='text-sm text-strawberry-600'>Chargement...</p>
                 </div>
               </div>
-            )
+              )
             : (
               <div className='space-y-4'>
                 {/* Quêtes complétées */}
@@ -244,7 +244,7 @@ export function QuestsModal({ isOpen, onClose, onQuestClaimed }: QuestsModalProp
                   </div>
                 )}
               </div>
-            )}
+              )}
         </div>
 
         {/* Footer */}
@@ -281,7 +281,7 @@ interface QuestCardCompactProps {
   isPast?: boolean
 }
 
-function QuestCardCompact({ quest, onClaim, isClaiming, justClaimed, isPast = false }: QuestCardCompactProps): React.ReactElement {
+function QuestCardCompact ({ quest, onClaim, isClaiming, justClaimed, isPast = false }: QuestCardCompactProps): React.ReactElement {
   const isCompleted = quest.status === QuestStatus.COMPLETED
 
   console.log('🎯 [QuestCardCompact] Rendering quest:', {
@@ -360,13 +360,13 @@ function QuestCardCompact({ quest, onClaim, isClaiming, justClaimed, isPast = fa
                         <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
                         Récupération...
                       </>
-                    )
+                      )
                     : (
                       <>
                         <FiCheckCircle className='w-4 h-4' />
                         Récupérer
                       </>
-                    )}
+                      )}
                 </button>
 
                 {/* Particules d'étoiles */}

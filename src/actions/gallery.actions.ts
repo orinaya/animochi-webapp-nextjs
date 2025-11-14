@@ -194,7 +194,7 @@ export async function toggleMonsterVisibility (
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Vous devez être authentifié pour modifier la visibilité',
+        message: 'Vous devez être authentifié pour modifier la visibilité'
       }
     }
 
@@ -204,7 +204,7 @@ export async function toggleMonsterVisibility (
     if (!Types.ObjectId.isValid(monsterId)) {
       return {
         success: false,
-        message: 'ID de monstre invalide',
+        message: 'ID de monstre invalide'
       }
     }
 
@@ -232,13 +232,13 @@ export async function toggleMonsterVisibility (
 
     return {
       success: true,
-      message: isPublic ? 'Monstre rendu public !' : 'Monstre rendu privé !',
+      message: isPublic ? 'Monstre rendu public !' : 'Monstre rendu privé !'
     }
   } catch (error) {
     console.error('Error toggling monster visibility:', error)
     return {
       success: false,
-      message: 'Erreur lors de la modification de la visibilité',
+      message: 'Erreur lors de la modification de la visibilité'
     }
   }
 }

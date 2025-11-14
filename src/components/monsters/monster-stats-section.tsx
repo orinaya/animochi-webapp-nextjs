@@ -41,7 +41,7 @@ interface MonsterStatsSectionProps {
   actionsComponent?: React.ReactNode
 }
 
-export default function MonsterStatsSection({ monster, actionsComponent }: MonsterStatsSectionProps): React.ReactNode {
+export default function MonsterStatsSection ({ monster, actionsComponent }: MonsterStatsSectionProps): React.ReactNode {
   const state = (monster.state ?? 'happy') as MonsterState
   const stateConf = STATE_CONFIG[state]
   return (
@@ -87,7 +87,7 @@ export default function MonsterStatsSection({ monster, actionsComponent }: Monst
                   {/* Particules effet gaming */}
                   <span className='absolute -top-2 -right-2 animate-ping-slow text-yellow-300 text-lg select-none'>★</span>
                 </div>
-              )
+                )
               : (
                 <div
                   className='flex items-center gap-2 px-4 py-1 rounded-full border-2 font-bold text-base shadow-lg transition-all bg-gray-100 text-gray-700 border-gray-300 animate-bounce-slow relative'
@@ -97,7 +97,7 @@ export default function MonsterStatsSection({ monster, actionsComponent }: Monst
                   <span className='tracking-wide drop-shadow'>État inconnu</span>
                   <span className='absolute -top-2 -right-2 animate-ping-slow text-yellow-300 text-lg select-none'>★</span>
                 </div>
-              )}
+                )}
           </div>
         </div>
         {actionsComponent != null && (

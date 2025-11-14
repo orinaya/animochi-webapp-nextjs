@@ -1,103 +1,103 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
-const {Schema} = mongoose
+const { Schema } = mongoose
 
 const monsterSchema = new Schema(
   {
     name: {
       type: String, // = 'string'
-      required: true,
+      required: true
     },
     description: {
       type: String,
-      required: false,
+      required: false
     },
     color: {
       type: String,
       required: false,
-      enum: ["blueberry", "strawberry", "peach", "latte"],
+      enum: ['blueberry', 'strawberry', 'peach', 'latte']
     },
     emoji: {
       type: String,
-      required: false,
+      required: false
     },
     rarity: {
       type: String,
       required: false,
-      enum: ["Commun", "Rare", "Épique", "Légendaire"],
+      enum: ['Commun', 'Rare', 'Épique', 'Légendaire']
     },
     level: {
       type: Number,
       required: false,
-      default: 1,
+      default: 1
     },
     draw: {
       type: String,
       required: true,
-      default: "placeholder", // SVG par défaut si non fourni
+      default: 'placeholder' // SVG par défaut si non fourni
     },
     state: {
       type: String,
       required: true,
-      enum: ["happy", "sad", "angry", "hungry", "sleepy", "bored", "sick"],
-      default: "happy",
+      enum: ['happy', 'sad', 'angry', 'hungry', 'sleepy', 'bored', 'sick'],
+      default: 'happy'
     },
     experience: {
       type: Number,
       required: false,
-      default: 0,
+      default: 0
     },
     experienceToNextLevel: {
       type: Number,
       required: false,
-      default: 150, // XP nécessaire pour le niveau 2 (BASE_XP * 1 * GROWTH_FACTOR = 100 * 1 * 1.5)
+      default: 150 // XP nécessaire pour le niveau 2 (BASE_XP * 1 * GROWTH_FACTOR = 100 * 1 * 1.5)
     },
     stateUpdatedAt: {
       type: Date,
       required: false,
-      default: Date.now,
+      default: Date.now
     },
     nextStateAt: {
       type: Date,
       required: false,
-      default: Date.now,
+      default: Date.now
     },
     ownerId: {
       type: Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
+      ref: 'user',
+      required: true
     },
     isPublic: {
       type: Boolean,
       required: false,
-      default: false,
+      default: false
     },
     equippedAccessories: {
       hat: {
         type: String,
         required: false,
-        default: null,
+        default: null
       },
       glasses: {
         type: String,
         required: false,
-        default: null,
+        default: null
       },
       shoes: {
         type: String,
         required: false,
-        default: null,
+        default: null
       },
       background: {
         type: String,
         required: false,
-        default: null,
-      },
-    },
+        default: null
+      }
+    }
   },
   {
     bufferCommands: false,
-    timestamps: true,
+    timestamps: true
   }
 )
 
@@ -106,6 +106,6 @@ if (mongoose.models.Monster != null) {
   delete mongoose.models.Monster
 }
 
-const Monster = mongoose.model("Monster", monsterSchema)
+const Monster = mongoose.model('Monster', monsterSchema)
 
 export default Monster

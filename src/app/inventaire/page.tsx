@@ -10,7 +10,7 @@ import InventoryPageContent from '@/components/inventory/inventory-page-content'
  * Permet d'acheter de nouveaux accessoires
  * Version responsive adaptée mobile et desktop
  */
-export default async function InventairePage(): Promise<React.ReactElement> {
+export default async function InventairePage (): Promise<React.ReactElement> {
   const session = await auth.api.getSession({
     headers: await headers()
   })

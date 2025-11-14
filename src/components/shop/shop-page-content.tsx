@@ -298,18 +298,18 @@ export function ShopPageContent ({ session }: ShopPageContentProps): React.React
                     ? (
                         accessory.imagePath != null
                           ? (
-                          <div
-                            className='w-full h-28 rounded bg-cover bg-center'
-                            style={{ backgroundImage: `url(${accessory.imagePath})` }}
-                          />
+                            <div
+                              className='w-full h-28 rounded bg-cover bg-center'
+                              style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                            />
                             )
                           : accessory.svg != null
                             ? (
-                            <svg
-                              viewBox='0 0 100 100'
-                              className='w-full h-28 rounded'
-                              dangerouslySetInnerHTML={{ __html: accessory.svg }}
-                            />
+                              <svg
+                                viewBox='0 0 100 100'
+                                className='w-full h-28 rounded'
+                                dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                              />
                               )
                             : null
                       )

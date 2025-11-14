@@ -1,5 +1,5 @@
-import {connectMongooseToDatabase} from "@/db"
-import MonsterModel from "@/db/models/monster.model"
+import { connectMongooseToDatabase } from '@/db'
+import MonsterModel from '@/db/models/monster.model'
 
 /**
  * Script de migration pour ajouter stateUpdatedAt et nextStateAt aux monstres existants
@@ -9,27 +9,27 @@ import MonsterModel from "@/db/models/monster.model"
 // import { connectMongooseToDatabase } from '../src/db'
 // import MonsterModel from '../src/db/models/monster.model'
 
-async function migrateMonsters(): Promise<void> {
+async function migrateMonsters (): Promise<void> {
   try {
-    console.log("🔄 Connexion à MongoDB...")
+    console.log('🔄 Connexion à MongoDB...')
     await connectMongooseToDatabase()
 
     // Afficher toutes les collections MongoDB
-    const mongoose = await import("mongoose")
+    const mongoose = await import('mongoose')
     const db = mongoose.default.connection.db
     if (db == null) {
-      throw new Error("Database connection not established")
+      throw new Error('Database connection not established')
     }
     const collections = await db.listCollections().toArray()
-    console.log("\n📦 Collections MongoDB disponibles:")
+    console.log('\n📦 Collections MongoDB disponibles:')
     for (const coll of collections) {
       console.log(`   - ${coll.name}`)
     }
 
     // Afficher tous les monstres
-    console.log("\n📋 Liste de TOUS les monstres:")
+    console.log('\n📋 Liste de TOUS les monstres:')
     const allMonstersFirst = await MonsterModel.find({}).select(
-      "name state stateUpdatedAt nextStateAt _id"
+      'name state stateUpdatedAt nextStateAt _id'
     )
     console.log(`   Total: ${allMonstersFirst.length} monstre(s)`)
     for (const monster of allMonstersFirst) {
@@ -39,24 +39,24 @@ async function migrateMonsters(): Promise<void> {
         } | stateUpdatedAt: ${
           monster.stateUpdatedAt !== null && monster.stateUpdatedAt !== undefined
             ? monster.stateUpdatedAt.toISOString()
-            : "NULL"
+            : 'NULL'
         } | nextStateAt: ${
           monster.nextStateAt !== null && monster.nextStateAt !== undefined
             ? monster.nextStateAt.toISOString()
-            : "NULL"
+            : 'NULL'
         }`
       )
     }
 
     // Récupérer les monstres à migrer
-    console.log("\n🔍 Recherche des monstres à migrer...")
+    console.log('\n🔍 Recherche des monstres à migrer...')
     const monstersToMigrate = await MonsterModel.find({
       $or: [
-        {stateUpdatedAt: {$exists: false}},
-        {stateUpdatedAt: null},
-        {nextStateAt: {$exists: false}},
-        {nextStateAt: null},
-      ],
+        { stateUpdatedAt: { $exists: false } },
+        { stateUpdatedAt: null },
+        { nextStateAt: { $exists: false } },
+        { nextStateAt: null }
+      ]
     })
     console.log(`📊 ${monstersToMigrate.length} monstre(s) à migrer`)
 
@@ -68,34 +68,34 @@ async function migrateMonsters(): Promise<void> {
         {
           $set: {
             stateUpdatedAt: now,
-            nextStateAt: now,
-          },
+            nextStateAt: now
+          }
         },
-        {runValidators: true}
+        { runValidators: true }
       )
-      console.log("   ✅ Champs ajoutés avec succès")
+      console.log('   ✅ Champs ajoutés avec succès')
     }
 
     // Vérification finale
-    console.log("\n🔍 Vérification finale...")
-    const allMonsters = await MonsterModel.find({}).select("name state stateUpdatedAt nextStateAt")
+    console.log('\n🔍 Vérification finale...')
+    const allMonsters = await MonsterModel.find({}).select('name state stateUpdatedAt nextStateAt')
     for (const monster of allMonsters) {
       console.log(
         `✅ ${monster.name} - stateUpdatedAt: ${
           monster.stateUpdatedAt !== null && monster.stateUpdatedAt !== undefined
             ? monster.stateUpdatedAt.toISOString()
-            : "N/A"
+            : 'N/A'
         } | nextStateAt: ${
           monster.nextStateAt !== null && monster.nextStateAt !== undefined
             ? monster.nextStateAt.toISOString()
-            : "N/A"
+            : 'N/A'
         }`
       )
     }
 
-    console.log("\n🎉 Migration terminée !")
+    console.log('\n🎉 Migration terminée !')
   } catch (error) {
-    console.error("❌ Erreur:", error)
+    console.error('❌ Erreur:', error)
   } finally {
     process.exit(0)
   }

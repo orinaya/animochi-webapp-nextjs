@@ -37,7 +37,7 @@ interface PublicToggleProps {
  * />
  * ```
  */
-export function PublicToggle({
+export function PublicToggle ({
   monsterId,
   initialIsPublic,
   onToggle,
@@ -91,13 +91,13 @@ export function PublicToggle({
               <FiGlobe size={14} />
               <span>Public</span>
             </div>
-          )
+            )
           : (
             <div className='flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full'>
               <FiLock size={14} />
               <span>Privé</span>
             </div>
-          )}
+            )}
 
         {/* Tooltip */}
         <div className='absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 invisible group-hover/toggle:opacity-100 group-hover/toggle:visible transition-all duration-200 pointer-events-none z-50'>

@@ -248,7 +248,7 @@ export const QUEST_TEMPLATES: QuestTemplate[] = [
     reward: 120,
     icon: '💎',
     weight: 1
-  },
+  }
 ]
 
 /**

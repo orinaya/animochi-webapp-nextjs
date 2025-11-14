@@ -27,7 +27,7 @@ function getStripeInstance (): Stripe {
 
   return new Stripe(secretKey, {
     typescript: true,
-    apiVersion: '2025-10-29.clover',
+    apiVersion: '2025-10-29.clover'
   })
 }
 
@@ -59,10 +59,10 @@ export class StripePaymentRepository implements PaymentRepository {
             product_data: {
               name: options.productDescription,
               description: options.productDescription
-            },
+            }
           },
           quantity: 1
-        },
+        }
       ],
       mode: 'payment',
       success_url: options.successUrl,
@@ -70,7 +70,7 @@ export class StripePaymentRepository implements PaymentRepository {
       customer_email: options.customerEmail,
       metadata: options.metadata,
       payment_intent_data: {
-        description: 'Merci pour votre achat sur Animochi !',
+        description: 'Merci pour votre achat sur Animochi !'
       }
     })
 

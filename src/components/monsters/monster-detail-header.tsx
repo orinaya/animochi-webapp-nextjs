@@ -31,6 +31,8 @@ interface MonsterDetailHeaderProps {
   initialInventoryCategory?: AccessoryCategory | null
   /** Callback pour réinitialiser la catégorie */
   onInventoryCategoryReset?: () => void
+  /** Callback appelé quand le monstre est mis à jour (équipement) */
+  onMonsterUpdate?: (monster: Monster) => void
 }
 
 /**
@@ -39,11 +41,12 @@ interface MonsterDetailHeaderProps {
  * @param {MonsterDetailHeaderProps} props - Les propriétés du composant
  * @returns {React.ReactNode} Le header avec nom et navigation
  */
-export default function MonsterDetailHeader({
+export default function MonsterDetailHeader ({
   monster,
   monsterId,
   initialInventoryCategory = null,
-  onInventoryCategoryReset
+  onInventoryCategoryReset,
+  onMonsterUpdate
 }: MonsterDetailHeaderProps): React.ReactNode {
   const router = useRouter()
   const { wallet, refetch: refetchWallet } = useWallet()
@@ -117,8 +120,18 @@ export default function MonsterDetailHeader({
   /**
    * Gère l'équipement d'un accessoire
    */
-  const handleEquipAccessory = async (accessoryName: string, category: string): Promise<void> => {
+  const handleEquipAccessory = async (accessoryName: string, category: AccessoryCategory): Promise<void> => {
     try {
+      // Optimistic update : on met à jour le monstre localement tout de suite
+      if (typeof onMonsterUpdate === 'function') {
+        onMonsterUpdate({
+          ...monster,
+          equippedAccessories: {
+            ...monster.equippedAccessories,
+            [category]: accessoryName
+          }
+        })
+      }
       const response = await fetch('/api/accessories/equip', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -127,7 +140,19 @@ export default function MonsterDetailHeader({
 
       if (response.ok) {
         toast.success('Accessoire équipé !')
-        router.refresh()
+        // Optionnel : resynchroniser avec le serveur si besoin
+        const monsterRes = await fetch(`/api/monsters/${monsterId}`)
+        if (monsterRes.ok) {
+          const data: unknown = await monsterRes.json()
+          if (
+            typeof data === 'object' && data !== null &&
+            'monster' in data &&
+            typeof onMonsterUpdate === 'function'
+          ) {
+            onMonsterUpdate((data as { monster: Monster }).monster)
+          }
+        }
+        // router.refresh() supprimé pour éviter le rechargement
       } else {
         const error = await response.json()
         toast.error(error.error ?? 'Erreur lors de l\'équipement')
@@ -141,8 +166,17 @@ export default function MonsterDetailHeader({
   /**
    * Gère le retrait d'un accessoire
    */
-  const handleUnequipAccessory = async (category: string): Promise<void> => {
+  const handleUnequipAccessory = async (category: AccessoryCategory): Promise<void> => {
     try {
+      // Optimistic update : on retire l'accessoire localement tout de suite
+      if (typeof onMonsterUpdate === 'function') {
+        const updated = { ...monster.equippedAccessories }
+        delete updated[category as keyof typeof updated]
+        onMonsterUpdate({
+          ...monster,
+          equippedAccessories: updated
+        })
+      }
       const response = await fetch('/api/accessories/unequip', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -151,7 +185,19 @@ export default function MonsterDetailHeader({
 
       if (response.ok) {
         toast.success('Accessoire retiré !')
-        router.refresh()
+        // Optionnel : resynchroniser avec le serveur si besoin
+        const monsterRes = await fetch(`/api/monsters/${monsterId}`)
+        if (monsterRes.ok) {
+          const data: unknown = await monsterRes.json()
+          if (
+            typeof data === 'object' && data !== null &&
+            'monster' in data &&
+            typeof onMonsterUpdate === 'function'
+          ) {
+            onMonsterUpdate((data as { monster: Monster }).monster)
+          }
+        }
+        // router.refresh() supprimé pour éviter le rechargement
       } else {
         const error = await response.json()
         toast.error(error.error ?? 'Erreur lors du retrait')

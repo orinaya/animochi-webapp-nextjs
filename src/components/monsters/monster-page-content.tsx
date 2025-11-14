@@ -13,7 +13,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useWallet } from '@/hooks/use-wallet'
 import type { Monster } from '@/types/monster'
 import type { MonsterAction } from '@/types/monster-actions'
@@ -50,7 +50,7 @@ interface MonstrePageContentProps {
  * />
  * ```
  */
-export default function MonstrePageContent({
+export default function MonstrePageContent ({
   monster: initialMonster,
   monsterId,
   session
@@ -62,6 +62,21 @@ export default function MonstrePageContent({
 
   // État local pour le monstre (XP/niveau réactif)
   const [monster, setMonster] = useState<Monster>(initialMonster)
+
+  // Polling automatique toutes les 5 min pour rafraîchir l'état du monstre
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch(`/api/monsters/${monsterId}`)
+        .then(async (res) => res.ok ? await res.json() : null)
+        .then((data: any) => {
+          if (data?.monster != null) {
+            setMonster((prev) => ({ ...prev, ...data.monster }))
+          }
+        })
+        .catch(() => { /* ignore */ })
+    }, 5 * 60 * 1000) // 5 minutes
+    return () => clearInterval(interval)
+  }, [monsterId])
 
   // Données du fil d'Ariane
   const breadcrumbItems = [
@@ -94,6 +109,7 @@ export default function MonstrePageContent({
           monsterId={monsterId}
           initialInventoryCategory={inventoryCategory}
           onInventoryCategoryReset={() => { setInventoryCategory(null) }}
+          onMonsterUpdate={setMonster}
         />
 
         {/* Layout principal en grille - optimisé pour remplir l'écran sans scroll */}

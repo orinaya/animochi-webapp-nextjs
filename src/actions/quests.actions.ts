@@ -67,7 +67,7 @@ QuestProgress & {
         ...quest,
         questTitle: questData?.title ?? 'Quête mystère',
         questDescription: questData?.description ?? 'Complète cette quête',
-        questIcon: questData?.icon ?? '🎯',
+        questIcon: questData?.icon ?? '🎯'
       }
     })
 
@@ -111,13 +111,13 @@ export async function updateQuestProgress (
         progress: result.progress,
         justCompleted: result.justCompleted,
         reward: result.reward
-      },
+      }
     }
   } catch (error) {
     console.error('Error updating quest progress:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Erreur lors de la mise à jour',
+      message: error instanceof Error ? error.message : 'Erreur lors de la mise à jour'
     }
   }
 }
@@ -196,7 +196,7 @@ export async function resetUserDailyQuests (): Promise<QuestActionResult> {
     console.error('Error resetting daily quests:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Erreur lors de la réinitialisation',
+      message: error instanceof Error ? error.message : 'Erreur lors de la réinitialisation'
     }
   }
 }
@@ -222,7 +222,7 @@ export async function resetAllDailyQuests (cronSecret: string): Promise<QuestAct
     console.error('Error resetting all daily quests:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Erreur lors de la réinitialisation',
+      message: error instanceof Error ? error.message : 'Erreur lors de la réinitialisation'
     }
   }
 }
@@ -286,13 +286,13 @@ export async function claimQuestReward (questId: string): Promise<QuestActionRes
       data: {
         reward: quest.reward,
         newBalance: creditResult.balance
-      },
+      }
     }
   } catch (error) {
     console.error('🎯 [claimQuestReward] Error:', error)
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Erreur lors de la récupération',
+      message: error instanceof Error ? error.message : 'Erreur lors de la récupération'
     }
   }
 }

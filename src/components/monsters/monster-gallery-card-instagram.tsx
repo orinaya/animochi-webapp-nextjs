@@ -51,6 +51,16 @@ const STATE_CONFIG: Record<MonsterState, { label: string, emoji: string, classNa
     label: 'Endormi',
     emoji: '😴',
     className: 'bg-purple-100 text-purple-700 border-purple-300'
+  },
+  bored: {
+    label: 'Ennuyé',
+    emoji: '🥱',
+    className: 'bg-gray-100 text-gray-700 border-gray-300'
+  },
+  sick: {
+    label: 'Malade',
+    emoji: '🤒',
+    className: 'bg-latte-100 text-latte-700 border-latte-300'
   }
 }
 
