@@ -26,13 +26,14 @@ import MonsterExperienceSection from './monster-experience-section'
 import MonsterActionsSection from './monster-actions-section'
 import MonsterStatsSection from './monster-stats-section'
 
+import type { Session } from '@/lib/auth/auth-client'
 interface MonstrePageContentProps {
   /** Données du monstre */
   monster: Monster
   /** ID du monstre */
   monsterId: string
   /** Session utilisateur */
-  session: any
+  session: Session
 }
 
 /**
@@ -50,7 +51,7 @@ interface MonstrePageContentProps {
  * />
  * ```
  */
-export default function MonstrePageContent ({
+export default function MonstrePageContent({
   monster: initialMonster,
   monsterId,
   session
@@ -84,7 +85,7 @@ export default function MonstrePageContent ({
     const interval = setInterval(() => {
       fetch(`/api/monsters/${monsterId}`)
         .then(async (res) => res.ok ? await res.json() : null)
-        .then((data: any) => {
+        .then((data: unknown) => {
           if (data?.monster != null) {
             setMonster((prev) => ({ ...prev, ...data.monster }))
           }

@@ -5,16 +5,16 @@
 
 // Clés de localStorage pour l'application
 export const STORAGE_KEYS = {
-  USER_AVATAR: 'animochi-user-avatar',
-  USER_PREFERENCES: 'animochi-user-preferences',
-  THEME: 'animochi-theme'
+  USER_AVATAR: "animochi-user-avatar",
+  USER_PREFERENCES: "animochi-user-preferences",
+  THEME: "animochi-theme",
 } as const
 
 /**
  * Sauvegarde une valeur dans localStorage avec gestion d'erreur
  */
-export function saveToStorage (key: string, value: string): boolean {
-  if (typeof window === 'undefined') return false
+export function saveToStorage(key: string, value: string): boolean {
+  if (typeof window === "undefined") return false
 
   try {
     localStorage.setItem(key, value)
@@ -28,8 +28,8 @@ export function saveToStorage (key: string, value: string): boolean {
 /**
  * Charge une valeur depuis localStorage avec gestion d'erreur
  */
-export function loadFromStorage (key: string): string | null {
-  if (typeof window === 'undefined') return null
+export function loadFromStorage(key: string): string | null {
+  if (typeof window === "undefined") return null
 
   try {
     return localStorage.getItem(key)
@@ -42,7 +42,7 @@ export function loadFromStorage (key: string): string | null {
 /**
  * Sauvegarde un objet JSON dans localStorage
  */
-export function saveObjectToStorage (key: string, object: Record<string, any>): boolean {
+export function saveObjectToStorage(key: string, object: Record<string, unknown>): boolean {
   try {
     return saveToStorage(key, JSON.stringify(object))
   } catch (error) {
@@ -54,7 +54,7 @@ export function saveObjectToStorage (key: string, object: Record<string, any>): 
 /**
  * Charge un objet JSON depuis localStorage
  */
-export function loadObjectFromStorage<T = Record<string, any>> (key: string): T | null {
+export function loadObjectFromStorage<T = Record<string, unknown>>(key: string): T | null {
   try {
     const value = loadFromStorage(key)
     return value != null ? JSON.parse(value) : null
@@ -67,8 +67,8 @@ export function loadObjectFromStorage<T = Record<string, any>> (key: string): T 
 /**
  * Supprime une valeur du localStorage
  */
-export function removeFromStorage (key: string): boolean {
-  if (typeof window === 'undefined') return false
+export function removeFromStorage(key: string): boolean {
+  if (typeof window === "undefined") return false
 
   try {
     localStorage.removeItem(key)
@@ -82,14 +82,14 @@ export function removeFromStorage (key: string): boolean {
 /**
  * Vide complètement le localStorage (attention !)
  */
-export function clearStorage (): boolean {
-  if (typeof window === 'undefined') return false
+export function clearStorage(): boolean {
+  if (typeof window === "undefined") return false
 
   try {
     localStorage.clear()
     return true
   } catch (error) {
-    console.warn('Erreur lors du vidage du localStorage:', error)
+    console.warn("Erreur lors du vidage du localStorage:", error)
     return false
   }
 }

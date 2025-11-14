@@ -5,11 +5,11 @@
  * Principe DIP: Implémente l'interface du domaine
  */
 
-import { connectMongooseToDatabase } from '@/db'
-import Purchase from '@/db/models/purchase.model'
-import type { PurchaseRepository } from '@/domain/repositories/purchase-repository'
-import type { Purchase as PurchaseEntity, CreatePurchaseCommand } from '@/domain/entities/purchase'
-import type { PaymentStatus } from '@/domain/value-objects/payment-status'
+import {connectMongooseToDatabase} from "@/db"
+import Purchase from "@/db/models/purchase.model"
+import type {PurchaseRepository} from "@/domain/repositories/purchase-repository"
+import type {Purchase as PurchaseEntity, CreatePurchaseCommand} from "@/domain/entities/purchase"
+import type {PaymentStatus} from "@/domain/value-objects/payment-status"
 
 /**
  * Implémentation MongoDB du repository de purchases
@@ -18,16 +18,16 @@ export class MongoPurchaseRepository implements PurchaseRepository {
   /**
    * Assure la connexion à la base de données
    */
-  private async ensureConnection (): Promise<void> {
+  private async ensureConnection(): Promise<void> {
     await connectMongooseToDatabase()
   }
 
   /**
    * Convertit un document Mongoose en entité Purchase
    */
-  private toDomainEntity (doc: any): PurchaseEntity {
+  private toDomainEntity(doc: Record<string, any>): PurchaseEntity {
     return {
-      id: doc._id.toString(),
+      id: doc._id?.toString() ?? "",
       userId: doc.userId,
       type: doc.type,
       itemId: doc.itemId,
@@ -37,18 +37,18 @@ export class MongoPurchaseRepository implements PurchaseRepository {
       paymentStatus: doc.paymentStatus,
       stripeSessionId: doc.stripeSessionId,
       stripePaymentIntentId: doc.stripePaymentIntentId,
-      targetMonsterId: doc.targetMonsterId?.toString(),
+      targetMonsterId: doc.targetMonsterId ? doc.targetMonsterId.toString() : undefined,
       metadata: doc.metadata,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
-      completedAt: doc.completedAt
+      completedAt: doc.completedAt,
     }
   }
 
   /**
    * Crée un nouvel achat
    */
-  async create (command: CreatePurchaseCommand): Promise<PurchaseEntity> {
+  async create(command: CreatePurchaseCommand): Promise<PurchaseEntity> {
     await this.ensureConnection()
 
     const purchase = await Purchase.create({
@@ -57,10 +57,10 @@ export class MongoPurchaseRepository implements PurchaseRepository {
       itemId: command.itemId,
       quantity: command.quantity,
       totalAmount: 0, // Sera mis à jour lors de la création de la session
-      currency: 'eur',
-      paymentStatus: 'pending',
+      currency: "eur",
+      paymentStatus: "pending",
       targetMonsterId: command.targetMonsterId,
-      metadata: command.metadata
+      metadata: command.metadata,
     })
 
     return this.toDomainEntity(purchase)
@@ -69,7 +69,7 @@ export class MongoPurchaseRepository implements PurchaseRepository {
   /**
    * Trouve un achat par son ID
    */
-  async findById (id: string): Promise<PurchaseEntity | null> {
+  async findById(id: string): Promise<PurchaseEntity | null> {
     await this.ensureConnection()
 
     const purchase = await Purchase.findById(id)
@@ -83,10 +83,10 @@ export class MongoPurchaseRepository implements PurchaseRepository {
   /**
    * Trouve un achat par l'ID de session Stripe
    */
-  async findByStripeSessionId (sessionId: string): Promise<PurchaseEntity | null> {
+  async findByStripeSessionId(sessionId: string): Promise<PurchaseEntity | null> {
     await this.ensureConnection()
 
-    const purchase = await Purchase.findOne({ stripeSessionId: sessionId })
+    const purchase = await Purchase.findOne({stripeSessionId: sessionId})
     if (purchase === null || purchase === undefined) {
       return null
     }
@@ -97,28 +97,27 @@ export class MongoPurchaseRepository implements PurchaseRepository {
   /**
    * Met à jour le statut de paiement d'un achat
    */
-  async updatePaymentStatus (
+  async updatePaymentStatus(
     id: string,
     status: PaymentStatus,
     paymentIntentId?: string
   ): Promise<PurchaseEntity> {
     await this.ensureConnection()
 
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       paymentStatus: status,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }
 
     if (paymentIntentId !== undefined) {
       updateData.stripePaymentIntentId = paymentIntentId
     }
 
-    if (status === 'succeeded') {
+    if (status === "succeeded") {
       updateData.completedAt = new Date()
     }
 
-    const purchase = await Purchase.findByIdAndUpdate(id, updateData, { new: true })
-
+    const purchase = await Purchase.findByIdAndUpdate(id, updateData, {new: true})
     if (purchase === null || purchase === undefined) {
       throw new Error(`Purchase ${id} not found`)
     }
@@ -129,24 +128,22 @@ export class MongoPurchaseRepository implements PurchaseRepository {
   /**
    * Liste les achats d'un utilisateur
    */
-  async findByUserId (userId: string, limit: number = 50): Promise<PurchaseEntity[]> {
+  findByUserId = async (userId: string, limit: number = 50): Promise<PurchaseEntity[]> => {
     await this.ensureConnection()
-
-    const purchases = await Purchase.find({ userId }).sort({ createdAt: -1 }).limit(limit)
-
-    return purchases.map((p) => this.toDomainEntity(p))
+    const purchases = await Purchase.find({userId}).sort({createdAt: -1}).limit(limit)
+    return purchases.map((p: Record<string, any>) => this.toDomainEntity(p))
   }
 
   /**
    * Met à jour la session Stripe d'un achat
    */
-  async updateStripeSession (id: string, sessionId: string, amount: number): Promise<void> {
+  async updateStripeSession(id: string, sessionId: string, amount: number): Promise<void> {
     await this.ensureConnection()
 
     await Purchase.findByIdAndUpdate(id, {
       stripeSessionId: sessionId,
       totalAmount: amount,
-      paymentStatus: 'processing'
+      paymentStatus: "processing",
     })
   }
 }

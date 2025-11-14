@@ -4,12 +4,12 @@
  * @module actions/user.actions
  */
 
-'use server'
+"use server"
 
-import { connectMongooseToDatabase } from '@/db'
-import UserModel from '@/db/models/user.model'
-import { auth } from '@/lib/auth/auth'
-import { headers } from 'next/headers'
+import {connectMongooseToDatabase} from "@/db"
+import UserModel from "@/db/models/user.model"
+import {auth} from "@/lib/auth/auth"
+import {headers} from "next/headers"
 
 /**
  * Met à jour le username d'un utilisateur
@@ -32,24 +32,24 @@ import { headers } from 'next/headers'
  * }
  * ```
  */
-export async function updateUsername (
+export async function updateUsername(
   newUsername: string
-): Promise<{ success: boolean, message: string }> {
+): Promise<{success: boolean; message: string}> {
   try {
     await connectMongooseToDatabase()
 
     const session = await auth.api.getSession({
-      headers: await headers()
+      headers: await headers(),
     })
 
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Vous devez être authentifié pour modifier votre pseudo'
+        message: "Vous devez être authentifié pour modifier votre pseudo",
       }
     }
 
-    const { user } = session
+    const {user} = session
 
     // Validation du username
     const trimmedUsername = newUsername.trim()
@@ -57,52 +57,52 @@ export async function updateUsername (
     if (trimmedUsername.length < 3) {
       return {
         success: false,
-        message: 'Le pseudo doit contenir au moins 3 caractères'
+        message: "Le pseudo doit contenir au moins 3 caractères",
       }
     }
 
     if (trimmedUsername.length > 30) {
       return {
         success: false,
-        message: 'Le pseudo ne peut pas dépasser 30 caractères'
+        message: "Le pseudo ne peut pas dépasser 30 caractères",
       }
     }
 
     // Vérifier que le username n'est pas déjà utilisé
     const existingUser = await UserModel.findOne({
-      $or: [{ username: trimmedUsername }, { pseudo: trimmedUsername }],
-      _id: { $ne: user.id } // Exclure l'utilisateur actuel
+      $or: [{username: trimmedUsername}, {pseudo: trimmedUsername}],
+      _id: {$ne: user.id}, // Exclure l'utilisateur actuel
     })
 
     if (existingUser != null) {
       return {
         success: false,
-        message: 'Ce pseudo est déjà utilisé par un autre utilisateur'
+        message: "Ce pseudo est déjà utilisé par un autre utilisateur",
       }
     }
 
     const updatedUser = await UserModel.findByIdAndUpdate(
       user.id,
-      { $set: { pseudo: trimmedUsername, username: trimmedUsername } },
-      { new: true, runValidators: true }
+      {$set: {pseudo: trimmedUsername, username: trimmedUsername}},
+      {new: true, runValidators: true}
     ).lean()
 
     if (updatedUser == null) {
       return {
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: "Utilisateur non trouvé",
       }
     }
 
     return {
       success: true,
-      message: 'Pseudo mis à jour avec succès !'
+      message: "Pseudo mis à jour avec succès !",
     }
   } catch (error) {
-    console.error('Erreur mise à jour pseudo:', error)
+    console.error("Erreur mise à jour pseudo:", error)
     return {
       success: false,
-      message: 'Une erreur est survenue lors de la mise à jour'
+      message: "Une erreur est survenue lors de la mise à jour",
     }
   }
 }
@@ -112,7 +112,7 @@ export async function updateUsername (
  *
  * @returns {Promise<{ success: boolean; user?: any; message?: string }>}
  */
-export async function getUserProfile (): Promise<{
+export async function getUserProfile(): Promise<{
   success: boolean
   user?: {
     id: string
@@ -128,45 +128,52 @@ export async function getUserProfile (): Promise<{
     await connectMongooseToDatabase()
 
     const session = await auth.api.getSession({
-      headers: await headers()
+      headers: await headers(),
     })
 
     if (session === null || session === undefined) {
       return {
         success: false,
-        message: 'Vous devez être authentifié'
+        message: "Vous devez être authentifié",
       }
     }
 
-    const { user: sessionUser } = session
+    const {user: sessionUser} = session
 
     const user = await UserModel.findById(sessionUser.id)
-      .select('email username pseudo name avatarUrl')
-      .lean()
+      .select("email username pseudo name avatarUrl")
+      .lean<{
+        _id: unknown
+        email: string
+        username?: string
+        pseudo?: string
+        name?: string
+        avatarUrl?: string
+      } | null>()
 
     if (user == null) {
       return {
         success: false,
-        message: 'Utilisateur non trouvé'
+        message: "Utilisateur non trouvé",
       }
     }
 
     return {
       success: true,
       user: {
-        id: (user as any)._id.toString(),
-        email: (user as any).email,
-        username: (user as any).username,
-        pseudo: (user as any).pseudo,
-        name: (user as any).name,
-        avatarUrl: (user as any).avatarUrl
-      }
+        id: user._id.toString(),
+        email: user.email,
+        username: user.username,
+        pseudo: user.pseudo,
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+      },
     }
   } catch (error) {
-    console.error('Erreur récupération profil:', error)
+    console.error("Erreur récupération profil:", error)
     return {
       success: false,
-      message: 'Une erreur est survenue'
+      message: "Une erreur est survenue",
     }
   }
 }
