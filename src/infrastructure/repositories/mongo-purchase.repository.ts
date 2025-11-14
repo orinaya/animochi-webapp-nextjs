@@ -37,7 +37,7 @@ export class MongoPurchaseRepository implements PurchaseRepository {
       paymentStatus: doc.paymentStatus,
       stripeSessionId: doc.stripeSessionId,
       stripePaymentIntentId: doc.stripePaymentIntentId,
-      targetMonsterId: doc.targetMonsterId ? doc.targetMonsterId.toString() : undefined,
+      targetMonsterId: typeof doc.targetMonsterId !== 'undefined' && doc.targetMonsterId !== null ? doc.targetMonsterId.toString() : undefined,
       metadata: doc.metadata,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,

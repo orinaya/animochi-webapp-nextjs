@@ -6,6 +6,10 @@
     {
       "path": "/api/cron/reset-daily-quests",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/monster-auto-state-change",
+      "schedule": "*/2 * * * *"
     }
   ],
   "rewrites": [],

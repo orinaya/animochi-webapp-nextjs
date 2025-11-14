@@ -17,7 +17,6 @@ import type { MonsterAction } from '@/types/monster/monster-actions'
  */
 
 import React, { useState } from 'react'
-import { getMonsterMoodInfo } from '@/shared/monster-mood'
 import { walletEvents } from '@/lib/events/wallet-events'
 import { FaHeart, FaSmile, FaBell, FaWalking, FaDumbbell } from 'react-icons/fa'
 
@@ -124,6 +123,17 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
 }) => {
   const router = useRouter()
   const [loadingAction, setLoadingAction] = useState<MonsterAction | null>(null)
+  // Compteur de "hug" consécutifs en état happy
+  const [hugCount, setHugCount] = useState(0)
+  const lastStateRef = React.useRef<string | null>(monster.state)
+
+  // Réinitialise le compteur si l'état du monstre change
+  React.useEffect(() => {
+    if (monster.state !== lastStateRef.current) {
+      setHugCount(0)
+      lastStateRef.current = monster.state
+    }
+  }, [monster.state])
   // const [showLevelUp, setShowLevelUp] = useState(false)
   // const [levelUpData, setLevelUpData] = useState<{ newLevel: number, levelsGained: number }>({ newLevel: 1, levelsGained: 0 })
 
@@ -144,6 +154,11 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
   const expectedAction = typeof monster.state === 'string' ? STATE_TO_ACTION[monster.state] : undefined
 
   const handleAction = async (action: MonsterAction): Promise<void> => {
+    // Limite l'action "hug" à 3 fois consécutives en état happy
+    if (monster.state === 'happy' && action === 'hug' && hugCount >= 3) {
+      toast.info('Tu as déjà bien câliné ton monstre ! Attends un changement d\'humeur.')
+      return
+    }
     // Conversion action front -> backend
     const backendAction = FRONT_TO_BACKEND_ACTION[action] ?? 'feed'
     setLoadingAction(action)
@@ -159,6 +174,10 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
       })
       const result: ApiResponse = await res.json()
       if (result.ok && result.matched && result.reward > 0) {
+        // Incrémente le compteur si hug en happy
+        if (monster.state === 'happy' && action === 'hug') {
+          setHugCount((prev) => Math.min(prev + 1, 3))
+        }
         // Notifier tous les composants wallet (navbar, etc.)
         walletEvents.emit()
         toast.success(`+${result.reward} Animoney ! 🎉`)
@@ -211,11 +230,13 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
           const animoney = isExpected
             ? REWARD_AMOUNTS[FRONT_TO_BACKEND_ACTION[actionConfig.action] as keyof typeof REWARD_AMOUNTS] ?? 0
             : PENALTY_AMOUNTS[monster.state as keyof typeof PENALTY_AMOUNTS] ?? 0
+          // Désactive le bouton hug si limite atteinte en happy
+          const isHugDisabled = actionConfig.action === 'hug' && monster.state === 'happy' && hugCount >= 3
           return (
             <div key={actionConfig.action} className='relative'>
               <button
                 onClick={() => { void handleAction(actionConfig.action) }}
-                disabled={loadingAction !== null}
+                disabled={loadingAction !== null || isHugDisabled}
                 className={[
                   'flex flex-col justify-center items-center w-full',
                   bg,
@@ -236,6 +257,7 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
                 <span className={`text-xs font-semibold ${text}`}>
                   {actionConfig.label}
                   {isExpected ? <span className='ml-2 px-2 py-0.5 rounded-full bg-blueberry-200 text-blueberry-900 text-[10px] font-bold animate-pulse'>Action attendue</span> : null}
+                  {isHugDisabled ? <span className='ml-2 px-2 py-0.5 rounded-full bg-strawberry-200 text-strawberry-900 text-[10px] font-bold'>Limite atteinte</span> : null}
                 </span>
                 <span className={`text-[10px] font-bold mt-0.5 ${text}`}>
                   {isExpected

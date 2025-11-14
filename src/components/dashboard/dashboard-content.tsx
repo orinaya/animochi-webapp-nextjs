@@ -33,7 +33,7 @@ interface DashboardContentProps {
  *
  * Respecte le principe SRP : Gère uniquement l'affichage carousel des monstres
  */
-function MonsterCarousel ({ monsters }: { monsters: Monster[] }): React.ReactNode {
+function MonsterCarousel({ monsters }: { monsters: Monster[] }): React.ReactNode {
   const [currentIndex, setCurrentIndex] = useState(0)
   const router = useRouter()
 
@@ -170,7 +170,7 @@ function MonsterCarousel ({ monsters }: { monsters: Monster[] }): React.ReactNod
   )
 }
 
-function DashboardShop (): React.ReactNode {
+function DashboardShop(): React.ReactNode {
   // On combine tous les accessoires et backgrounds
   const items: AccessoryData[] = [...ACCESSORIES_CATALOG, ...BACKGROUNDS_CATALOG]
   // Rareté couleurs (copié de la boutique)
@@ -212,30 +212,30 @@ function DashboardShop (): React.ReactNode {
             <div className='bg-latte-50 rounded-lg p-4 mb-4 flex items-center justify-center min-h-[100px] overflow-hidden'>
               {accessory.category === 'background'
                 ? (
-                    accessory.imagePath != null
+                  accessory.imagePath != null
+                    ? (
+                      <div
+                        className='w-full h-20 rounded bg-cover bg-center'
+                        style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                      />
+                    )
+                    : accessory.svg != null
                       ? (
-                        <div
-                          className='w-full h-20 rounded bg-cover bg-center'
-                          style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                        <svg
+                          viewBox='0 0 100 100'
+                          className='w-full h-20 rounded'
+                          dangerouslySetInnerHTML={{ __html: accessory.svg }}
                         />
-                        )
-                      : accessory.svg != null
-                        ? (
-                          <svg
-                            viewBox='0 0 100 100'
-                            className='w-full h-20 rounded'
-                            dangerouslySetInnerHTML={{ __html: accessory.svg }}
-                          />
-                          )
-                        : null
-                  )
+                      )
+                      : null
+                )
                 : (
                   <svg
                     viewBox='0 0 80 80'
                     className='w-16 h-16'
                     dangerouslySetInnerHTML={{ __html: accessory.svg ?? '' }}
                   />
-                  )}
+                )}
             </div>
             {/* Infos */}
             <div className='space-y-2 flex-1'>
@@ -268,7 +268,7 @@ interface LeaderboardRow {
   xp: number
   level: number
 }
-function DashboardLeaderboard (): React.ReactNode {
+function DashboardLeaderboard(): React.ReactNode {
   const [data, setData] = useState<LeaderboardRow[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -286,7 +286,7 @@ function DashboardLeaderboard (): React.ReactNode {
   }, [])
 
   return (
-    <div className='bg-gradient-to-br from-blueberry-100 via-peach-50 to-latte-100 rounded-2xl shadow-lg p-5 h-full flex flex-col border-2 border-blueberry-200'>
+    <div className='bg-linear-to-br from-blueberry-100 via-peach-50 to-latte-100 rounded-2xl shadow-lg p-5 h-full flex flex-col border-2 border-blueberry-200'>
       <h3 className='text-xl font-extrabold text-blueberry-900 mb-3 tracking-wide flex items-center gap-2'>
         <span className='inline-block text-2xl drop-shadow-glow'>🏆</span>
         Leaderboard
@@ -295,28 +295,28 @@ function DashboardLeaderboard (): React.ReactNode {
         {loading
           ? (
             <div className='text-center text-latte-500 py-8 font-mono animate-pulse'>Chargement...</div>
-            )
+          )
           : (error != null && error !== '')
-              ? (
-                <div className='text-center text-red-500 py-8 font-mono'>{error}</div>
-                )
-              : (
-                <table className='min-w-full text-sm font-mono'>
-                  <thead>
-                    <tr className='bg-blueberry-50 text-blueberry-700 uppercase text-xs'>
-                      <th className='text-left pr-2 py-2 rounded-tl-xl'>#</th>
-                      <th className='text-left pr-2'>Monstre</th>
-                      <th className='text-left pr-2'>Propriétaire</th>
-                      <th className='text-right pr-2'>XP</th>
-                      <th className='text-right'>Niv.</th>
-                      {/* Colonne visuel supprimée */}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.map((row, idx) => (
-                      <tr
-                        key={row.rank}
-                        className={`transition-all duration-200 border-b last:border-b-0 ${row.rank === 1
+            ? (
+              <div className='text-center text-red-500 py-8 font-mono'>{error}</div>
+            )
+            : (
+              <table className='min-w-full text-sm font-mono'>
+                <thead>
+                  <tr className='bg-blueberry-50 text-blueberry-700 uppercase text-xs'>
+                    <th className='text-left pr-2 py-2 rounded-tl-xl'>#</th>
+                    <th className='text-left pr-2'>Monstre</th>
+                    <th className='text-left pr-2'>Propriétaire</th>
+                    <th className='text-right pr-2'>XP</th>
+                    <th className='text-right'>Niv.</th>
+                    {/* Colonne visuel supprimée */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((row, idx) => (
+                    <tr
+                      key={row.rank}
+                      className={`transition-all duration-200 border-b last:border-b-0 ${row.rank === 1
                         ? 'bg-yellow-100/80 font-bold text-yellow-700 shadow-sm'
                         : row.rank === 2
                           ? 'bg-blueberry-100/60 font-semibold text-blueberry-700'
@@ -326,18 +326,18 @@ function DashboardLeaderboard (): React.ReactNode {
                               ? 'bg-white/80'
                               : 'bg-latte-50/80'
                         }`}
-                      >
-                        <td className='font-extrabold pr-2 text-lg text-center drop-shadow-glow'>{row.rank}</td>
-                        <td className='pr-2 font-semibold tracking-wide'>{row.monster}</td>
-                        <td className='pr-2 text-blueberry-800'>{row.owner}</td>
-                        <td className='text-right pr-2 text-strawberry-700 font-bold'>{row.xp}</td>
-                        <td className='text-right text-blueberry-700 font-bold'>{row.level}</td>
+                    >
+                      <td className='font-extrabold pr-2 text-lg text-center drop-shadow-glow'>{row.rank}</td>
+                      <td className='pr-2 font-semibold tracking-wide'>{row.monster}</td>
+                      <td className='pr-2 text-blueberry-800'>{row.owner}</td>
+                      <td className='text-right pr-2 text-strawberry-700 font-bold'>{row.xp}</td>
+                      <td className='text-right text-blueberry-700 font-bold'>{row.level}</td>
 
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
       </div>
     </div>
   )
@@ -354,7 +354,7 @@ interface QuickActionProps {
   color: 'blueberry' | 'strawberry' | 'peach' | 'latte'
 }
 
-function QuickAction ({ icon, label, description, onClick, color }: QuickActionProps): React.ReactNode {
+function QuickAction({ icon, label, description, onClick, color }: QuickActionProps): React.ReactNode {
   const colorClasses = {
     blueberry: 'bg-blueberry-100 hover:bg-blueberry-200 border-blueberry-300',
     strawberry: 'bg-strawberry-100 hover:bg-strawberry-200 border-strawberry-300',
@@ -402,7 +402,7 @@ function QuickAction ({ icon, label, description, onClick, color }: QuickActionP
  * <DashboardContent session={session} monsters={monsters} />
  * ```
  */
-function DashboardContent ({ session, monsters = [] }: DashboardContentProps): React.ReactNode {
+function DashboardContent({ session, monsters = [] }: DashboardContentProps): React.ReactNode {
   const { logout } = useAuth()
   const router = useRouter()
   const { pseudo } = useUserPseudo()
