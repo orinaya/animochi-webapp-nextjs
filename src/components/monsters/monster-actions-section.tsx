@@ -1,3 +1,9 @@
+
+'use client'
+import { getActionXpReward } from '@/services/experience'
+import { REWARD_AMOUNTS, PENALTY_AMOUNTS } from '@/config/rewards'
+import type { MonsterAction } from '@/types/monster-actions'
+
 /**
  * MonsterActionsSection - Section des actions du monstre
  *
@@ -10,26 +16,33 @@
  * @module components/monsters/monster-actions-section
  */
 
-'use client'
-
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { walletEvents } from '@/lib/wallet-events'
 import { FaHeart, FaSmile, FaBell, FaWalking, FaDumbbell } from 'react-icons/fa'
 import { MdFastfood } from '@/components/icons/mdfastfood'
+
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import { applyMonsterAction } from '@/actions/monsters.action'
-import { getActionXpReward } from '@/services/experience'
-import type { Monster } from '@/types/monster'
-import type { MonsterAction } from '@/types/monster-actions'
-import LevelUpModal from './level-up-modal'
+// import { applyMonsterAction } from '@/actions/monsters.action'
 
+// Props explicites pour MonsterActionsSection
 interface MonsterActionsSectionProps {
-  /** Données du monstre */
-  monster: Monster
-  /** ID du monstre */
+  monster: import('@/types/monster').Monster
   monsterId: string
-  /** Callback quand une action démarre */
+  setMonster?: (monster: import('@/types/monster').Monster) => void
   onActionStart?: (action: MonsterAction) => void
+  onActionDone?: () => void
+}
+
+interface ApiResponse {
+  ok: boolean
+  reward: number
+  penalty: number
+  matched: boolean
+  expectedAction: MonsterAction
+  xpGained?: number
+  newLevel?: number
+  leveledUp?: boolean
 }
 
 interface ActionConfig {
@@ -38,6 +51,16 @@ interface ActionConfig {
   label: string
   description: string
   color: string // ex: 'strawberry', 'blueberry', 'peach', 'latte'
+}
+
+// Mapping front (labels/actions UI) -> backend (actions API)
+const FRONT_TO_BACKEND_ACTION: Record<string, 'feed' | 'play' | 'heal'> = {
+  feed: 'feed',
+  hug: 'play',
+  comfort: 'play',
+  walk: 'play',
+  train: 'play',
+  wake: 'heal'
 }
 
 const AVAILABLE_ACTIONS: ActionConfig[] = [
@@ -91,55 +114,80 @@ const AVAILABLE_ACTIONS: ActionConfig[] = [
  * @param {MonsterActionsSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section des actions
  */
-export default function MonsterActionsSection({
+const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
   monster,
   monsterId,
-  onActionStart
-}: MonsterActionsSectionProps): React.ReactNode {
+  setMonster,
+  onActionStart,
+  onActionDone
+}) => {
   const router = useRouter()
   const [loadingAction, setLoadingAction] = useState<MonsterAction | null>(null)
-  const [showLevelUp, setShowLevelUp] = useState(false)
-  const [levelUpData, setLevelUpData] = useState<{ newLevel: number, levelsGained: number }>({ newLevel: 1, levelsGained: 0 })
+  // const [showLevelUp, setShowLevelUp] = useState(false)
+  // const [levelUpData, setLevelUpData] = useState<{ newLevel: number, levelsGained: number }>({ newLevel: 1, levelsGained: 0 })
 
   /**
    * Gère l'exécution d'une action
    */
-  const handleAction = async (action: MonsterAction): Promise<void> => {
-    setLoadingAction(action)
+  // Mapping état -> action attendue (doit matcher le backend)
+  const STATE_TO_ACTION: Record<string, string> = {
+    hungry: 'feed',
+    bored: 'play',
+    sick: 'heal',
+    happy: 'hug',
+    sad: 'comfort',
+    angry: 'hug',
+    sleepy: 'wake'
+  }
 
-    // Déclencher l'animation sur l'avatar
-    if (onActionStart !== null && onActionStart !== undefined) {
+  const expectedAction = typeof monster.state === 'string' ? STATE_TO_ACTION[monster.state] : undefined
+
+  const handleAction = async (action: MonsterAction): Promise<void> => {
+    // Conversion action front -> backend
+    const backendAction = FRONT_TO_BACKEND_ACTION[action] ?? 'feed'
+    setLoadingAction(action)
+    if (typeof onActionStart === 'function') {
       onActionStart(action)
     }
-
     try {
-      const result = await applyMonsterAction(monsterId, action)
-
-      if (result.success) {
-        // Afficher le toast de succès
-        toast.success(result.message)
-
-        // Si level up, afficher le modal après l'animation
-        if (result.leveledUp) {
-          setTimeout(() => {
-            setLevelUpData({
-              newLevel: result.newLevel,
-              levelsGained: result.levelsGained
-            })
-            setShowLevelUp(true)
-          }, 1500)
+      // Appel sécurisé à la route API
+      const res = await fetch(`/api/monsters/${monsterId}/action`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: backendAction, userId: monster.ownerId })
+      })
+      const result: ApiResponse = await res.json()
+      if (result.ok && result.matched && result.reward > 0) {
+        // Notifier tous les composants wallet (navbar, etc.)
+        walletEvents.emit()
+        toast.success(`+${result.reward} Animoney ! 🎉`)
+        if (result.leveledUp === true && typeof result.newLevel === 'number' && result.newLevel > 0) {
+          toast.info(`🎉 Ton monstre passe niveau ${result.newLevel} !`, { autoClose: 4000 })
         }
-
-        // Rafraîchir la page après l'animation pour mettre à jour l'état
-        setTimeout(() => {
-          router.refresh()
-        }, result.leveledUp ? 1500 : 1000)
+        // Mise à jour du monstre (XP/niveau réactif)
+        if (typeof setMonster === 'function') {
+          setMonster({
+            ...monster,
+            experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
+            level: result.newLevel ?? monster.level
+          })
+        }
+      } else if (result.ok && !result.matched && result.penalty > 0) {
+        walletEvents.emit()
+        toast.error(`Mauvaise action ! -${result.penalty} Animoney. Action attendue : ${result.expectedAction}`)
+      } else if (result.ok && !result.matched) {
+        toast.info("Ce n'était pas l'action attendue pour l'état du monstre.")
       } else {
-        toast.warning(result.message)
+        toast.error('Erreur lors de l’action')
       }
+      setTimeout(() => {
+        if (typeof onActionDone === 'function') {
+          onActionDone()
+        }
+        router.refresh()
+      }, 1000)
     } catch (error) {
-      console.error('Erreur lors de l\'exécution de l\'action:', error)
-      toast.error('Une erreur est survenue')
+      toast.error('Erreur lors de l’action')
     } finally {
       setLoadingAction(null)
     }
@@ -151,46 +199,61 @@ export default function MonsterActionsSection({
       <div className='grid grid-cols-1 sm:grid-cols-3 gap-3 w-full h-fit'>
         {AVAILABLE_ACTIONS.map((actionConfig) => {
           const xpReward = getActionXpReward(actionConfig.action)
-          // Palette pastel : fond clair, texte/icône foncé
           const bg = `bg-${actionConfig.color}-100 hover:bg-${actionConfig.color}-200`
           const text = `text-${actionConfig.color}-800`
+          const isExpected = expectedAction !== undefined && FRONT_TO_BACKEND_ACTION[actionConfig.action] === expectedAction
+          // Montant animoney affiché
+          const animoney = isExpected
+            ? REWARD_AMOUNTS[FRONT_TO_BACKEND_ACTION[actionConfig.action] as keyof typeof REWARD_AMOUNTS] ?? 0
+            : PENALTY_AMOUNTS[monster.state as keyof typeof PENALTY_AMOUNTS] ?? 0
           return (
-            <button
-              key={actionConfig.action}
-              onClick={() => { void handleAction(actionConfig.action) }}
-              disabled={loadingAction !== null}
-              className={[
-                'flex flex-col justify-center items-center w-full',
-                bg,
-                'rounded-xl px-4 py-3',
-                'transition-all duration-200',
-                'disabled:opacity-50 disabled:cursor-not-allowed',
-                loadingAction === actionConfig.action ? 'scale-95' : 'hover:scale-105',
-                'min-h-[70px]'
-              ].join(' ')}
-              title={`${actionConfig.description} (+${xpReward} XP)`}
-            >
-              <span className={`mb-1 ${text}`}>
-                {actionConfig.icon({ className: `${text}` })}
-              </span>
-              <span className={`text-xs font-semibold ${text}`}>
-                {actionConfig.label}
-              </span>
-              <span className={`text-[10px] font-bold mt-0.5 ${text}`}>
-                +{xpReward} XP
-              </span>
-            </button>
+            <div key={actionConfig.action} className='relative'>
+              <button
+                onClick={() => { void handleAction(actionConfig.action) }}
+                disabled={loadingAction !== null}
+                className={[
+                  'flex flex-col justify-center items-center w-full',
+                  bg,
+                  'rounded-xl px-4 py-3',
+                  'transition-all duration-200',
+                  'disabled:opacity-50 disabled:cursor-not-allowed',
+                  loadingAction === actionConfig.action ? 'scale-95' : 'hover:scale-105',
+                  'min-h-[70px]',
+                  isExpected ? 'ring-2 ring-blueberry-500 ring-offset-2 shadow-lg' : ''
+                ].join(' ')}
+                title={isExpected
+                  ? `${actionConfig.description} (+${xpReward} XP, +${animoney} Animoney) — Action attendue !`
+                  : `${actionConfig.description} (+0 XP, -${animoney} Animoney)`}
+              >
+                <span className={`mb-1 ${text}`}>
+                  {actionConfig.icon({ className: `${text}` })}
+                </span>
+                <span className={`text-xs font-semibold ${text}`}>
+                  {actionConfig.label}
+                  {isExpected ? <span className='ml-2 px-2 py-0.5 rounded-full bg-blueberry-200 text-blueberry-900 text-[10px] font-bold animate-pulse'>Action attendue</span> : null}
+                </span>
+                <span className={`text-[10px] font-bold mt-0.5 ${text}`}>
+                  {isExpected
+                    ? `+${xpReward} XP, +${animoney}🪙`
+                    : `+0 XP, -${animoney}🪙`}
+                </span>
+              </button>
+              {/* Plus d’aide contextuelle textuelle, uniquement le badge visuel */}
+            </div>
           )
         })}
       </div>
 
       {/* Modal de level up */}
-      <LevelUpModal
+      {/* Modal de level up désactivé (code mort) */}
+      {/* <LevelUpModal
         isOpen={showLevelUp}
         newLevel={levelUpData.newLevel}
         levelsGained={levelUpData.levelsGained}
         onClose={() => { setShowLevelUp(false) }}
-      />
+      /> */}
     </>
   )
 }
+
+export default MonsterActionsSection

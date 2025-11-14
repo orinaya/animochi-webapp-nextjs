@@ -11,7 +11,7 @@
 
 'use client'
 
-import { calculateLevelProgress, calculateTotalXpForLevel } from '@/services/experience'
+import { calculateLevelProgress } from '@/services/experience'
 import { FiTrendingUp } from 'react-icons/fi'
 import type { Monster } from '@/types/monster'
 
@@ -26,7 +26,7 @@ interface MonsterExperienceSectionProps {
  * @param {MonsterExperienceSectionProps} props - Les propriétés du composant
  * @returns {React.ReactNode} La section d'expérience
  */
-export default function MonsterExperienceSection({
+export default function MonsterExperienceSection ({
   monster
 }: MonsterExperienceSectionProps): React.ReactNode {
   const currentLevel = monster.level ?? 1
@@ -34,13 +34,13 @@ export default function MonsterExperienceSection({
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
 
   // Utiliser le service de calcul d'XP pour calculer la progression réelle
-  const progress = calculateLevelProgress(experience, currentLevel)
+  const progress = calculateLevelProgress(experience, experienceToNextLevel)
 
   const nextLevel = currentLevel + 1
 
   // Calculer l'XP dans le niveau actuel
-  const xpForCurrentLevel = calculateTotalXpForLevel(currentLevel)
-  const xpInCurrentLevel = experience - xpForCurrentLevel
+  // L'XP du monstre est déjà l'XP courante dans le niveau
+  const xpInCurrentLevel = experience
   const remainingXP = experienceToNextLevel - xpInCurrentLevel
 
   return (

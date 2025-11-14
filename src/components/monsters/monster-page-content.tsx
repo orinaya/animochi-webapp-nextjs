@@ -14,6 +14,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useWallet } from '@/hooks/use-wallet'
 import type { Monster } from '@/types/monster'
 import type { MonsterAction } from '@/types/monster-actions'
 import type { AccessoryCategory } from '@/types/monster-accessories'
@@ -50,13 +51,17 @@ interface MonstrePageContentProps {
  * ```
  */
 export default function MonstrePageContent({
-  monster,
+  monster: initialMonster,
   monsterId,
   session
 }: MonstrePageContentProps): React.ReactNode {
   const { logout } = useAuth()
   const [currentAnimation, setCurrentAnimation] = useState<MonsterAction | null>(null)
   const [inventoryCategory, setInventoryCategory] = useState<AccessoryCategory | null>(null)
+  const { refetch: refetchWallet } = useWallet()
+
+  // État local pour le monstre (XP/niveau réactif)
+  const [monster, setMonster] = useState<Monster>(initialMonster)
 
   // Données du fil d'Ariane
   const breadcrumbItems = [
@@ -115,7 +120,9 @@ export default function MonstrePageContent({
                   <MonsterActionsSection
                     monster={monster}
                     monsterId={monsterId}
+                    setMonster={setMonster}
                     onActionStart={(action: MonsterAction) => { setCurrentAnimation(action) }}
+                    onActionDone={() => { void refetchWallet() }}
                   />
                 }
               />
