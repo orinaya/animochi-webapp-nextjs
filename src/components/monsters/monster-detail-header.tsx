@@ -202,8 +202,7 @@ export default function MonsterDetailHeader({
         isOpen={showModal}
         onClose={handleCloseModal}
         ownedAccessories={ownedAccessoriesDetails}
-        equippedAccessories={monster.equippedAccessories ?? {}}
-        monsterId={monsterId}
+        monster={monster}
         onEquip={handleEquipAccessory}
         onUnequip={handleUnequipAccessory}
         initialCategory={initialInventoryCategory ?? undefined}

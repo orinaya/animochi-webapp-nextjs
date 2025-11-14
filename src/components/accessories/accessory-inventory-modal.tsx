@@ -15,9 +15,13 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { RARITY_COLORS } from '@/types/monster-accessories'
+import dynamic from 'next/dynamic'
 import { ACCESSORIES_CATALOG } from '@/data/accessories-catalog'
 import { BACKGROUNDS_CATALOG } from '@/data/backgrounds-catalog'
-import type { AccessoryData, AccessoryCategory, OwnedAccessory, EquippedAccessories, AccessoryRarity } from '@/types/monster-accessories'
+import type { AccessoryData, AccessoryCategory, OwnedAccessory, AccessoryRarity } from '@/types/monster-accessories'
+
+import type { Monster } from '@/types/monster'
+const MonsterDetailAvatar = dynamic(async () => await import('@/components/monsters/monster-detail-avatar'), { ssr: false })
 
 interface AccessoryInventoryModalProps {
   /** Indique si la modal est ouverte */
@@ -26,10 +30,8 @@ interface AccessoryInventoryModalProps {
   onClose: () => void
   /** Liste des accessoires possédés avec leurs détails */
   ownedAccessories: Array<OwnedAccessory & { details: AccessoryData }>
-  /** Accessoires actuellement équipés sur le monstre */
-  equippedAccessories: EquippedAccessories
-  /** ID du monstre concerné */
-  monsterId: string
+  /** Monstre complet à afficher */
+  monster: Monster
   /** Callback appelé lors de l'équipement d'un accessoire */
   onEquip: (accessoryId: string, category: AccessoryCategory) => Promise<void>
   /** Callback appelé lors du retrait d'un accessoire */
@@ -58,27 +60,13 @@ function getCategoryLabel (category: AccessoryCategory): string {
 }
 
 /**
- * Retourne l'emoji pour une catégorie
- */
-function getCategoryEmoji (category: AccessoryCategory): string {
-  const emojis: Record<AccessoryCategory, string> = {
-    hat: '🎩',
-    glasses: '👓',
-    shoes: '👟',
-    background: '🖼️'
-  }
-  return emojis[category]
-}
-
-/**
  * Modal de l'inventaire et boutique d'accessoires
  */
 export default function AccessoryInventoryModal ({
   isOpen,
   onClose,
   ownedAccessories,
-  equippedAccessories,
-  monsterId,
+  monster,
   onEquip,
   onUnequip,
   initialCategory,
@@ -158,7 +146,7 @@ export default function AccessoryInventoryModal ({
    * Vérifie si un accessoire est équipé
    */
   const isEquipped = (accessoryName: string, category: AccessoryCategory): boolean => {
-    return equippedAccessories[category] === accessoryName
+    return monster.equippedAccessories?.[category] === accessoryName
   }
 
   /**
@@ -225,83 +213,12 @@ export default function AccessoryInventoryModal ({
         {/* Contenu de l'onglet Inventaire */}
         {activeTab === 'inventory' && (
           <div className='space-y-6'>
-            {/* Statistiques */}
-            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3'>
-              <div className='bg-linear-to-br from-blueberry-100 to-blueberry-50 rounded-xl p-3 text-center'>
-                <span className='text-2xl block mb-1'>🎒</span>
-                <p className='text-sm text-blueberry-600'>Total</p>
-                <p className='text-xl font-bold text-blueberry-950'>{ownedAccessories.length}</p>
-              </div>
-              <div className='bg-linear-to-br from-peach-100 to-peach-50 rounded-xl p-3 text-center'>
-                <span className='text-2xl block mb-1'>🎩</span>
-                <p className='text-sm text-peach-600'>Chapeaux</p>
-                <p className='text-xl font-bold text-peach-950'>{countByCategory('hat')}</p>
-              </div>
-              <div className='bg-linear-to-br from-strawberry-100 to-strawberry-50 rounded-xl p-3 text-center'>
-                <span className='text-2xl block mb-1'>👓</span>
-                <p className='text-sm text-strawberry-600'>Lunettes</p>
-                <p className='text-xl font-bold text-strawberry-950'>{countByCategory('glasses')}</p>
-              </div>
-              <div className='bg-linear-to-br from-latte-100 to-latte-50 rounded-xl p-3 text-center'>
-                <span className='text-2xl block mb-1'>👟</span>
-                <p className='text-sm text-latte-600'>Chaussures</p>
-                <p className='text-xl font-bold text-latte-950'>{countByCategory('shoes')}</p>
-              </div>
-              <div className='bg-linear-to-br from-blueberry-200 to-blueberry-100 rounded-xl p-3 text-center'>
-                <span className='text-2xl block mb-1'>🖼️</span>
-                <p className='text-sm text-blueberry-600'>Arrière-plans</p>
-                <p className='text-xl font-bold text-blueberry-950'>{countByCategory('background')}</p>
-              </div>
-            </div>
 
-            {/* Accessoires actuellement équipés */}
-            <div className='bg-linear-to-r from-strawberry-50 to-peach-50 rounded-xl p-4'>
-              <h3 className='text-lg font-bold text-blueberry-950 mb-3 flex items-center gap-2'>
-                <span>✨</span>
-                Actuellement équipé
-              </h3>
-              <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
-                {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => {
-                  const equippedName = equippedAccessories[category]
-                  const equippedItem = equippedName != null
-                    ? ownedAccessories.find(item => item.accessoryName === equippedName)
-                    : null
-
-                  return (
-                    <div
-                      key={category}
-                      className='bg-white rounded-lg p-3 text-center border-2 border-latte-200'
-                    >
-                      <p className='text-xs font-semibold text-latte-600 mb-2'>
-                        {getCategoryEmoji(category)}
-                      </p>
-                      {equippedItem != null
-                        ? (
-                          <>
-                            <svg
-                              viewBox='0 0 80 80'
-                              className='w-12 h-12 mx-auto mb-2'
-                              dangerouslySetInnerHTML={{ __html: equippedItem.details.svg ?? '' }}
-                            />
-                            <p className='text-xs font-bold text-blueberry-950 mb-2'>
-                              {equippedItem.details.name}
-                            </p>
-                            <button
-                              onClick={() => { void handleUnequip(category) }}
-                              disabled={processing === category}
-                              className='w-full px-2 py-1 text-xs bg-strawberry-500 text-white rounded hover:bg-strawberry-600 disabled:bg-latte-300 disabled:cursor-not-allowed transition-all'
-                            >
-                              {processing === category ? '⏳' : 'Retirer'}
-                            </button>
-                          </>
-                          )
-                        : (
-                          <p className='text-xs text-latte-400 py-4'>Vide</p>
-                          )}
-                    </div>
-                  )
-                })}
-              </div>
+            {/* Visualisation du monstre */}
+            <div className='bg-white rounded-2xl p-4 shadow-lg flex justify-center items-center'>
+              <MonsterDetailAvatar
+                monster={monster}
+              />
             </div>
 
             {/* Filtres par catégorie */}
@@ -318,6 +235,9 @@ export default function AccessoryInventoryModal ({
                     }`}
                 >
                   Tout
+                  <span className='ml-2 px-2 py-0.5 bg-latte-200 text-latte-700 text-xs rounded-full'>
+                    {ownedAccessories.length}
+                  </span>
                 </button>
                 {(['hat', 'glasses', 'shoes', 'background'] as AccessoryCategory[]).map((category) => (
                   <button
@@ -329,92 +249,127 @@ export default function AccessoryInventoryModal ({
                       }`}
                   >
                     {getCategoryLabel(category)}
+                    <span className='ml-2 px-2 py-0.5 bg-latte-200 text-latte-700 text-xs rounded-full'>
+                      {countByCategory(category)}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Grille d'accessoires */}
-            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[400px] overflow-y-auto pr-2'>
-              {filteredAccessories.map((item) => {
-                const equipped = isEquipped(item.accessoryName, item.details.category)
-                const isProcessing = processing === item.accessoryName
+            {/* Liste horizontale d'accessoires avec scroll */}
+            <div className='relative'>
+              {/* Chevron gauche (desktop uniquement) */}
+              <button
+                type='button'
+                aria-label='Faire défiler vers la gauche'
+                className='hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 border border-latte-300 rounded-full shadow p-2 hover:bg-blueberry-100 transition disabled:opacity-30'
+                onClick={() => {
+                  const el = document.getElementById('accessory-scroll-list')
+                  if (el !== null) el.scrollBy({ left: -300, behavior: 'smooth' })
+                }}
+              >
+                <svg width='24' height='24' fill='none' viewBox='0 0 24 24'><path d='M15 19l-7-7 7-7' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' /></svg>
+              </button>
 
-                return (
-                  <div
-                    key={item.id ?? item.accessoryName}
-                    className={`bg-white rounded-xl p-3 border-2 transition-all hover:shadow-lg ${equipped
-                      ? 'border-strawberry-400 bg-strawberry-50'
-                      : 'border-latte-200 hover:border-blueberry-300'
-                      }`}
-                  >
-                    {/* Badge de rareté */}
-                    <div className='flex justify-between items-start mb-2'>
-                      <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${RARITY_COLORS[item.details.rarity]}`}
-                      >
-                        {item.details.rarity}
-                      </span>
-                      {equipped && (
-                        <span className='text-lg'>✓</span>
-                      )}
-                    </div>
+              {/* Liste scrollable */}
+              <div
+                id='accessory-scroll-list'
+                className='flex overflow-x-auto gap-3 py-2 px-1 scrollbar-thin scrollbar-thumb-blueberry-200 scrollbar-track-latte-100 md:scroll-smooth'
+                style={{ scrollBehavior: 'smooth' }}
+              >
+                {filteredAccessories.map((item) => {
+                  const equipped = isEquipped(item.accessoryName, item.details.category)
+                  const isProcessing = processing === item.accessoryName
+                  return (
+                    <div
+                      key={item.id ?? item.accessoryName}
+                      className={`min-w-40 max-w-[180px] shrink-0 bg-white rounded-xl p-3 border-2 transition-all hover:shadow-lg ${equipped
+                        ? 'border-strawberry-400 bg-strawberry-50'
+                        : 'border-latte-200 hover:border-blueberry-300'
+                        }`}
+                    >
+                      {/* Badge de rareté */}
+                      <div className='flex justify-between items-start mb-2'>
+                        <span
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${RARITY_COLORS[item.details.rarity]}`}
+                        >
+                          {item.details.rarity}
+                        </span>
+                        {equipped && (
+                          <span className='text-lg'>✓</span>
+                        )}
+                      </div>
 
-                    {/* Prévisualisation SVG ou Image */}
-                    <div className='bg-latte-50 rounded-lg p-2 mb-2 flex items-center justify-center min-h-[60px] overflow-hidden'>
-                      {item.details.category === 'background'
-                        ? (
-                            item.details.imagePath != null
-                              ? (
+                      {/* Prévisualisation SVG ou Image */}
+                      <div className='bg-latte-50 rounded-lg p-2 mb-2 flex items-center justify-center min-h-[60px] overflow-hidden'>
+                        {item.details.category === 'background'
+                          ? (
+                              item.details.imagePath != null
+                                ? (
                                 <div
                                   className='w-full h-16 rounded bg-cover bg-center'
                                   style={{ backgroundImage: `url(${item.details.imagePath})` }}
                                 />
-                                )
-                              : item.details.svg != null
-                                ? (
+                                  )
+                                : item.details.svg != null
+                                  ? (
                                   <svg
                                     viewBox='0 0 100 100'
                                     className='w-full h-16 rounded'
                                     dangerouslySetInnerHTML={{ __html: item.details.svg }}
                                   />
-                                  )
-                                : null
-                          )
-                        : (
-                          <svg
-                            viewBox='0 0 80 80'
-                            className='w-14 h-14'
-                            dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
-                          />
-                          )}
+                                    )
+                                  : null
+                            )
+                          : (
+                            <svg
+                              viewBox='0 0 80 80'
+                              className='w-14 h-14'
+                              dangerouslySetInnerHTML={{ __html: item.details.svg ?? '' }}
+                            />
+                            )}
+                      </div>
+
+                      {/* Nom */}
+                      <h4 className='font-bold text-blueberry-950 text-xs mb-2 text-center'>
+                        {item.details.name}
+                      </h4>
+
+                      {/* Bouton d'action */}
+                      <button
+                        onClick={() => {
+                          if (equipped) {
+                            void handleUnequip(item.details.category)
+                          } else {
+                            void handleEquip(item.accessoryName, item.details.category)
+                          }
+                        }}
+                        disabled={isProcessing}
+                        className={`w-full px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${equipped
+                          ? 'bg-strawberry-500 text-white hover:bg-strawberry-600'
+                          : 'bg-blueberry-500 text-white hover:bg-blueberry-600'
+                          } disabled:bg-latte-300 disabled:cursor-not-allowed`}
+                      >
+                        {isProcessing ? '⏳' : equipped ? 'Retirer' : 'Équiper'}
+                      </button>
                     </div>
+                  )
+                })}
+              </div>
 
-                    {/* Nom */}
-                    <h4 className='font-bold text-blueberry-950 text-xs mb-2 text-center'>
-                      {item.details.name}
-                    </h4>
-
-                    {/* Bouton d'action */}
-                    <button
-                      onClick={() => {
-                        if (equipped) {
-                          void handleUnequip(item.details.category)
-                        } else {
-                          void handleEquip(item.accessoryName, item.details.category)
-                        }
-                      }}
-                      disabled={isProcessing}
-                      className={`w-full px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${equipped
-                        ? 'bg-strawberry-500 text-white hover:bg-strawberry-600'
-                        : 'bg-blueberry-500 text-white hover:bg-blueberry-600'
-                        } disabled:bg-latte-300 disabled:cursor-not-allowed`}
-                    >
-                      {isProcessing ? '⏳' : equipped ? 'Retirer' : 'Équiper'}
-                    </button>
-                  </div>
-                )
-              })}
+              {/* Chevron droit (desktop uniquement) */}
+              <button
+                type='button'
+                aria-label='Faire défiler vers la droite'
+                className='hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 border border-latte-300 rounded-full shadow p-2 hover:bg-blueberry-100 transition disabled:opacity-30'
+                onClick={() => {
+                  const el = document.getElementById('accessory-scroll-list')
+                  if (el !== null) el.scrollBy({ left: 300, behavior: 'smooth' })
+                }}
+              >
+                <svg width='24' height='24' fill='none' viewBox='0 0 24 24'><path d='M9 5l7 7-7 7' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' /></svg>
+              </button>
             </div>
 
             {/* Message si inventaire vide */}
@@ -553,18 +508,18 @@ export default function AccessoryInventoryModal ({
                         ? (
                             accessory.imagePath != null
                               ? (
-                                <div
-                                  className='w-full h-24 rounded bg-cover bg-center'
-                                  style={{ backgroundImage: `url(${accessory.imagePath})` }}
-                                />
+                              <div
+                                className='w-full h-24 rounded bg-cover bg-center'
+                                style={{ backgroundImage: `url(${accessory.imagePath})` }}
+                              />
                                 )
                               : accessory.svg != null
                                 ? (
-                                  <svg
-                                    viewBox='0 0 100 100'
-                                    className='w-full h-24 rounded'
-                                    dangerouslySetInnerHTML={{ __html: accessory.svg }}
-                                  />
+                                <svg
+                                  viewBox='0 0 100 100'
+                                  className='w-full h-24 rounded'
+                                  dangerouslySetInnerHTML={{ __html: accessory.svg }}
+                                />
                                   )
                                 : null
                           )
