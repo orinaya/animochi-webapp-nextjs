@@ -1,0 +1,14 @@
+name: Vercel Monster Auto State Change Cron
+
+on:
+  schedule:
+    - cron: "*/2 * * * *" # Toutes les 2 minutes
+  workflow_dispatch:
+
+jobs:
+  call-vercel-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Vercel Monster Auto State Change API
+        run: |
+          curl -s -X GET "https://animochi.vercel.app/api/cron/monster-auto-state-change"
