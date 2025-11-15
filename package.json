@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "dev:docs": "cd documentation && npm run start",
-    "build": "next build --ignore documentation/*",
+    "build": "npm run build:docs && next build",
+    "build:docs": "cd documentation && npm ci && npm run build",
     "build:next": "next build",
     "build:docs": "cd documentation && npm ci && npm run build",
     "merge-outputs": "node scripts/merge-outputs.js",
