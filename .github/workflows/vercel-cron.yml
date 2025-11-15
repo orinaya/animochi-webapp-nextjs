@@ -2,7 +2,7 @@ name: Vercel Monster Auto State Change Cron
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # Toutes les 5 minutes
+    - cron: "*/10 * * * *" # Toutes les 10 minutes
   workflow_dispatch:
 
 jobs:
