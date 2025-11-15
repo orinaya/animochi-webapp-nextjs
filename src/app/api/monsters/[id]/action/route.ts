@@ -10,15 +10,15 @@ import { REWARD_AMOUNTS, PENALTY_AMOUNTS, MonsterAction, MonsterState } from '@/
 import { getActionXpReward } from '@/services/experience-calculator.service'
 import { getNextLevelXp } from '@/services/experience.service'
 
-// Mapping état -> action attendue (doit matcher le front)
-const STATE_TO_ACTION: Record<MonsterState, MonsterAction> = {
-  hungry: 'feed',
-  bored: 'play',
-  sick: 'heal',
-  happy: 'hug',
-  sad: 'comfort',
-  angry: 'hug',
-  sleepy: 'wake'
+// Mapping état -> actions valides (doit matcher le front)
+const STATE_TO_ACTIONS: Record<MonsterState, MonsterAction[]> = {
+  hungry: ['feed'],
+  bored: ['walk', 'train'],
+  sick: ['comfort', 'hug'],
+  happy: ['hug', 'walk', 'train'],
+  sad: ['comfort', 'hug'],
+  angry: ['hug', 'walk'],
+  sleepy: ['wake', 'hug']
 }
 
 export async function POST (
@@ -36,8 +36,8 @@ export async function POST (
   // Enregistrer l'action utilisateur
   await MonsterActionModel.create({ monsterId: monster._id, userId, action })
 
-  // Vérifier si l'action correspond à l'état du monstre
-  const expectedAction = STATE_TO_ACTION[monster.state as MonsterState]
+  // Vérifier si l'action fait partie des actions valides pour l'état du monstre
+  const expectedActions = STATE_TO_ACTIONS[monster.state as MonsterState] ?? ['hug']
 
   let reward = 0
   let penalty = 0
@@ -46,7 +46,7 @@ export async function POST (
   let leveledUp = false
   const walletRepo = new WalletMongooseRepository()
 
-  if (action === expectedAction) {
+  if (expectedActions.includes(action)) {
     // Créditer le gain animoney
     await walletRepo.addToBalance(monster.ownerId.toString(), REWARD_AMOUNTS[action])
     reward = REWARD_AMOUNTS[action]
@@ -89,8 +89,8 @@ export async function POST (
     ok: true,
     reward,
     penalty,
-    matched: action === expectedAction,
-    expectedAction,
+    matched: expectedActions.includes(action),
+    expectedAction: expectedActions[0],
     xpGained,
     newLevel,
     leveledUp

@@ -51,7 +51,7 @@ interface MonstrePageContentProps {
  * />
  * ```
  */
-export default function MonstrePageContent({
+export default function MonstrePageContent ({
   monster: initialMonster,
   monsterId,
   session

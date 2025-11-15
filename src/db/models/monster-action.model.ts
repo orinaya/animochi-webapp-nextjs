@@ -20,7 +20,7 @@ const monsterActionSchema = new Schema(
     },
     action: {
       type: String,
-      enum: ['feed', 'play', 'heal'],
+      enum: ['feed', 'comfort', 'hug', 'wake', 'walk', 'train'],
       required: true
     },
     createdAt: {

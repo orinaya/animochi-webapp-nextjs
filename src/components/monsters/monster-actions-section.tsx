@@ -54,13 +54,15 @@ interface ActionConfig {
 }
 
 // Mapping front (labels/actions UI) -> backend (actions API)
-const FRONT_TO_BACKEND_ACTION: Record<string, 'feed' | 'play' | 'heal'> = {
+const FRONT_TO_BACKEND_ACTION: Record<string, 'feed' | 'play' | 'heal' | 'hug' | 'comfort' | 'walk' | 'train' | 'wake'> = {
   feed: 'feed',
-  hug: 'play',
-  comfort: 'play',
-  walk: 'play',
-  train: 'play',
-  wake: 'heal'
+  play: 'play',
+  heal: 'heal',
+  hug: 'hug',
+  comfort: 'comfort',
+  walk: 'walk',
+  train: 'train',
+  wake: 'wake'
 }
 
 const AVAILABLE_ACTIONS: ActionConfig[] = [
@@ -141,17 +143,22 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
    * Gère l'exécution d'une action
    */
   // Mapping état -> action attendue (doit matcher le backend)
-  const STATE_TO_ACTION: Record<string, string> = {
-    hungry: 'feed',
-    bored: 'play',
-    sick: 'heal',
-    happy: 'hug',
-    sad: 'comfort',
-    angry: 'hug',
-    sleepy: 'wake'
+  // Mapping des états vers un tableau d'actions valides (MonsterAction[])
+  const STATE_TO_ACTIONS: Record<string, MonsterAction[]> = {
+    hungry: ['feed'],
+    bored: ['walk', 'train'],
+    sick: ['comfort', 'hug'],
+    happy: ['hug', 'walk', 'train'],
+    sad: ['comfort', 'hug'],
+    angry: ['hug', 'walk'],
+    sleepy: ['wake', 'hug'],
+    default: ['hug']
   }
 
-  const expectedAction = typeof monster.state === 'string' ? STATE_TO_ACTION[monster.state] : undefined
+  let expectedActions: MonsterAction[] = STATE_TO_ACTIONS.default
+  if (typeof monster.state === 'string' && monster.state !== '') {
+    expectedActions = STATE_TO_ACTIONS[monster.state] ?? STATE_TO_ACTIONS.default
+  }
 
   const handleAction = async (action: MonsterAction): Promise<void> => {
     // Limite l'action "hug" à 3 fois consécutives en état happy
@@ -173,7 +180,8 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
         body: JSON.stringify({ action: backendAction, userId: monster.ownerId })
       })
       const result: ApiResponse = await res.json()
-      if (result.ok && result.matched && result.reward > 0) {
+      const isGoodAction = expectedActions.includes(action)
+      if (result.ok && isGoodAction && result.reward > 0) {
         // Incrémente le compteur si hug en happy
         if (monster.state === 'happy' && action === 'hug') {
           setHugCount((prev) => Math.min(prev + 1, 3))
@@ -184,22 +192,42 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
         if (result.leveledUp === true && typeof result.newLevel === 'number' && result.newLevel > 0) {
           toast.info(`🎉 Ton monstre passe niveau ${result.newLevel} !`, { autoClose: 4000 })
         }
-        // Mise à jour instantanée de l'humeur (state, stateUpdatedAt, nextStateAt) + XP/level
+        // Re-fetch du monstre à jour depuis l'API pour garantir la synchro XP/état/level
         if (typeof setMonster === 'function') {
-          const now = new Date()
-          setMonster({
-            ...monster,
-            experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
-            level: result.newLevel ?? monster.level,
-            state: 'happy',
-            stateUpdatedAt: now.toISOString(),
-            nextStateAt: new Date(now.getTime() + 5 * 60 * 1000).toISOString()
-          })
+          try {
+            const monsterRes = await fetch(`/api/monsters/${monsterId}`)
+            if (monsterRes.ok) {
+              const updatedMonster = await monsterRes.json()
+              setMonster(updatedMonster)
+            } else {
+              // fallback local si l'API échoue
+              const now = new Date()
+              setMonster({
+                ...monster,
+                experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
+                level: result.newLevel ?? monster.level,
+                state: 'happy',
+                stateUpdatedAt: now.toISOString(),
+                nextStateAt: new Date(now.getTime() + 5 * 60 * 1000).toISOString()
+              })
+            }
+          } catch {
+            // fallback local si fetch échoue
+            const now = new Date()
+            setMonster({
+              ...monster,
+              experience: (monster.experience ?? 0) + (result.xpGained ?? 0),
+              level: result.newLevel ?? monster.level,
+              state: 'happy',
+              stateUpdatedAt: now.toISOString(),
+              nextStateAt: new Date(now.getTime() + 5 * 60 * 1000).toISOString()
+            })
+          }
         }
-      } else if (result.ok && !result.matched && result.penalty > 0) {
+      } else if (result.ok && !isGoodAction && result.penalty > 0) {
         walletEvents.emit()
         toast.error(`Mauvaise action ! -${result.penalty} Animoney. Action attendue : ${result.expectedAction}`)
-      } else if (result.ok && !result.matched) {
+      } else if (result.ok && !isGoodAction) {
         toast.info("Ce n'était pas l'action attendue pour l'état du monstre.")
       } else {
         toast.error('Erreur lors de l’action')
@@ -225,10 +253,11 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
           const xpReward = getActionXpReward(actionConfig.action)
           const bg = `bg-${actionConfig.color}-100 hover:bg-${actionConfig.color}-200`
           const text = `text-${actionConfig.color}-800`
-          const isExpected = expectedAction !== undefined && FRONT_TO_BACKEND_ACTION[actionConfig.action] === expectedAction
+          // On compare directement l'action attendue (backend) avec l'action du bouton
+          const isExpected = expectedActions.includes(actionConfig.action)
           // Montant animoney affiché
           const animoney = isExpected
-            ? REWARD_AMOUNTS[FRONT_TO_BACKEND_ACTION[actionConfig.action] as keyof typeof REWARD_AMOUNTS] ?? 0
+            ? REWARD_AMOUNTS[actionConfig.action as keyof typeof REWARD_AMOUNTS] ?? 0
             : PENALTY_AMOUNTS[monster.state as keyof typeof PENALTY_AMOUNTS] ?? 0
           // Désactive le bouton hug si limite atteinte en happy
           const isHugDisabled = actionConfig.action === 'hug' && monster.state === 'happy' && hugCount >= 3

@@ -1,10 +1,10 @@
-import {MonsterRarity, ThemeColor} from ".."
-import type {EquippedAccessories} from "./monster-accessories"
+import { MonsterRarity, ThemeColor } from '..'
+import type { EquippedAccessories } from './monster-accessories'
 
 /**
  * États possibles d'un monstre
  */
-export type MonsterState = "happy" | "sad" | "angry" | "hungry" | "sleepy" | "bored" | "sick"
+export type MonsterState = 'happy' | 'sad' | 'angry' | 'hungry' | 'sleepy' | 'bored' | 'sick'
 
 /**
  * Type sérialisé pour passer les données de Mongoose aux composants clients
