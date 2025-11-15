@@ -8,7 +8,12 @@
       "schedule": "0 0 * * *"
     }
   ],
-  "rewrites": [],
+  "rewrites": [
+    {
+      "source": "/documentation/:match*",
+      "destination": "/documentation/build/:match*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

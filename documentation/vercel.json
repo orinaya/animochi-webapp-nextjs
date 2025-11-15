@@ -1,0 +1,8 @@
+// Vercel rewrite pour servir la documentation Docusaurus sur /documentation
+// Redirige /documentation/* vers le dossier build de Docusaurus
+[
+  {
+    "source": "/documentation/:match*",
+    "destination": "/documentation/build/:match*"
+  }
+]
