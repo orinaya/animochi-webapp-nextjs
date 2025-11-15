@@ -13,6 +13,7 @@
 
 import { FiTrendingUp } from 'react-icons/fi'
 import type { Monster } from '@/types/monster/monster'
+import { calculateTotalXpForLevel } from '@/services/experience-calculator.service'
 
 interface MonsterExperienceSectionProps {
   /** Données du monstre */
@@ -31,16 +32,15 @@ export default function MonsterExperienceSection ({
   const currentLevel = monster.level ?? 1
   const experience = monster.experience ?? 0
   const experienceToNextLevel = monster.experienceToNextLevel ?? 150
-
-  // Calcul du pourcentage de progression dans le niveau courant (même logique que MonsterCard)
-  const progress = Math.min(100, Math.max(0, Math.floor((experience / experienceToNextLevel) * 100)))
-
   const nextLevel = currentLevel + 1
 
-  // Calculer l'XP dans le niveau actuel
-  // L'XP du monstre est déjà l'XP courante dans le niveau
-  const xpInCurrentLevel = experience
-  const remainingXP = experienceToNextLevel - xpInCurrentLevel
+  // Calcul de l'XP acquise dans le niveau courant
+  const totalXpForCurrentLevel = calculateTotalXpForLevel(currentLevel)
+  const xpInCurrentLevel = Math.max(0, experience - totalXpForCurrentLevel)
+  const remainingXP = Math.max(0, experienceToNextLevel - xpInCurrentLevel)
+
+  // Calcul du pourcentage de progression dans le niveau courant
+  const progress = Math.min(100, Math.max(0, Math.floor((xpInCurrentLevel / experienceToNextLevel) * 100)))
 
   return (
     <div className='relative bg-linear-to-br from-strawberry-100 via-strawberry-150 to-strawberry-200 rounded-3xl p-6 shadow-lg overflow-hidden border border-strawberry-300 pb-8'>
@@ -52,7 +52,7 @@ export default function MonsterExperienceSection ({
       <div className='absolute -bottom-10 -left-10 w-32 h-32 bg-strawberry-200/40 rounded-full blur-3xl' />
 
       <div className='relative z-10'>
-        {/* En-tête avec niveau actuel et prochain niveau */}
+        {/* En-tête avec niveau actuel et prochain niveau (inversé pour clarté) */}
         <div className='flex items-center justify-between mb-6'>
           <div>
             <h2 className='text-2xl font-bold text-strawberry-900 flex items-center gap-2'>
@@ -60,15 +60,15 @@ export default function MonsterExperienceSection ({
               Progression
             </h2>
             <p className='text-sm text-strawberry-700 mt-1'>
-              Niveau actuel : <span className='font-bold text-strawberry-800'>{currentLevel}</span>
+              Niveau suivant : <span className='font-bold text-strawberry-800'>{nextLevel}</span>
             </p>
           </div>
-          {/* Badge "Niveau suivant" style carte blanche + effet gaming */}
+          {/* Badge "Niveau actuel" */}
           <div className='text-right bg-white rounded-2xl px-4 py-3 border-2 border-yellow-300 shadow-xl relative animate-glow-gaming'>
-            <span className='text-xs text-yellow-700 block font-bold tracking-wide drop-shadow'>Niveau suivant</span>
+            <span className='text-xs text-yellow-700 block font-bold tracking-wide drop-shadow'>Niveau actuel</span>
             <div className='text-4xl font-extrabold text-yellow-600 drop-shadow-lg flex items-center justify-end gap-2'>
               <span className='inline-block animate-bounce-slow'>⭐</span>
-              {nextLevel}
+              {currentLevel}
             </div>
             {/* Glow animé autour du badge */}
             <span className='pointer-events-none absolute -inset-1 rounded-2xl border-4 border-yellow-200 opacity-60 blur-lg animate-pulse-gaming' />

@@ -27,32 +27,29 @@ export class MongoMonsterRepository implements MonsterRepository {
     }
 
     // Ajouter l'XP
-    const currentXp = Number(monster.experience ?? 0)
-    const newXp = currentXp + Number(amount)
+    let xp = Number(monster.experience ?? 0) + Number(amount)
+    let level = Number(monster.level ?? 1)
+    let xpToNext = Number(monster.experienceToNextLevel ?? 150)
+    const BASE_XP = 100
+    const GROWTH_FACTOR = 1.5
 
-    monster.experience = newXp
-    monster.markModified('experience')
-
-    // Vérifier si level up
-    const xpNeeded = Number(monster.experienceToNextLevel ?? 150)
-
-    if (newXp >= xpNeeded) {
-      // Level up!
-      const currentLevel = Number(monster.level ?? 1)
-      monster.level = currentLevel + 1
-      monster.markModified('level')
-
-      // Recalculer l'XP pour le prochain niveau
-      // Formule: BASE_XP * level * GROWTH_FACTOR
-      const BASE_XP = 100
-      const GROWTH_FACTOR = 1.5
-      monster.experienceToNextLevel = Math.floor(BASE_XP * monster.level * GROWTH_FACTOR)
-      monster.markModified('experienceToNextLevel')
-
-      // Réinitialiser l'XP (ou garder le surplus)
-      monster.experience = Math.max(0, newXp - xpNeeded)
-      monster.markModified('experience')
+    // Boucle de level-up : tant que l'XP suffit, on passe de niveau
+    while (xp >= xpToNext) {
+      xp -= xpToNext
+      level += 1
+      xpToNext = Math.floor(BASE_XP * level * GROWTH_FACTOR)
     }
+    // Correction : ne jamais dépasser le seuil du niveau courant
+    if (xp >= xpToNext) {
+      xp = xpToNext - 1
+    }
+
+    monster.experience = xp
+    monster.level = level
+    monster.experienceToNextLevel = xpToNext
+    monster.markModified('experience')
+    monster.markModified('level')
+    monster.markModified('experienceToNextLevel')
 
     await monster.save()
   }
@@ -63,7 +60,7 @@ export class MongoMonsterRepository implements MonsterRepository {
   async findById (monsterId: string): Promise<Monster | null> {
     await connectMongooseToDatabase()
 
-    return (await MonsterModel.findById(monsterId))
+    return await MonsterModel.findById(monsterId)
   }
 
   /**

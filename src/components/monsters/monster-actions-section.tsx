@@ -17,6 +17,7 @@ import type { MonsterAction } from '@/types/monster/monster-actions'
  */
 
 import React, { useState } from 'react'
+import LevelUpModal from './level-up-modal'
 import { walletEvents } from '@/lib/events/wallet-events'
 import { FaHeart, FaSmile, FaBell, FaWalking, FaDumbbell } from 'react-icons/fa'
 
@@ -43,6 +44,7 @@ interface ApiResponse {
   xpGained?: number
   newLevel?: number
   leveledUp?: boolean
+  levelsGained?: number
 }
 
 interface ActionConfig {
@@ -136,8 +138,21 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
       lastStateRef.current = monster.state
     }
   }, [monster.state])
-  // const [showLevelUp, setShowLevelUp] = useState(false)
-  // const [levelUpData, setLevelUpData] = useState<{ newLevel: number, levelsGained: number }>({ newLevel: 1, levelsGained: 0 })
+
+  const [showLevelUp, setShowLevelUp] = useState(false)
+  const [levelUpData, setLevelUpData] = useState<{ newLevel: number, levelsGained: number }>({ newLevel: 1, levelsGained: 0 })
+  // Pour détecter le level-up même après un refetch
+  const lastLevelRef = React.useRef<number>(monster.level ?? 1)
+
+  React.useEffect(() => {
+    const currentLevel = monster.level ?? 1
+    const lastLevel = lastLevelRef.current
+    if (currentLevel > lastLevel) {
+      setLevelUpData({ newLevel: currentLevel, levelsGained: currentLevel - lastLevel })
+      setShowLevelUp(true)
+    }
+    lastLevelRef.current = currentLevel
+  }, [monster.level])
 
   /**
    * Gère l'exécution d'une action
@@ -189,16 +204,25 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
         // Notifier tous les composants wallet (navbar, etc.)
         walletEvents.emit()
         toast.success(`+${result.reward} Animoney ! 🎉`)
-        if (result.leveledUp === true && typeof result.newLevel === 'number' && result.newLevel > 0) {
-          toast.info(`🎉 Ton monstre passe niveau ${result.newLevel} !`, { autoClose: 4000 })
-        }
         // Re-fetch du monstre à jour depuis l'API pour garantir la synchro XP/état/level
         if (typeof setMonster === 'function') {
           try {
             const monsterRes = await fetch(`/api/monsters/${monsterId}`)
             if (monsterRes.ok) {
               const updatedMonster = await monsterRes.json()
+              // Détection du level-up APRÈS rechargement
+              const previousLevel = monster.level ?? 1
+              const newLevel = updatedMonster.level ?? previousLevel
+              const levelsGained = newLevel - previousLevel
               setMonster(updatedMonster)
+              if (levelsGained > 0) {
+                toast.info(`🎉 Ton monstre passe niveau ${newLevel} !`, { autoClose: 4000 })
+                setLevelUpData({
+                  newLevel,
+                  levelsGained
+                })
+                setShowLevelUp(true)
+              }
             } else {
               // fallback local si l'API échoue
               const now = new Date()
@@ -300,13 +324,12 @@ const MonsterActionsSection: React.FC<MonsterActionsSectionProps> = ({
       </div>
 
       {/* Modal de level up */}
-      {/* Modal de level up désactivé (code mort) */}
-      {/* <LevelUpModal
+      <LevelUpModal
         isOpen={showLevelUp}
         newLevel={levelUpData.newLevel}
         levelsGained={levelUpData.levelsGained}
         onClose={() => { setShowLevelUp(false) }}
-      /> */}
+      />
     </>
   )
 }

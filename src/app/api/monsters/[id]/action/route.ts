@@ -8,7 +8,6 @@ import MonsterActionModel from '@/db/models/monster-action.model'
 import { WalletMongooseRepository } from '@/infrastructure/repositories/wallet-mongoose-repository'
 import { REWARD_AMOUNTS, PENALTY_AMOUNTS, MonsterAction, MonsterState } from '@/config/rewards.config'
 import { getActionXpReward } from '@/services/experience-calculator.service'
-import { getNextLevelXp } from '@/services/experience.service'
 
 // Mapping état -> actions valides (doit matcher le front)
 const STATE_TO_ACTIONS: Record<MonsterState, MonsterAction[]> = {
@@ -43,40 +42,37 @@ export async function POST (
   let penalty = 0
   let xpGained = 0
   let newLevel = monster.level ?? 1
-  let leveledUp = false
+  const leveledUp = false
   const walletRepo = new WalletMongooseRepository()
+  const { MongoMonsterRepository } = await import(
+    '@/infrastructure/repositories/mongo-monster.repository'
+  )
 
   if (expectedActions.includes(action)) {
     // Créditer le gain animoney
     await walletRepo.addToBalance(monster.ownerId.toString(), REWARD_AMOUNTS[action])
     reward = REWARD_AMOUNTS[action]
 
-    // Gérer l’XP et la montée de niveau
+    // Gérer l’XP et la montée de niveau via le repository
     type XpAction = 'feed' | 'comfort' | 'hug' | 'wake' | 'walk' | 'train'
     const xpAction: XpAction = ['feed', 'comfort', 'hug', 'wake', 'walk', 'train'].includes(action)
       ? (action as XpAction)
       : 'hug'
     xpGained = getActionXpReward(xpAction)
-    let xp = (monster.experience ?? 0) + xpGained
-    let level = monster.level ?? 1
-    let xpToNext = monster.experienceToNextLevel ?? getNextLevelXp(level)
-    while (xp >= xpToNext) {
-      xp -= xpToNext
-      level += 1
-      xpToNext = getNextLevelXp(level)
-      leveledUp = true
+    const monsterRepo = new MongoMonsterRepository()
+    await monsterRepo.addXp(monster._id.toString(), xpGained)
+
+    // Recharger le monstre pour obtenir les valeurs à jour
+    const updatedMonster = await MonsterModel.findById(monster._id)
+    if (updatedMonster !== null && updatedMonster !== undefined) {
+      newLevel = updatedMonster.level ?? newLevel
+      // Remettre l'état à happy et nextStateAt à dans 5 min
+      updatedMonster.state = 'happy'
+      const now = new Date()
+      updatedMonster.stateUpdatedAt = now
+      updatedMonster.nextStateAt = new Date(now.getTime() + 5 * 60 * 1000)
+      await updatedMonster.save()
     }
-    // Mise à jour du monstre
-    monster.experience = xp
-    monster.level = level
-    monster.experienceToNextLevel = xpToNext
-    newLevel = level
-    // Remettre l'état à happy et nextStateAt à dans 5 min
-    monster.state = 'happy'
-    const now = new Date()
-    monster.stateUpdatedAt = now
-    monster.nextStateAt = new Date(now.getTime() + 5 * 60 * 1000)
-    await monster.save()
   } else {
     // Appliquer la pénalité animoney
     penalty = PENALTY_AMOUNTS[monster.state as MonsterState] ?? 0
