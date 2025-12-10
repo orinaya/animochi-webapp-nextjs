@@ -8,7 +8,6 @@
     "build": "npm run build:docs && next build",
     "build:docs": "cd documentation && npm ci && npm run build",
     "build:next": "next build",
-    "build:docs": "cd documentation && npm ci && npm run build",
     "merge-outputs": "node scripts/merge-outputs.js",
     "start": "next start",
     "lint": "ts-standard --fix"
@@ -20,7 +19,7 @@
     "dotenv": "^17.2.3",
     "mongodb": "^6.20.0",
     "mongoose": "^8.19.1",
-    "next": "15.5.4",
+    "next": "15.5.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
